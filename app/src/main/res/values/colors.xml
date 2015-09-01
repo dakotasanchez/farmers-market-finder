@@ -4,4 +4,12 @@
     <color name="primary_dark">#00897B</color>
     <color name="accent">#2196F3</color>
     <color name="material_white">#EEEEEE</color>
+
+    <!-- Market colors -->
+    <color name="market_red">#C62828</color>
+    <color name="market_pink">#AD1457</color>
+    <color name="market_orange">#D84315</color>
+    <color name="market_green">#2E7D32</color>
+    <color name="market_blue">#1565C0</color>
+
 </resources>
