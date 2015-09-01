@@ -1,5 +1,34 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/market_item_card"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/cardview_margin"
+    card_view:cardElevation="@dimen/cardview_elevation"
+    card_view:cardCornerRadius="@dimen/cardview_radius"
+    card_view:cardBackgroundColor="@color/material_white">
 
-</CardView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/cardview_padding">
+
+        <TextView
+            android:id="@+id/market_name"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/market_distance"
+            style="@style/Base.TextAppearance.AppCompat.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

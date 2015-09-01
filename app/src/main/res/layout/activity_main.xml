@@ -16,23 +16,29 @@
         android:layout_height="match_parent"
         android:clickable="true">
 
-        <!-- Move to separate frag and swap out container for that frag?-->
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_main_activity"
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar_main_activity"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:minHeight="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            android:fitsSystemWindows="true" />
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_main_activity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:minHeight="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                android:fitsSystemWindows="true" />
+
+        </android.support.design.widget.AppBarLayout>
 
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/toolbar_main_activity"/>
+            android:layout_below="@id/appbar_main_activity"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/market_search"
