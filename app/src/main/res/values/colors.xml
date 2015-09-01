@@ -4,6 +4,7 @@
     <color name="primary_dark">#00897B</color>
     <color name="accent">#2196F3</color>
     <color name="material_white">#EEEEEE</color>
+    <color name="material_gray">#E0E0E0</color>
 
     <!-- Market colors -->
     <color name="market_red">#C62828</color>
