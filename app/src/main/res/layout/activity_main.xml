@@ -11,17 +11,17 @@
     <!-- As the main content view, the view below consumes the entire
          space available using match_parent in both dimensions. -->
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true"
-        android:orientation="vertical">
+        android:clickable="true">
 
         <!-- Move to separate frag and swap out container for that frag?-->
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_main_activity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:minHeight="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -31,9 +31,21 @@
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar_main_activity"/>
 
-    </LinearLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/market_search"
+            android:src="@drawable/ic_search_white_36dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/fab_margin"
+            app:fabSize="normal"
+            app:borderWidth="0dp"/>
+
+    </RelativeLayout>
 
     <!-- android:layout_gravity="start" tells DrawerLayout to treat
          this as a sliding drawer on the left side for left-to-right
