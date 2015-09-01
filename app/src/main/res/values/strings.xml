@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Farmers Market Finder</string>
 
+    <string name="default_suggestion">No markets! Try searching above.</string>
+
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
@@ -11,4 +13,7 @@
     <string name="action_example">Search</string>
 
     <string name="action_settings">Settings</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

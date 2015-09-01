@@ -10,13 +10,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.TextView;
+
+import com.sanchez.fmf.fragment.MarketListFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Default to first frag for now
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, new FirstFragment()).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, MarketListFragment.newInstance()).commit();
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
@@ -94,28 +93,32 @@ public class MainActivity extends AppCompatActivity {
         Class fragmentClass;
         switch(menuItem.getItemId()) {
             case R.id.nav_first_fragment:
-                fragmentClass = FirstFragment.class;
+                fragmentClass = MarketListFragment.class;
                 break;
             case R.id.nav_second_fragment:
-                fragmentClass = SecondFragment.class;
+                fragmentClass = null;
                 break;
             default:
-                fragmentClass = FirstFragment.class;
+                fragmentClass = MarketListFragment.class;
         }
 
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(fragmentClass != null) {
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Insert the fragment by replacing any existing fragment
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+
+            // Highlight the selected item, update the title, and close the drawer
+            menuItem.setChecked(true);
+            setTitle(menuItem.getTitle());
+        } else {
+            // launch fragment dialog saying map is coming soon
         }
-
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
-
-        // Highlight the selected item, update the title, and close the drawer
-        menuItem.setChecked(true);
-        setTitle(menuItem.getTitle());
         mDrawerLayout.closeDrawers();
     }
 
@@ -163,43 +166,5 @@ public class MainActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    public static class FirstFragment extends Fragment {
-
-        public FirstFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-
-        @Override
-        public void onViewCreated(View v, Bundle savedInstanceState) {
-            TextView tv = (TextView)getActivity().findViewById(R.id.section_label);
-            tv.setText("ONE");
-        }
-    }
-
-    public static class SecondFragment extends Fragment {
-
-        public SecondFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-
-        @Override
-        public void onViewCreated(View v, Bundle savedInstanceState) {
-            TextView tv = (TextView)getActivity().findViewById(R.id.section_label);
-            tv.setText("TWO");
-        }
     }
 }
