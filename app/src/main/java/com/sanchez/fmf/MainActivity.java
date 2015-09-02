@@ -1,7 +1,7 @@
 package com.sanchez.fmf;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             w.setStatusBarColor(getResources().getColor(R.color.primary_dark));
         }
 
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         Fragment mainFragment = fm.findFragmentById(R.id.container_main_activity);
 
         if (mainFragment == null) {
