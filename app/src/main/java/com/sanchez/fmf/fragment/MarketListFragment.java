@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sanchez.fmf.R;
-import com.sanchez.fmf.adapter.MarketAdapter;
+import com.sanchez.fmf.adapter.MarketListAdapter;
 import com.sanchez.fmf.model.MarketListItemModel;
 import com.sanchez.fmf.util.MarketUtils;
 import com.sanchez.fmf.util.ViewUtils;
@@ -61,7 +61,7 @@ public class MarketListFragment extends Fragment {
 
         ArrayList<MarketListItemModel> mMarkets = MarketUtils.getExampleMarkets();
 
-        mAdapter = new MarketAdapter(mMarkets);
+        mAdapter = new MarketListAdapter(mMarkets);
         mMarketList.setAdapter(mAdapter);
 
         return v;

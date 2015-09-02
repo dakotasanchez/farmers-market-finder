@@ -14,17 +14,17 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MarketAdapter extends RecyclerView.Adapter<MarketAdapter.ViewHolder> {
+public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.ViewHolder> {
     private ArrayList<MarketListItemModel> mDataset;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MarketAdapter(ArrayList<MarketListItemModel> dataSet) {
+    public MarketListAdapter(ArrayList<MarketListItemModel> dataSet) {
         mDataset = dataSet;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public MarketAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public MarketListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
