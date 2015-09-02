@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         style="@style/Base.TextAppearance.AppCompat.Medium"
         android:layout_centerInParent="true"
-        android:text="@string/default_suggestion" />
+        android:text="@string/main_hint" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/market_list"
