@@ -5,7 +5,7 @@
     tools:context="com.sanchez.fmf.fragment.MainFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/material_gray">
+    android:background="@color/material_white">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -20,11 +20,12 @@
             android:layout_margin="@dimen/cardview_margin"
             card_view:cardElevation="@dimen/cardview_elevation"
             card_view:cardCornerRadius="@dimen/cardview_radius"
-            card_view:cardBackgroundColor="@color/material_white">
+            card_view:cardBackgroundColor="@color/pure_white">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:padding="@dimen/cardview_padding">
 
                 <ImageView
                     android:id="@+id/search_icon"
@@ -33,23 +34,71 @@
                     android:src="@drawable/ic_search_black_24dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:paddingLeft="@dimen/cardview_padding"
-                    android:paddingRight="@dimen/cardview_padding_small"/>
+                    android:paddingRight="@dimen/cardview_padding" />
 
                 <AutoCompleteTextView
                     android:id="@+id/search_autocomplete"
                     style="@style/Widget.AppCompat.AutoCompleteTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/cardview_padding_small"
                     android:layout_toRightOf="@id/search_icon"
-                    android:elegantTextHeight="true"
+                    android:textColorHint="@color/accent"
                     android:background="#00000000"
                     android:hint="@string/search_hint"
                     android:imeOptions="actionSearch"
                     android:inputType="textAutoComplete"
                     android:maxLines="1"
                     android:singleLine="true"/>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <View
+            android:id="@+id/search_separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/card_search"
+            android:layout_margin="@dimen/cardview_padding"
+            android:background="@color/accent" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/pinned_markets"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/search_separator"
+            android:layout_margin="@dimen/cardview_margin"
+            card_view:cardElevation="@dimen/cardview_elevation"
+            card_view:cardCornerRadius="@dimen/cardview_radius"
+            card_view:cardBackgroundColor="@color/pure_white">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/cardview_padding">
+
+                <TextView
+                    android:id="@+id/pinned_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    style="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:text="@string/pinned_markets"/>
+
+                <View
+                    android:id="@+id/title_separator"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/pinned_title"
+                    android:layout_marginBottom="@dimen/cardview_padding_small"
+                    android:background="@color/accent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/title_separator"
+                    android:text="Nothing yet!"/>
 
             </RelativeLayout>
 
