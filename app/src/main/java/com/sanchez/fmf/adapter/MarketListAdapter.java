@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.model.MarketListItemModel;
+import com.sanchez.fmf.util.MarketUtils;
 
 import java.util.ArrayList;
 
@@ -40,7 +41,9 @@ public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.Vi
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.mMarketName.setText(mDataset.get(position).getName());
-        holder.mDistance.setText(Double.toString(mDataset.get(position).getDistanceFromQuery()));
+
+        String name = mDataset.get(position).getName();
+        holder.mDistance.setText(MarketUtils.getDistanceFromName(name));
 
     }
 

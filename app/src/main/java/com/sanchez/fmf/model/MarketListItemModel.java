@@ -7,12 +7,10 @@ public class MarketListItemModel {
 
     private String mId;
     private String mName;
-    private double mDistanceFromQuery;
 
-    public MarketListItemModel(String id, String name, double distanceFromQuery) {
+    public MarketListItemModel(String id, String name) {
         mId = id;
         mName = name;
-        mDistanceFromQuery = distanceFromQuery;
     }
 
     public String getId() {
@@ -21,9 +19,5 @@ public class MarketListItemModel {
 
     public String getName() {
         return mName;
-    }
-
-    public double getDistanceFromQuery() {
-        return mDistanceFromQuery;
     }
 }
