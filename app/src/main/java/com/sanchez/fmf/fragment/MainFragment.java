@@ -1,6 +1,7 @@
 package com.sanchez.fmf.fragment;
 
 
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -73,6 +74,10 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                 android.R.layout.simple_list_item_1, googleApiClient, BOUNDS_NORTH_AMERICA, null);
         mSearchAutocomplete.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         mSearchAutocomplete.setAdapter(mAutocompleteAdapter);
+        mSearchAutocomplete.setDropDownVerticalOffset(10);
+        mSearchAutocomplete.setDropDownBackgroundDrawable(new ColorDrawable(getResources()
+                .getColor(R.color.pure_white)));
+        mSearchAutocomplete.setDropDownAnchor(R.id.card_search);
 
         return v;
     }
