@@ -16,6 +16,10 @@
 #   public *;
 #}
 
+# retrolambda
+-dontwarn java.lang.invoke.*
+
+# retrofit
 -dontwarn retrofit.**
 -keep class retrofit.** { *; }
 -keepattributes Signature
