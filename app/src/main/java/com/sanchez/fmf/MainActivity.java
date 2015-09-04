@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
             w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             w.setStatusBarColor(getResources().getColor(R.color.primary_dark));
+            w.setNavigationBarColor(getResources().getColor(R.color.primary_dark));
         }
 
         FragmentManager fm = getSupportFragmentManager();
