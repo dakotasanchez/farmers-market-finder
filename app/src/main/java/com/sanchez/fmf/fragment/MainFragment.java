@@ -10,10 +10,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -35,6 +38,8 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     public String TAG = MainFragment.class.getSimpleName();
 
+    @Bind(R.id.root_main_fragment)
+    View mRootView;
     @Bind(R.id.search_autocomplete)
     AutoCompleteTextView mSearchAutocomplete;
 
@@ -74,10 +79,22 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                 android.R.layout.simple_list_item_1, googleApiClient, BOUNDS_NORTH_AMERICA, null);
         mSearchAutocomplete.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         mSearchAutocomplete.setAdapter(mAutocompleteAdapter);
-        mSearchAutocomplete.setDropDownVerticalOffset(10);
+        mSearchAutocomplete.setDropDownVerticalOffset(8);
         mSearchAutocomplete.setDropDownBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(R.color.pure_white)));
         mSearchAutocomplete.setDropDownAnchor(R.id.card_search);
+        mSearchAutocomplete.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    Toast.makeText(getActivity(), "Clicked!", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        mRootView.requestFocus();
 
         return v;
     }
