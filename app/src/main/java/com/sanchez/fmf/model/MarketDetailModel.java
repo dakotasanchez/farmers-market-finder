@@ -10,26 +10,38 @@ public class MarketDetailModel {
     private String mProducts;
     private String mSchedule;
 
-    public MarketDetailModel(String address, String mapLink, String products, String schedule) {
-        mAddress = address;
-        mMapLink = mapLink;
-        mProducts = products;
-        mSchedule = schedule;
+    public MarketDetailModel() {
     }
 
     public String getAddress() {
         return mAddress;
     }
 
+    public void setAddress(String address) {
+        mAddress = address;
+    }
+
     public String getMapLink() {
         return mMapLink;
+    }
+
+    public void setMapLink(String mapLink) {
+        mMapLink = mapLink;
     }
 
     public String getProducts() {
         return mProducts;
     }
 
+    public void setProducts(String products) {
+        mProducts = products;
+    }
+
     public String getSchedule() {
         return mSchedule;
+    }
+
+    public void setSchedule(String schedule) {
+        mSchedule = schedule;
     }
 }

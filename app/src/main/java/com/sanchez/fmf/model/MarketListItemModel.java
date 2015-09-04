@@ -5,19 +5,25 @@ package com.sanchez.fmf.model;
  */
 public class MarketListItemModel {
 
-    private String mId;
-    private String mName;
+    private String id;
+    private String marketname;
 
-    public MarketListItemModel(String id, String name) {
-        mId = id;
-        mName = name;
+    public MarketListItemModel() {
     }
 
     public String getId() {
-        return mId;
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
-        return mName;
+        return marketname;
+    }
+
+    public void setName(String name) {
+        this.marketname = name;
     }
 }
