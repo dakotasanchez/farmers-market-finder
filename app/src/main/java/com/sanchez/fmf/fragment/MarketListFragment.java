@@ -1,6 +1,7 @@
 package com.sanchez.fmf.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.MarketListAdapter;
 import com.sanchez.fmf.model.MarketListItemModel;
@@ -27,14 +29,14 @@ public class MarketListFragment extends Fragment {
     View mSuggestion;
 
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
 
-    public static MarketListFragment newInstance() {
+    private double[] coordinates = new double[2];
+
+    public static MarketListFragment newInstance(double[] coords) {
         MarketListFragment fragment = new MarketListFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
+        Bundle args = new Bundle();
+        args.putDoubleArray(MarketListActivity.EXTRA_COORDINATES, coords);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -44,10 +46,9 @@ public class MarketListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
+        if (getArguments() != null) {
+            coordinates = getArguments().getDoubleArray(MarketListActivity.EXTRA_COORDINATES);
+        }
     }
 
     @Override
@@ -56,8 +57,8 @@ public class MarketListFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_market_list, container, false);
         ButterKnife.bind(this, v);
 
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mMarketList.setLayoutManager(mLayoutManager);
+        RecyclerView.LayoutManager linearLM = new LinearLayoutManager(getContext());
+        mMarketList.setLayoutManager(linearLM);
 
         ArrayList<MarketListItemModel> mMarkets = MarketUtils.getExampleMarkets();
 
@@ -69,12 +70,11 @@ public class MarketListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        mMarketList.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int shortAnimation = getResources().getInteger(android.R.integer.config_shortAnimTime);
-                ViewUtils.crossfadeTwoViews(mMarketList, mSuggestion, shortAnimation);
-            }
+        Snackbar.make(getView(), "lat = " + coordinates[0] + " lon = " + coordinates[1], Snackbar.LENGTH_LONG).show();
+
+        mMarketList.postDelayed(() -> {
+            int shortAnimation = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            ViewUtils.crossfadeTwoViews(mMarketList, mSuggestion, shortAnimation);
         }, 3000);
     }
 }

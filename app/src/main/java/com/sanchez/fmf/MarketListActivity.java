@@ -19,6 +19,8 @@ import butterknife.ButterKnife;
 
 public class MarketListActivity extends AppCompatActivity {
 
+    public static final String EXTRA_COORDINATES = "com.sanchez.extra_coordinates";
+
     @Bind(R.id.toolbar_market_list_activity)
     Toolbar mToolbar;
 
@@ -37,11 +39,13 @@ public class MarketListActivity extends AppCompatActivity {
             w.setStatusBarColor(getResources().getColor(R.color.primary_dark));
         }
 
+        double[] coordinates = getIntent().getDoubleArrayExtra(EXTRA_COORDINATES);
+
         FragmentManager fm = getSupportFragmentManager();
         Fragment listFragment = fm.findFragmentById(R.id.container_market_list_activity);
 
         if (listFragment == null) {
-            listFragment = MarketListFragment.newInstance();
+            listFragment = MarketListFragment.newInstance(coordinates);
             fm.beginTransaction()
                     .add(R.id.container_market_list_activity, listFragment)
                     .commit();

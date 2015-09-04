@@ -1,34 +1,34 @@
 package com.sanchez.fmf.fragment;
 
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.PlaceAutocompleteAdapter;
+import com.sanchez.fmf.util.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,8 +90,11 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         mSearchAutocomplete.setDropDownAnchor(R.id.card_search);
         mSearchAutocomplete.setThreshold(3); // waits for 3 chars before autocomplete kicks in
         mSearchAutocomplete.setOnEditorActionListener((v, actionId, event) -> {
-            if(actionId == EditorInfo.IME_ACTION_SEARCH) {
-                Toast.makeText(getActivity(), "Clicked!", Toast.LENGTH_SHORT).show();
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                new GetCoordinatesFromLocation().execute(mSearchAutocomplete.getText().toString());
+
+                ViewUtils.hideKeyboard(getActivity());
+                mSearchAutocomplete.dismissDropDown();
                 return true;
             }
             return false;
@@ -131,13 +134,20 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         mRootView.requestFocus();
     }
 
+    private void launchMarketList(ArrayList<Double> coords) {
+        Intent i = new Intent(getActivity(), MarketListActivity.class);
+        i.putExtra(MarketListActivity.EXTRA_COORDINATES,
+                new double[] { coords.get(0), coords.get(1) } );
+        startActivity(i);
+    }
+
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.e(TAG, "Google Places API connection failed with error code: "
                 + connectionResult.getErrorCode());
 
-        Toast.makeText(getActivity(), "Google Places API unavailable right now. Error code:" +
-                connectionResult.getErrorCode(), Toast.LENGTH_LONG).show();
+        Snackbar.make(mRootView, "Google Places API unavailable right now. Error code:" +
+                connectionResult.getErrorCode(), Snackbar.LENGTH_LONG).show();
     }
 
     private class GetCoordinatesFromLocation extends AsyncTask<String, Void, ArrayList<Double>> {
@@ -158,7 +168,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                 }
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage());
-                Toast.makeText(getActivity(), "Geocoder error", Toast.LENGTH_LONG).show();
+                Snackbar.make(mRootView, "Geocoder error", Snackbar.LENGTH_LONG).show();
             }
             return null;
         }
@@ -166,10 +176,12 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         @Override
         protected void onPostExecute(ArrayList<Double> result) {
             if(result != null) {
-                Toast.makeText(getActivity(), "Coords: lat=" + result.get(0) + " lon=" + result.get(1),
-                        Toast.LENGTH_LONG).show();
+                //Snackbar.make(mRootView, "Coords: lat=" + result.get(0) + " lon=" + result.get(1),
+                //        Snackbar.LENGTH_LONG).show();
+                //TODO: checkout the coords to make sure they're valid
+                launchMarketList(result);
             } else {
-                Toast.makeText(getActivity(), "Invalid input", Toast.LENGTH_LONG).show();
+                Snackbar.make(mRootView, "Invalid input", Snackbar.LENGTH_LONG).show();
             }
         }
     }
