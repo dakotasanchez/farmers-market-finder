@@ -5,6 +5,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +14,23 @@ import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.MarketListAdapter;
 import com.sanchez.fmf.model.MarketListItemModel;
-import com.sanchez.fmf.util.MarketUtils;
+import com.sanchez.fmf.model.MarketListModel;
+import com.sanchez.fmf.service.MarketService;
+import com.sanchez.fmf.service.RestClient;
 import com.sanchez.fmf.util.ViewUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MarketListFragment extends Fragment {
+
+    public static final String TAG = MarketListFragment.class.getSimpleName();
 
     @Bind(R.id.market_list)
     RecyclerView mMarketList;
@@ -31,6 +40,8 @@ public class MarketListFragment extends Fragment {
     View mProgressBar;
 
     private RecyclerView.Adapter mAdapter;
+
+    private MarketService mMarketService;
 
     private double[] coordinates = new double[2];
 
@@ -48,6 +59,10 @@ public class MarketListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        RestClient client = new RestClient();
+        mMarketService = client.getMarketService();
+
         if (getArguments() != null) {
             coordinates = getArguments().getDoubleArray(MarketListActivity.EXTRA_COORDINATES);
         }
@@ -62,21 +77,33 @@ public class MarketListFragment extends Fragment {
         RecyclerView.LayoutManager linearLM = new LinearLayoutManager(getContext());
         mMarketList.setLayoutManager(linearLM);
 
-        ArrayList<MarketListItemModel> mMarkets = MarketUtils.getExampleMarkets();
-
-        mAdapter = new MarketListAdapter(mMarkets);
-        mMarketList.setAdapter(mAdapter);
-
         return v;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        Snackbar.make(getView(), "lat = " + coordinates[0] + " lon = " + coordinates[1], Snackbar.LENGTH_LONG).show();
+        super.onViewCreated(view, savedInstanceState);
 
-        mMarketList.postDelayed(() -> {
-            int shortAnimation = getResources().getInteger(android.R.integer.config_mediumAnimTime);
-            ViewUtils.crossfadeTwoViews(mMarketList, mProgressBar, shortAnimation);
-        }, 3000);
+        // get markets from api
+        mMarketService.getMarkets(coordinates[0], coordinates[1], new Callback<MarketListModel>() {
+            @Override
+            public void success(MarketListModel marketListModel, Response response) {
+                showMarkets(marketListModel.getMarkets());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Snackbar.make(getView(), "Failed to get markets!", Snackbar.LENGTH_LONG).show();
+                Log.e(TAG, error.getMessage());
+            }
+        });
+    }
+
+    private void showMarkets(List<MarketListItemModel> markets) {
+        mAdapter = new MarketListAdapter(new ArrayList<>(markets));
+        mMarketList.setAdapter(mAdapter);
+
+        int shortAnimation = getResources().getInteger(android.R.integer.config_mediumAnimTime);
+        ViewUtils.crossfadeTwoViews(mMarketList, mProgressBar, shortAnimation);
     }
 }

@@ -40,10 +40,12 @@ public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mMarketName.setText(mDataset.get(position).getName());
-
         String name = mDataset.get(position).getName();
-        holder.mDistance.setText(MarketUtils.getDistanceFromName(name));
+        String dist = MarketUtils.getDistanceFromName(name);
+
+        holder.mMarketName.setText(name.substring(dist.length() + 1));
+
+        holder.mDistance.setText(dist);
 
     }
 
