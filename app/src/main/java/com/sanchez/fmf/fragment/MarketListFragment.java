@@ -27,6 +27,8 @@ public class MarketListFragment extends Fragment {
     RecyclerView mMarketList;
     @Bind(R.id.fragment_default_suggestion)
     View mSuggestion;
+    @Bind(R.id.progress_bar)
+    View mProgressBar;
 
     private RecyclerView.Adapter mAdapter;
 
@@ -73,8 +75,8 @@ public class MarketListFragment extends Fragment {
         Snackbar.make(getView(), "lat = " + coordinates[0] + " lon = " + coordinates[1], Snackbar.LENGTH_LONG).show();
 
         mMarketList.postDelayed(() -> {
-            int shortAnimation = getResources().getInteger(android.R.integer.config_shortAnimTime);
-            ViewUtils.crossfadeTwoViews(mMarketList, mSuggestion, shortAnimation);
+            int shortAnimation = getResources().getInteger(android.R.integer.config_mediumAnimTime);
+            ViewUtils.crossfadeTwoViews(mMarketList, mProgressBar, shortAnimation);
         }, 3000);
     }
 }
