@@ -5,10 +5,13 @@ import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -42,6 +45,8 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     View mRootView;
     @Bind(R.id.search_autocomplete)
     AutoCompleteTextView mSearchAutocomplete;
+    @Bind(R.id.clear_icon)
+    View mClearSearch;
 
     private static final int GOOGLE_API_CLIENT_ID = 0;
     private static final LatLngBounds BOUNDS_NORTH_AMERICA = new LatLngBounds(new LatLng(18.000000,
@@ -65,38 +70,65 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         googleApiClient = new GoogleApiClient
                 .Builder(getActivity())
                 .addApi(Places.GEO_DATA_API)
-                .enableAutoManage((FragmentActivity) getActivity(), GOOGLE_API_CLIENT_ID, this)
+                .enableAutoManage(getActivity(), GOOGLE_API_CLIENT_ID, this)
                 .build();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_main, container, false);
-        ButterKnife.bind(this, v);
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        ButterKnife.bind(this, rootView);
 
         mAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(),
                 android.R.layout.simple_list_item_1, googleApiClient, BOUNDS_NORTH_AMERICA, null);
         mSearchAutocomplete.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         mSearchAutocomplete.setAdapter(mAutocompleteAdapter);
-        mSearchAutocomplete.setDropDownVerticalOffset(8);
+        mSearchAutocomplete.setDropDownVerticalOffset(8); // just below search box
         mSearchAutocomplete.setDropDownBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(R.color.pure_white)));
         mSearchAutocomplete.setDropDownAnchor(R.id.card_search);
-        mSearchAutocomplete.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mSearchAutocomplete.setThreshold(3); // waits for 3 chars before autocomplete kicks in
+        mSearchAutocomplete.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+                Toast.makeText(getActivity(), "Clicked!", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            return false;
+        });
+        mSearchAutocomplete.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    Toast.makeText(getActivity(), "Clicked!", Toast.LENGTH_SHORT).show();
-                    return true;
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() > 0) {
+                    if(mClearSearch.getVisibility() == View.GONE) {
+                        mClearSearch.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    mClearSearch.setVisibility(View.GONE);
                 }
-                return false;
             }
         });
 
-        mRootView.requestFocus();
+        mClearSearch.setOnClickListener((v) -> {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                mSearchAutocomplete.setText("", false);
+            } else {
+                mSearchAutocomplete.setText("");
+            }
+        });
 
-        return v;
+        removeFocusFromAll();
+
+        return rootView;
+    }
+
+    private void removeFocusFromAll() {
+        mRootView.requestFocus();
     }
 
     @Override
