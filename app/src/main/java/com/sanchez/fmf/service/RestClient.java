@@ -1,9 +1,12 @@
 package com.sanchez.fmf.service;
 
-import com.squareup.moshi.Moshi;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sanchez.fmf.model.MarketListModel;
+import com.sanchez.fmf.service.json.MarketListModelDeserializer;
 
-import retrofit.MoshiConverterFactory;
-import retrofit.Retrofit;
+import retrofit.RestAdapter;
+import retrofit.converter.GsonConverter;
 
 /**
  * Created by dakota on 9/2/15.
@@ -14,11 +17,15 @@ public class RestClient {
     private MarketService marketService;
 
     public RestClient() {
-        Moshi moshi = new Moshi.Builder().build();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(MoshiConverterFactory.create(moshi))
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(MarketListModel.class, new MarketListModelDeserializer())
+                .create();
+
+        RestAdapter retrofit = new RestAdapter.Builder()
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setEndpoint(BASE_URL)
+                .setConverter(new GsonConverter(gson))
                 .build();
 
         marketService = retrofit.create(MarketService.class);
