@@ -18,8 +18,10 @@ public class RestClient {
 
     public RestClient() {
 
+//        Gson gson = new GsonBuilder()
+//                .registerTypeAdapter(MarketListModel.class, new MarketListModelDeserializer())
+//                .create();
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(MarketListModel.class, new MarketListModelDeserializer())
                 .create();
 
         RestAdapter retrofit = new RestAdapter.Builder()
