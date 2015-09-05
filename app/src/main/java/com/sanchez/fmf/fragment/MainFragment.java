@@ -43,6 +43,8 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     @Bind(R.id.root_main_fragment)
     View mRootView;
+    @Bind(R.id.card_search)
+    View mSearchCard;
     @Bind(R.id.search_autocomplete)
     AutoCompleteTextView mSearchAutocomplete;
     @Bind(R.id.clear_icon)
@@ -88,7 +90,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         mSearchAutocomplete.setDropDownBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(R.color.pure_white)));
         mSearchAutocomplete.setDropDownAnchor(R.id.card_search);
-        mSearchAutocomplete.setThreshold(3); // waits for 3 chars before autocomplete kicks in
+        //mSearchAutocomplete.setThreshold(3); // waits for 3 chars before autocomplete kicks in
         mSearchAutocomplete.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 new GetCoordinatesFromLocation().execute(mSearchAutocomplete.getText().toString());
@@ -115,6 +117,11 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                     mClearSearch.setVisibility(View.GONE);
                 }
             }
+        });
+
+        mSearchCard.setOnClickListener((v) -> {
+            mSearchAutocomplete.requestFocus();
+            ViewUtils.showKeyboard(getActivity(), mSearchAutocomplete);
         });
 
         mClearSearch.setOnClickListener((v) -> {
