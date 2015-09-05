@@ -29,7 +29,8 @@ public class PlaceAutocompleteAdapter
 
     private ArrayList<PlaceAutocomplete> mResultList;
 
-    private HashMap<String, PlacePhotoMetadataResult> photoMetadata;
+    // Map<"place description","place id"> as a backup if we can't get the id from
+    private HashMap<String, String> mPlaceIdMap;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -43,7 +44,7 @@ public class PlaceAutocompleteAdapter
         mGoogleApiClient = googleApiClient;
         mBounds = bounds;
         mPlaceFilter = filter;
-        photoMetadata = new HashMap<>();
+        mPlaceIdMap = new HashMap<>();
     }
 
     @Override
@@ -54,6 +55,10 @@ public class PlaceAutocompleteAdapter
     @Override
     public PlaceAutocomplete getItem(int position) {
         return mResultList.get(position);
+    }
+
+    public HashMap<String, String> getPlaceIdMap() {
+        return mPlaceIdMap;
     }
 
     @Override
@@ -141,7 +146,9 @@ public class PlaceAutocompleteAdapter
                 AutocompletePrediction prediction = iterator.next();
                 // Get the details of this prediction and copy it into a new PlaceAutocomplete object.
                 if(prediction.getDescription().contains("United States")) {
-                    resultList.add(new PlaceAutocomplete(prediction.getPlaceId(), prediction.getDescription()));
+                    mPlaceIdMap.put(prediction.getDescription(), prediction.getPlaceId());
+                    resultList.add(new PlaceAutocomplete(prediction.getPlaceId(),
+                            prediction.getDescription()));
                 }
             }
 
@@ -154,7 +161,7 @@ public class PlaceAutocompleteAdapter
         return null;
     }
 
-    class PlaceAutocomplete {
+    public class PlaceAutocomplete {
 
         public CharSequence placeId;
         public CharSequence description;
