@@ -1,6 +1,9 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/market_item_card"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/cardview_margin"
@@ -15,20 +18,34 @@
 
         <TextView
             android:id="@+id/market_name"
-            style="@style/Base.TextAppearance.AppCompat.Medium"
+            style="@style/Base.TextAppearance.AppCompat.SearchResult.Title"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="64dp"/>
 
-        <TextView
-            android:id="@+id/market_distance"
-            style="@style/Base.TextAppearance.AppCompat.Large"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true">
+            <TextView
+                android:id="@+id/market_distance"
+                style="@style/Base.TextAppearance.AppCompat.Large"
+                android:textColor="?android:attr/textColorSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:id="@+id/miles"
+                style="@style/Base.TextAppearance.AppCompat.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/miles"
+                android:layout_below="@id/market_distance" />
+        </RelativeLayout>
 
     </RelativeLayout>
 
