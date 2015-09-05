@@ -2,8 +2,6 @@ package com.sanchez.fmf.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sanchez.fmf.model.MarketListModel;
-import com.sanchez.fmf.service.json.MarketListModelDeserializer;
 
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;

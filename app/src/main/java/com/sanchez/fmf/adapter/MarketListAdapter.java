@@ -43,6 +43,7 @@ public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.Vi
 
         holder.mMarketName.setText(name.substring(dist.length() + 1));
 
+        // TODO: change this to a calculated distance from phone position
         holder.mDistance.setText(dist);
 
     }

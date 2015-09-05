@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.sanchez.fmf.fragment.MainFragment;
 import com.sanchez.fmf.fragment.MarketListFragment;
 
 import butterknife.Bind;
