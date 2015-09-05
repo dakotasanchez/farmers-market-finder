@@ -11,6 +11,8 @@
 
     <string name="pinned_markets">Pinned markets</string>
     <string name="title_activity_market_list">MarketListActivity</string>
+    <string name="markets">Markets</string>
+    <string name="miles">miles</string>
 
     <string name="hello_world">Hello world!</string>
 

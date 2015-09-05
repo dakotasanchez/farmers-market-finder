@@ -31,12 +31,16 @@ public class MarketListActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getResources().getString(R.string.markets));
 
         Window w = getWindow();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             w.setStatusBarColor(getResources().getColor(R.color.primary_dark));
+            w.setNavigationBarColor(getResources().getColor(R.color.primary_dark));
         }
 
         double[] coordinates = getIntent().getDoubleArrayExtra(EXTRA_COORDINATES);
