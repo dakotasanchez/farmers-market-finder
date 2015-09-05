@@ -6,10 +6,19 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResult;
+import com.google.android.gms.location.places.PlacePhotoResult;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
@@ -17,7 +26,9 @@ import android.widget.Filterable;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class PlaceAutocompleteAdapter
@@ -26,6 +37,8 @@ public class PlaceAutocompleteAdapter
     private static final String TAG = PlaceAutocompleteAdapter.class.getSimpleName();
 
     private ArrayList<PlaceAutocomplete> mResultList;
+
+    private HashMap<String, PlacePhotoMetadataResult> photoMetadata;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -39,6 +52,7 @@ public class PlaceAutocompleteAdapter
         mGoogleApiClient = googleApiClient;
         mBounds = bounds;
         mPlaceFilter = filter;
+        photoMetadata = new HashMap<>();
     }
 
     @Override
@@ -108,6 +122,23 @@ public class PlaceAutocompleteAdapter
                 return null;
             }
 
+            // get photos
+            // get id from dropdown dataset (from MainFragment) somehow and execute one photo request
+
+//            for (AutocompletePrediction pred : buffer) {
+//                String placeId = pred.getPlaceId();
+//                PendingResult<PlacePhotoMetadataResult> pendingMetadata =
+//                        Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId);
+//                PlacePhotoMetadataResult metadata = pendingMetadata.await(60, TimeUnit.SECONDS);
+//
+//                photoMetadata.put(placeId, metadata);
+//            }
+
+//                PendingResult<PlacePhotoResult> pendingPhoto =
+//                        metadata.getPhotoMetadata().get(0).getPhoto(mGoogleApiClient);
+//                PlacePhotoResult p = pendingPhoto.await(60, TimeUnit.SECONDS);
+//                Bitmap photo = p.getBitmap();
+
             Log.i(TAG, "Query completed. Received " + autocompletePredictions.getCount() + " predictions.");
 
             // Copy the results into our own data structure, because we can't hold onto the buffer.
@@ -118,7 +149,9 @@ public class PlaceAutocompleteAdapter
             while (iterator.hasNext()) {
                 AutocompletePrediction prediction = iterator.next();
                 // Get the details of this prediction and copy it into a new PlaceAutocomplete object.
-                resultList.add(new PlaceAutocomplete(prediction.getPlaceId(), prediction.getDescription()));
+                if(prediction.getDescription().contains("United States")) {
+                    resultList.add(new PlaceAutocomplete(prediction.getPlaceId(), prediction.getDescription()));
+                }
             }
 
             // Release the buffer now that all data has been copied.
