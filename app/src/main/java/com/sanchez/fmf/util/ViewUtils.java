@@ -39,4 +39,9 @@ public class ViewUtils {
             iMM.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
+
+    public static void showKeyboard(Activity activity, View v) {
+        InputMethodManager iMM = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        iMM.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
+    }
 }
