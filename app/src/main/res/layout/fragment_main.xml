@@ -10,10 +10,11 @@
     android:layout_height="match_parent"
     android:background="@color/material_white">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/cardview_padding">
+        android:paddingTop="@dimen/cardview_padding"
+        android:orientation="vertical">
 
         <android.support.v7.widget.CardView
             android:id="@+id/card_search"
@@ -69,19 +70,25 @@
 
         </android.support.v7.widget.CardView>
 
+        <TextView
+            android:id="@+id/pinned_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:paddingTop="@dimen/cardview_padding"
+            android:paddingLeft="@dimen/cardview_padding_small"
+            android:text="@string/pinned_markets"/>
+
         <View
-            android:id="@+id/search_separator"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@id/card_search"
-            android:layout_margin="@dimen/cardview_padding"
+            android:layout_marginBottom="@dimen/cardview_padding_small"
             android:background="@color/accent" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/pinned_markets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/search_separator"
             android:layout_margin="@dimen/cardview_margin"
             card_view:cardElevation="@dimen/cardview_elevation"
             card_view:cardCornerRadius="@dimen/cardview_radius"
@@ -93,32 +100,14 @@
                 android:padding="@dimen/cardview_padding">
 
                 <TextView
-                    android:id="@+id/pinned_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    style="@style/Base.TextAppearance.AppCompat.Medium"
-                    android:text="@string/pinned_markets"/>
-
-                <View
-                    android:id="@+id/title_separator"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_below="@id/pinned_title"
-                    android:layout_marginBottom="@dimen/cardview_padding_small"
-                    android:background="@color/accent" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/title_separator"
                     android:text="Nothing yet!"/>
 
             </RelativeLayout>
 
         </android.support.v7.widget.CardView>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </ScrollView>
