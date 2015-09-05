@@ -18,7 +18,6 @@ import butterknife.ButterKnife;
 public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.ViewHolder> {
     private ArrayList<MarketListItemModel> mDataset;
 
-    // Provide a suitable constructor (depends on the kind of dataset)
     public MarketListAdapter(ArrayList<MarketListItemModel> dataSet) {
         mDataset = dataSet;
     }
@@ -27,7 +26,6 @@ public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.Vi
     @Override
     public MarketListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
-        // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_market, parent, false);
         // set the view's size, margins, paddings and layout parameters
