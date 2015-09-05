@@ -22,8 +22,10 @@
         android:id="@+id/market_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="@dimen/cardview_margin"
+        android:paddingBottom="@dimen/cardview_margin"
+        android:clipToPadding="false"
         android:scrollbars="vertical"
-        android:layout_marginTop="@dimen/cardview_margin"
         android:visibility="gone"/>
 
 </RelativeLayout>
