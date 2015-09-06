@@ -13,26 +13,40 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/cardview_padding"
+        android:paddingTop="@dimen/cardview_margin"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/search_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_marginTop="@dimen/cardview_padding"
+            android:layout_marginLeft="@dimen/cardview_padding_small"
+            android:text="@string/search_markets"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/cardview_padding_small"
+            android:background="@color/accent" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/card_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:clickable="true"
             android:focusable="true"
-            android:layout_alignParentTop="true"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             android:layout_margin="@dimen/cardview_margin"
             card_view:cardElevation="@dimen/cardview_elevation"
             card_view:cardCornerRadius="@dimen/cardview_radius"
             card_view:cardBackgroundColor="@color/pure_white">
 
             <RelativeLayout
+                android:id="@+id/search_parent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/cardview_padding">
+                android:layout_height="match_parent">
 
                 <ImageView
                     android:id="@+id/search_icon"
@@ -40,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_search_black_24dp"
                     android:layout_alignParentLeft="true"
-                    android:paddingRight="@dimen/cardview_padding" />
+                    android:padding="@dimen/cardview_padding" />
 
                 <ImageView
                     android:id="@+id/clear_icon"
@@ -48,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_clear_black_24dp"
                     android:layout_alignParentRight="true"
-                    android:paddingLeft="@dimen/cardview_padding"
+                    android:padding="@dimen/cardview_padding"
                     android:visibility="gone"/>
 
                 <AutoCompleteTextView
@@ -58,8 +72,10 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/search_icon"
                     android:layout_toLeftOf="@id/clear_icon"
-                    android:textColorHint="@color/accent"
+                    android:paddingTop="@dimen/cardview_padding"
+                    android:paddingBottom="@dimen/cardview_padding"
                     android:background="#00000000"
+                    android:textColorHint="@color/accent"
                     android:hint="@string/search_hint"
                     android:imeOptions="actionSearch"
                     android:inputType="textAutoComplete"
@@ -71,12 +87,32 @@
         </android.support.v7.widget.CardView>
 
         <TextView
+            android:id="@+id/or_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_margin="@dimen/cardview_padding_small"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/or"/>
+
+        <Button
+            android:id="@+id/use_location_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/cardview_margin"
+            android:padding="@dimen/cardview_padding"
+            android:text="@string/use_location"
+            android:textColor="@color/material_white"/>
+
+        <TextView
             android:id="@+id/pinned_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Base.TextAppearance.AppCompat.Medium"
-            android:paddingTop="@dimen/cardview_padding"
-            android:paddingLeft="@dimen/cardview_padding_small"
+            android:layout_marginTop="@dimen/cardview_padding"
+            android:layout_marginLeft="@dimen/cardview_padding_small"
             android:text="@string/pinned_markets"/>
 
         <View

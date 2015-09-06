@@ -118,18 +118,10 @@ public class PlaceAutocompleteAdapter
                 return null;
             }
 
-            // get photos
-            // get id from dropdown dataset (from MainFragment) somehow and execute one photo request
-
-//            for (AutocompletePrediction pred : buffer) {
-//                String placeId = pred.getPlaceId();
 //                PendingResult<PlacePhotoMetadataResult> pendingMetadata =
 //                        Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId);
 //                PlacePhotoMetadataResult metadata = pendingMetadata.await(60, TimeUnit.SECONDS);
 //
-//                photoMetadata.put(placeId, metadata);
-//            }
-
 //                PendingResult<PlacePhotoResult> pendingPhoto =
 //                        metadata.getPhotoMetadata().get(0).getPhoto(mGoogleApiClient);
 //                PlacePhotoResult p = pendingPhoto.await(60, TimeUnit.SECONDS);
