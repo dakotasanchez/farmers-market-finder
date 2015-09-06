@@ -6,7 +6,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
-import com.google.android.gms.location.places.PlacePhotoMetadataResult;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -29,9 +28,6 @@ public class PlaceAutocompleteAdapter
 
     private ArrayList<PlaceAutocomplete> mResultList;
 
-    // Map<"place description","place id"> as a backup if we can't get the id from
-    private HashMap<String, String> mPlaceIdMap;
-
     private GoogleApiClient mGoogleApiClient;
 
     private LatLngBounds mBounds;
@@ -44,7 +40,6 @@ public class PlaceAutocompleteAdapter
         mGoogleApiClient = googleApiClient;
         mBounds = bounds;
         mPlaceFilter = filter;
-        mPlaceIdMap = new HashMap<>();
     }
 
     @Override
@@ -55,10 +50,6 @@ public class PlaceAutocompleteAdapter
     @Override
     public PlaceAutocomplete getItem(int position) {
         return mResultList.get(position);
-    }
-
-    public HashMap<String, String> getPlaceIdMap() {
-        return mPlaceIdMap;
     }
 
     @Override
@@ -138,7 +129,6 @@ public class PlaceAutocompleteAdapter
                 AutocompletePrediction prediction = iterator.next();
                 // Get the details of this prediction and copy it into a new PlaceAutocomplete object.
                 if(prediction.getDescription().contains("United States")) {
-                    mPlaceIdMap.put(prediction.getDescription(), prediction.getPlaceId());
                     resultList.add(new PlaceAutocomplete(prediction.getPlaceId(),
                             prediction.getDescription()));
                 }

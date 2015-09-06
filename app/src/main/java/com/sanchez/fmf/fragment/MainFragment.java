@@ -23,6 +23,10 @@ import android.widget.AutoCompleteTextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResult;
+import com.google.android.gms.location.places.PlacePhotoResult;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -55,7 +59,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     private GoogleApiClient mGoogleApiClient;
     private PlaceAutocompleteAdapter mAutocompleteAdapter;
-    private String mSelectedPlaceId;
+    private String mSelectedPlaceId = null;
 
     public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
@@ -95,8 +99,11 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         mSearchAutocomplete.setOnItemClickListener(mAutocompleteClickListener);
         mSearchAutocomplete.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                new GetCoordinatesFromLocation().execute(mSearchAutocomplete.getText().toString());
-                Log.e(TAG, "current place id = " + mSelectedPlaceId);
+                String searchText = mSearchAutocomplete.getText().toString();
+                new GetCoordinatesFromLocation().execute(searchText);
+                if (null != mSelectedPlaceId) {
+                    // use asynctask in google example
+                }
                 ViewUtils.hideKeyboard(getActivity());
                 mSearchAutocomplete.dismissDropDown();
                 return true;
