@@ -41,10 +41,12 @@ public class MarketListFragment extends Fragment {
 
     private RecyclerView.Adapter mAdapter;
 
+    // service for USDA API
     private MarketService mMarketService;
 
     private double[] coordinates = new double[2];
 
+    // grab coordinates sent from MainFragment intent
     public static MarketListFragment newInstance(double[] coords) {
         MarketListFragment fragment = new MarketListFragment();
         Bundle args = new Bundle();
@@ -74,6 +76,7 @@ public class MarketListFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_market_list, container, false);
         ButterKnife.bind(this, v);
 
+        // linear RecyclerView
         RecyclerView.LayoutManager linearLM = new LinearLayoutManager(getContext());
         mMarketList.setLayoutManager(linearLM);
 
@@ -84,7 +87,11 @@ public class MarketListFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // get markets from api
+        /**
+         * get markets from USDA API
+         * coordinates[0] is latitude
+         * coordinates[1] is longitude
+         */
         mMarketService.getMarkets(coordinates[0], coordinates[1], new Callback<MarketListModel>() {
             @Override
             public void success(MarketListModel marketListModel, Response response) {

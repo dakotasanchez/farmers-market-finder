@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
 
+        // color nav and status bar with app color
         Window w = getWindow();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -46,11 +47,6 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.container_main_activity, mainFragment)
                     .commit();
         }
-
-//        final ActionBar ab = getSupportActionBar();
-//        if(ab != null) {
-//            ab.setDisplayHomeAsUpEnabled(true);
-//        }
     }
 
     @Override

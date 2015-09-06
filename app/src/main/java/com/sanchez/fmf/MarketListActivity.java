@@ -34,6 +34,7 @@ public class MarketListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.markets));
 
+        // color nav and status bar with app color
         Window w = getWindow();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -42,6 +43,7 @@ public class MarketListActivity extends AppCompatActivity {
             w.setNavigationBarColor(getResources().getColor(R.color.primary_dark));
         }
 
+        // get coordinates from MainFragment intent to pass to MarketListFragment
         double[] coordinates = getIntent().getDoubleArrayExtra(EXTRA_COORDINATES);
 
         FragmentManager fm = getSupportFragmentManager();

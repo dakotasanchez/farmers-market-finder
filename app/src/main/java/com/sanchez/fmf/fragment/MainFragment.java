@@ -55,13 +55,12 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     private static final LatLngBounds BOUNDS_NORTH_AMERICA = new LatLngBounds(new LatLng(18.000000,
             -64.000000), new LatLng(67.000000, -165.000000));
 
-    private GoogleApiClient mGoogleApiClient;
-    private PlaceAutocompleteAdapter mAutocompleteAdapter;
+    private GoogleApiClient mGoogleApiClient = null;
+    private PlaceAutocompleteAdapter mAutocompleteAdapter = null;
     private String mSelectedPlaceId = null;
 
     public static MainFragment newInstance() {
-        MainFragment fragment = new MainFragment();
-        return fragment;
+        return new MainFragment();
     }
 
     public MainFragment() {
@@ -71,6 +70,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // register client for Google APIs
         mGoogleApiClient = new GoogleApiClient
                 .Builder(getActivity())
                 .addApi(Places.GEO_DATA_API)
@@ -84,17 +84,22 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, rootView);
 
+        // customize place autocomplete adapter
         mAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(),
                 android.R.layout.simple_list_item_1, mGoogleApiClient, BOUNDS_NORTH_AMERICA, null);
         mSearchAutocomplete.setAdapter(mAutocompleteAdapter);
 
+        // customize autocomplete
         mSearchAutocomplete.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         mSearchAutocomplete.setDropDownVerticalOffset(8); // just below search box
         mSearchAutocomplete.setDropDownBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(R.color.pure_white)));
         mSearchAutocomplete.setDropDownAnchor(R.id.card_search);
 
+        // remember place ID of selected dropdown item
         mSearchAutocomplete.setOnItemClickListener(mAutocompleteClickListener);
+
+        // search when search IME option pressed
         mSearchAutocomplete.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 String searchText = mSearchAutocomplete.getText().toString();
@@ -108,6 +113,8 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             }
             return false;
         });
+
+        // show search 'clear' icon when text is present
         mSearchAutocomplete.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -128,10 +135,13 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                 }
             }
         });
+
+        // necessary to pass touch events through to parent card view to trigger ripple animation
         RippleForegroundListener rFL = new RippleForegroundListener(getActivity(), R.id.card_search);
         mSearchAutocomplete.setOnTouchListener(rFL);
         mSearchIcon.setOnTouchListener(rFL);
 
+        // icon press triggers search also
         mSearchIcon.setOnClickListener((v) -> {
             mSearchAutocomplete.requestFocus();
             ViewUtils.showKeyboard(getActivity(), mSearchAutocomplete);
@@ -145,20 +155,30 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             }
         });
 
+        // no keyboard popup on launch
         removeFocusFromAll();
 
         return rootView;
+    }
+
+    private void launchMarketList(ArrayList<Double> coords) {
+        // start market list activity with coordinates from search
+        Intent i = new Intent(getActivity(), MarketListActivity.class);
+        i.putExtra(MarketListActivity.EXTRA_COORDINATES,
+                new double[] { coords.get(0), coords.get(1) } );
+        startActivity(i);
+    }
+
+    private void removeFocusFromAll() {
+        mRootView.requestFocus();
     }
 
     private AdapterView.OnItemClickListener mAutocompleteClickListener
             = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            /*
-             Retrieve the place ID of the selected item from the Adapter.
-             The adapter stores each Place suggestion in a PlaceAutocomplete object from which we
-             read the place ID.
-              */
+
+            // retrieve the place ID of the selected item from the Adapter.
             PlaceAutocompleteAdapter.PlaceAutocomplete item = mAutocompleteAdapter.getItem(position);
             mSelectedPlaceId = String.valueOf(item.placeId);
 
@@ -221,17 +241,6 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
 //                websiteUri));
 //    }
 
-    private void removeFocusFromAll() {
-        mRootView.requestFocus();
-    }
-
-    private void launchMarketList(ArrayList<Double> coords) {
-        Intent i = new Intent(getActivity(), MarketListActivity.class);
-        i.putExtra(MarketListActivity.EXTRA_COORDINATES,
-                new double[] { coords.get(0), coords.get(1) } );
-        startActivity(i);
-    }
-
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.e(TAG, "Google Places API connection failed with error code: "
@@ -240,6 +249,8 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         Snackbar.make(mRootView, "Google Places API unavailable right now. Error code:" +
                 connectionResult.getErrorCode(), Snackbar.LENGTH_LONG).show();
     }
+
+
 
     private class GetCoordinatesFromLocation extends AsyncTask<String, Void, ArrayList<Double>> {
 
