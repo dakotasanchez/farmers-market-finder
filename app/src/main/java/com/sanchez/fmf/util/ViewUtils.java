@@ -45,8 +45,8 @@ public class ViewUtils {
         }
     }
 
-    public static void showKeyboard(Activity activity, View v) {
-        InputMethodManager iMM = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+    public static void showKeyboard(Context context, View v) {
+        InputMethodManager iMM = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         iMM.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
     }
 

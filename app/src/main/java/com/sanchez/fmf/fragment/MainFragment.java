@@ -14,7 +14,6 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -23,16 +22,13 @@ import android.widget.AutoCompleteTextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
-import com.google.android.gms.location.places.PlacePhotoMetadataResult;
-import com.google.android.gms.location.places.PlacePhotoResult;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.PlaceAutocompleteAdapter;
+import com.sanchez.fmf.util.RippleForegroundListener;
 import com.sanchez.fmf.util.ViewUtils;
 
 import java.util.ArrayList;
@@ -50,6 +46,8 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     View mRootView;
     @Bind(R.id.search_autocomplete)
     AutoCompleteTextView mSearchAutocomplete;
+    @Bind(R.id.search_icon)
+    View mSearchIcon;
     @Bind(R.id.clear_icon)
     View mClearSearch;
 
@@ -130,8 +128,14 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                 }
             }
         });
-        RippleForegroundListener rFL = new RippleForegroundListener(R.id.card_search);
+        RippleForegroundListener rFL = new RippleForegroundListener(getActivity(), R.id.card_search);
         mSearchAutocomplete.setOnTouchListener(rFL);
+        mSearchIcon.setOnTouchListener(rFL);
+
+        mSearchIcon.setOnClickListener((v) -> {
+            mSearchAutocomplete.requestFocus();
+            ViewUtils.showKeyboard(getActivity(), mSearchAutocomplete);
+        });
 
         mClearSearch.setOnClickListener((v) -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -269,65 +273,6 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                 launchMarketList(result);
             } else {
                 Snackbar.make(mRootView, "Invalid input", Snackbar.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    private class RippleForegroundListener implements View.OnTouchListener {
-        private int rippleViewId = -1;
-
-        /**
-         * @param rippleViewId the id of the view which has the ripple effect
-         */
-        public RippleForegroundListener(int rippleViewId) {
-            this.rippleViewId = rippleViewId;
-        }
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            // Convert to view coordinates. Assumes the host view is
-            // a direct child and the view is not scrollable.
-            float x = event.getX() + v.getLeft();
-            float y = event.getY() + v.getTop();
-
-            final View rippleView = findRippleView(v);
-            //if we were not able to find the view to display the ripple on, continue.
-            if (rippleView == null) {
-                return false;
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                // Simulate motion on the view.
-                rippleView.drawableHotspotChanged(x, y);
-            }
-
-            // Simulate pressed state on the view.
-            switch (event.getActionMasked()) {
-                case MotionEvent.ACTION_DOWN:
-                    rippleView.setPressed(true);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    rippleView.setPressed(false);
-                    ViewUtils.showKeyboard(getActivity(), mSearchAutocomplete);
-                    break;
-                case MotionEvent.ACTION_CANCEL:
-                    rippleView.setPressed(false);
-                    break;
-            }
-
-            // Pass all events through to the host view.
-            return false;
-        }
-
-        public View findRippleView(View view) {
-            if (view.getId() == rippleViewId) {
-                return view;
-            } else {
-                if (view.getParent().getParent() instanceof View) {
-                    return findRippleView((View) view.getParent().getParent());
-                } else {
-                    return null;
-                }
             }
         }
     }
