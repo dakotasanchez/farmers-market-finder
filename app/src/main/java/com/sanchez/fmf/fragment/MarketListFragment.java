@@ -1,5 +1,7 @@
 package com.sanchez.fmf.fragment;
 
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -9,7 +11,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResult;
+import com.google.android.gms.location.places.PlacePhotoResult;
+import com.google.android.gms.location.places.Places;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.MarketListAdapter;
@@ -28,7 +39,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MarketListFragment extends Fragment {
+public class MarketListFragment extends Fragment  implements GoogleApiClient.OnConnectionFailedListener {
 
     public static final String TAG = MarketListFragment.class.getSimpleName();
 
@@ -38,19 +49,26 @@ public class MarketListFragment extends Fragment {
     View mSuggestion;
     @Bind(R.id.progress_bar)
     View mProgressBar;
+    @Bind(R.id.test_image)
+    ImageView mImageView;
 
+    private static final int GOOGLE_API_CLIENT_ID = 0;
+
+    private GoogleApiClient mGoogleApiClient = null;
     private RecyclerView.Adapter mAdapter;
 
     // service for USDA API
     private MarketService mMarketService;
 
-    private double[] coordinates = new double[2];
+    private double[] mCoordinates = new double[2];
+    private String mPlaceId = null;
 
     // grab coordinates sent from MainFragment intent
-    public static MarketListFragment newInstance(double[] coords) {
+    public static MarketListFragment newInstance(double[] coords, String placeId) {
         MarketListFragment fragment = new MarketListFragment();
         Bundle args = new Bundle();
         args.putDoubleArray(MarketListActivity.EXTRA_COORDINATES, coords);
+        args.putString(MarketListActivity.EXTRA_PLACE_ID, placeId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,7 +84,19 @@ public class MarketListFragment extends Fragment {
         mMarketService = client.getMarketService();
 
         if (getArguments() != null) {
-            coordinates = getArguments().getDoubleArray(MarketListActivity.EXTRA_COORDINATES);
+            mCoordinates = getArguments().getDoubleArray(MarketListActivity.EXTRA_COORDINATES);
+            mPlaceId = getArguments().getString(MarketListActivity.EXTRA_PLACE_ID);
+        }
+
+        // register client for Google APIs
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(getActivity())
+                .addApi(Places.GEO_DATA_API)
+                .enableAutoManage(getActivity(), GOOGLE_API_CLIENT_ID, this)
+                .build();
+
+        if(mPlaceId != null) {
+            getPlacePhotoAsync(mPlaceId, 600, 400);
         }
     }
 
@@ -92,7 +122,7 @@ public class MarketListFragment extends Fragment {
          * coordinates[0] is latitude
          * coordinates[1] is longitude
          */
-        mMarketService.getMarkets(coordinates[0], coordinates[1], new Callback<MarketListModel>() {
+        mMarketService.getMarkets(mCoordinates[0], mCoordinates[1], new Callback<MarketListModel>() {
             @Override
             public void success(MarketListModel marketListModel, Response response) {
                 showMarkets(marketListModel.getMarkets());
@@ -106,11 +136,50 @@ public class MarketListFragment extends Fragment {
         });
     }
 
+    private void getPlacePhotoAsync(String placeId, int width, int height) {
+        Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId)
+                .setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
+
+                    @Override
+                    public void onResult(PlacePhotoMetadataResult photos) {
+                        if (!photos.getStatus().isSuccess()) {
+                            return;
+                        }
+
+                        PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                        if (photoMetadataBuffer.getCount() > 0) {
+                            // Display the first bitmap in an ImageView in the size of the view
+                            photoMetadataBuffer.get(0)
+                                    .getScaledPhoto(mGoogleApiClient, width, height)
+                                    .setResultCallback(mDisplayPhotoResultCallback);
+                        }
+                        photoMetadataBuffer.release();
+                    }
+                });
+    }
+
+    private ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback
+            = new ResultCallback<PlacePhotoResult>() {
+        @Override
+        public void onResult(PlacePhotoResult placePhotoResult) {
+            if (!placePhotoResult.getStatus().isSuccess()) {
+                return;
+            }
+            mImageView.setImageBitmap(placePhotoResult.getBitmap());
+        }
+    };
+
     private void showMarkets(List<MarketListItemModel> markets) {
         mAdapter = new MarketListAdapter(new ArrayList<>(markets));
         mMarketList.setAdapter(mAdapter);
 
         int shortAnimation = getResources().getInteger(android.R.integer.config_mediumAnimTime);
         ViewUtils.crossfadeTwoViews(mMarketList, mProgressBar, shortAnimation);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.e(TAG, "Google Places API connection failed with error code: "
+                + connectionResult.getErrorCode());
     }
 }

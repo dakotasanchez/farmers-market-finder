@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 public class MarketListActivity extends AppCompatActivity {
 
     public static final String EXTRA_COORDINATES = "com.sanchez.extra_coordinates";
+    public static final String EXTRA_PLACE_ID = "com.sanchez.extra_place_id";
 
     @Bind(R.id.toolbar_market_list_activity)
     Toolbar mToolbar;
@@ -45,12 +46,13 @@ public class MarketListActivity extends AppCompatActivity {
 
         // get coordinates from MainFragment intent to pass to MarketListFragment
         double[] coordinates = getIntent().getDoubleArrayExtra(EXTRA_COORDINATES);
+        String placeId = getIntent().getStringExtra(EXTRA_PLACE_ID);
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment listFragment = fm.findFragmentById(R.id.container_market_list_activity);
 
         if (listFragment == null) {
-            listFragment = MarketListFragment.newInstance(coordinates);
+            listFragment = MarketListFragment.newInstance(coordinates, placeId);
             fm.beginTransaction()
                     .add(R.id.container_market_list_activity, listFragment)
                     .commit();

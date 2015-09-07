@@ -22,10 +22,18 @@
         android:id="@+id/market_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/test_image"
         android:paddingTop="@dimen/cardview_margin"
         android:paddingBottom="@dimen/cardview_margin"
         android:clipToPadding="false"
         android:scrollbars="vertical"
         android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/test_image"
+        android:layout_width="600px"
+        android:layout_height="400px"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -38,7 +38,7 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener{
+public class MainFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
 
     public String TAG = MainFragment.class.getSimpleName();
 
@@ -104,11 +104,10 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 String searchText = mSearchAutocomplete.getText().toString();
                 new GetCoordinatesFromLocation().execute(searchText);
-                if (null != mSelectedPlaceId) {
-                    // use asynctask in google example
-                }
+
                 ViewUtils.hideKeyboard(getActivity());
                 mSearchAutocomplete.dismissDropDown();
+
                 return true;
             }
             return false;
@@ -166,6 +165,8 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         Intent i = new Intent(getActivity(), MarketListActivity.class);
         i.putExtra(MarketListActivity.EXTRA_COORDINATES,
                 new double[] { coords.get(0), coords.get(1) } );
+        i.putExtra(MarketListActivity.EXTRA_PLACE_ID,
+                mSelectedPlaceId);
         startActivity(i);
     }
 
@@ -245,12 +246,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.e(TAG, "Google Places API connection failed with error code: "
                 + connectionResult.getErrorCode());
-
-        Snackbar.make(mRootView, "Google Places API unavailable right now. Error code:" +
-                connectionResult.getErrorCode(), Snackbar.LENGTH_LONG).show();
     }
-
-
 
     private class GetCoordinatesFromLocation extends AsyncTask<String, Void, ArrayList<Double>> {
 
