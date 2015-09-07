@@ -96,7 +96,8 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
                 .build();
 
         if(mPlaceId != null) {
-            getPlacePhotoAsync(mPlaceId, 600, 400);
+            // change width & height params in future
+            //getPlacePhotoAsync(mPlaceId, 600, 400);
         }
     }
 
@@ -136,38 +137,41 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         });
     }
 
-    private void getPlacePhotoAsync(String placeId, int width, int height) {
-        Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId)
-                .setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
 
-                    @Override
-                    public void onResult(PlacePhotoMetadataResult photos) {
-                        if (!photos.getStatus().isSuccess()) {
-                            return;
-                        }
-
-                        PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
-                        if (photoMetadataBuffer.getCount() > 0) {
-                            // Display the first bitmap in an ImageView in the size of the view
-                            photoMetadataBuffer.get(0)
-                                    .getScaledPhoto(mGoogleApiClient, width, height)
-                                    .setResultCallback(mDisplayPhotoResultCallback);
-                        }
-                        photoMetadataBuffer.release();
-                    }
-                });
-    }
-
-    private ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback
-            = new ResultCallback<PlacePhotoResult>() {
-        @Override
-        public void onResult(PlacePhotoResult placePhotoResult) {
-            if (!placePhotoResult.getStatus().isSuccess()) {
-                return;
-            }
-            mImageView.setImageBitmap(placePhotoResult.getBitmap());
-        }
-    };
+    // TODO: check to see if this photo API is usable in future
+    // current state: most place IDs don't return any photos....
+//    private void getPlacePhotoAsync(String placeId, int width, int height) {
+//        Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId)
+//                .setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
+//
+//                    @Override
+//                    public void onResult(PlacePhotoMetadataResult photos) {
+//                        if (!photos.getStatus().isSuccess()) {
+//                            return;
+//                        }
+//
+//                        PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+//                        if (photoMetadataBuffer.getCount() > 0) {
+//                            // Display the first bitmap in an ImageView in the size of the view
+//                            photoMetadataBuffer.get(0)
+//                                    .getScaledPhoto(mGoogleApiClient, width, height)
+//                                    .setResultCallback(mDisplayPhotoResultCallback);
+//                        }
+//                        photoMetadataBuffer.release();
+//                    }
+//                });
+//    }
+//
+//    private ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback
+//            = new ResultCallback<PlacePhotoResult>() {
+//        @Override
+//        public void onResult(PlacePhotoResult placePhotoResult) {
+//            if (!placePhotoResult.getStatus().isSuccess()) {
+//                return;
+//            }
+//            mImageView.setImageBitmap(placePhotoResult.getBitmap());
+//        }
+//    };
 
     private void showMarkets(List<MarketListItemModel> markets) {
         mAdapter = new MarketListAdapter(new ArrayList<>(markets));
