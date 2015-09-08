@@ -62,13 +62,17 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
 
     private double[] mCoordinates = new double[2];
     private String mPlaceId = null;
+    private boolean mCalculateDistances;
 
     // grab coordinates sent from MainFragment intent
-    public static MarketListFragment newInstance(double[] coords, String placeId) {
+    public static MarketListFragment newInstance(double[] coords,
+                                                 String placeId,
+                                                 boolean needToCalculateDistances) {
         MarketListFragment fragment = new MarketListFragment();
         Bundle args = new Bundle();
         args.putDoubleArray(MarketListActivity.EXTRA_COORDINATES, coords);
         args.putString(MarketListActivity.EXTRA_PLACE_ID, placeId);
+        args.putBoolean(MarketListActivity.EXTRA_CALCULATE_DISTANCES, needToCalculateDistances);
         fragment.setArguments(args);
         return fragment;
     }
@@ -86,19 +90,22 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         if (getArguments() != null) {
             mCoordinates = getArguments().getDoubleArray(MarketListActivity.EXTRA_COORDINATES);
             mPlaceId = getArguments().getString(MarketListActivity.EXTRA_PLACE_ID);
+            mCalculateDistances = getArguments().getBoolean(MarketListActivity.EXTRA_CALCULATE_DISTANCES);
         }
+
+        // TODO: use mCalculateDistances
 
         // register client for Google APIs
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(getActivity())
-                .addApi(Places.GEO_DATA_API)
-                .enableAutoManage(getActivity(), GOOGLE_API_CLIENT_ID, this)
-                .build();
-
-        if(mPlaceId != null) {
-            // change width & height params in future
-            //getPlacePhotoAsync(mPlaceId, 600, 400);
-        }
+//        mGoogleApiClient = new GoogleApiClient
+//                .Builder(getActivity())
+//                .addApi(Places.GEO_DATA_API)
+//                .enableAutoManage(getActivity(), GOOGLE_API_CLIENT_ID, this)
+//                .build();
+//
+//        if(mPlaceId != null) {
+//            // change width & height params in future
+//            getPlacePhotoAsync(mPlaceId, 600, 400);
+//        }
     }
 
     @Override

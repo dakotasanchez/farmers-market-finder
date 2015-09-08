@@ -12,6 +12,11 @@
     <string name="search_hint">Search city or zip</string>
     <string name="use_location">Use my location</string>
 
+    <string name="enable_location_prompt">Please enable location service:</string>
+    <string name="enable_gps_prompt">For better location detection:</string>
+    <string name="enable">Enable</string>
+    <string name="enable_gps">Enable GPS</string>
+
     <string name="search_markets">Search for markets</string>
     <string name="pinned_markets">Pinned markets</string>
     <string name="markets">Markets</string>
