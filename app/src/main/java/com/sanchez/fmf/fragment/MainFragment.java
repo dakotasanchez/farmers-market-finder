@@ -1,13 +1,10 @@
 package com.sanchez.fmf.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,10 +31,10 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.PlaceAutocompleteAdapter;
+import com.sanchez.fmf.util.LocationUtil;
 import com.sanchez.fmf.util.RippleForegroundListener;
 import com.sanchez.fmf.util.ViewUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -49,8 +46,6 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     public String TAG = MainFragment.class.getSimpleName();
 
-    @Bind(R.id.root_main_fragment)
-    View mRootView;
     @Bind(R.id.search_autocomplete)
     AutoCompleteTextView mSearchAutocomplete;
     @Bind(R.id.search_icon)
@@ -60,6 +55,8 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     @Bind(R.id.use_location_button)
     Button mUseLocationButton;
 
+    View contentView;
+
     private static final int GOOGLE_API_CLIENT_ID = 0;
     private static final LatLngBounds BOUNDS_NORTH_AMERICA = new LatLngBounds(new LatLng(18.000000,
             -64.000000), new LatLng(67.000000, -165.000000));
@@ -67,20 +64,12 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     private GoogleApiClient mGoogleApiClient = null;
     private PlaceAutocompleteAdapter mAutocompleteAdapter = null;
 
-    private LocationManager mLocationManager = null;
-    private String mLocationProvider = null;
-
     private String mSelectedPlace = null;
     private String mSelectedPlaceId = null;
 
     public abstract class OnGetCoordinatesFromLocationListener {
         public abstract void onFinished(ArrayList<Double> results);
     }
-
-    private View.OnClickListener mOnGpsIntentClicked = (v) -> {
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
-    };
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -93,15 +82,6 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        boolean isGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        // nudge user to enable gps if it's disabled
-        if(!isGpsEnabled) {
-            Snackbar.make(mRootView, R.string.enable_gps_prompt, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.enable_gps, mOnGpsIntentClicked)
-                    .show();
-        }
-
         // register client for Google APIs
         mGoogleApiClient = new GoogleApiClient
                 .Builder(getActivity())
@@ -113,14 +93,14 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     @Override
     public void onResume() {
         super.onResume();
-        // in case user left to turn on GPS
-        boolean isGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        if(isGpsEnabled) {
-            mLocationProvider = LocationManager.GPS_PROVIDER;
-        } else if (isNetworkEnabled) {
-            mLocationProvider = LocationManager.NETWORK_PROVIDER;
-        }
+//        // in case user left to turn on GPS
+//        boolean isGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+//        boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+//        if(isGpsEnabled) {
+//            mLocationProvider = LocationManager.GPS_PROVIDER;
+//        } else if (isNetworkEnabled) {
+//            mLocationProvider = LocationManager.NETWORK_PROVIDER;
+//        }
     }
 
     @Override
@@ -128,6 +108,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, rootView);
+        contentView = getActivity().findViewById(android.R.id.content);
 
         // customize place autocomplete adapter
         mAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(),
@@ -155,7 +136,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                     @Override
                     public void onFinished(ArrayList<Double> results) {
                         //TODO: checkout the coords to make sure they're valid
-                        launchMarketList(results);
+                        launchMarketList(new double[] { results.get(0), results.get(1) });
                     }
                 });
 
@@ -209,18 +190,37 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         });
 
         mUseLocationButton.setOnClickListener((v) -> {
-            if(null != mLocationProvider) {
-                getCoordinatesFromLocation(null, new OnGetCoordinatesFromLocationListener() {
-                    @Override
-                    public void onFinished(ArrayList<Double> results) {
-                        //TODO: checkout the coords to make sure they're valid
-                        launchMarketList(results);
-                    }
-                });
-            } else {
-                Snackbar.make(mRootView, R.string.enable_location_prompt, Snackbar.LENGTH_INDEFINITE)
-                        .setAction(R.string.enable, mOnGpsIntentClicked)
+            boolean locEnabled = new LocationUtil().getLocation(getContext(),
+                    new LocationUtil.LocationResult() {
+                        @Override
+                        public void gotLocation(Location location) {
+                            getActivity().runOnUiThread(() -> {
+                                mSearchAutocomplete.setEnabled(true);
+                                if (location == null) {
+                                    Snackbar.make(contentView, R.string.location_error,
+                                            Snackbar.LENGTH_LONG).show();
+                                } else {
+                                    double[] coords = {location.getLatitude(), location.getLongitude()};
+                                    launchMarketList(coords);
+                                }
+                            });
+                        }
+                    });
+            if(locEnabled) {
+                Snackbar.make(contentView, R.string.fetching_location, Snackbar.LENGTH_LONG)
                         .show();
+                mSearchAutocomplete.setEnabled(false);
+            } else {
+                final Snackbar s = Snackbar.make(contentView,
+                        R.string.enable_location_prompt,
+                        Snackbar.LENGTH_INDEFINITE);
+                s.setAction(R.string.enable, (view) -> {
+                    s.dismiss();
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+                });
+                s.setActionTextColor(getResources().getColor(R.color.pure_white));
+                s.show();
             }
         });
 
@@ -230,18 +230,22 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         return rootView;
     }
 
-    private void launchMarketList(ArrayList<Double> coords) {
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void launchMarketList(double[] coords) {
         // start market list activity with coordinates from search
         Intent i = new Intent(getActivity(), MarketListActivity.class);
-        i.putExtra(MarketListActivity.EXTRA_COORDINATES,
-                new double[] { coords.get(0), coords.get(1) } );
+        i.putExtra(MarketListActivity.EXTRA_COORDINATES, coords);
         i.putExtra(MarketListActivity.EXTRA_PLACE_TITLE, mSelectedPlace);
         i.putExtra(MarketListActivity.EXTRA_PLACE_ID, mSelectedPlaceId);
         startActivity(i);
     }
 
     private void removeFocusFromAll() {
-        mRootView.requestFocus();
+        contentView.requestFocus();
     }
 
     private AdapterView.OnItemClickListener mAutocompleteClickListener
@@ -325,29 +329,17 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             protected ArrayList<Double> doInBackground(Void... arg0) {
                 ArrayList<Double> returnList = new ArrayList<Double>();
                 try {
-                    if(null != location) {
-                        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
-                        List<Address> addresses = geocoder.getFromLocationName(location, 1);
-                        if (addresses.size() > 0) {
-                            Address address = addresses.get(0);
-                            returnList.add(address.getLatitude());
-                            returnList.add(address.getLongitude());
-                            return returnList;
-                        }
-                    } else {
-                        Location location = mLocationManager.getLastKnownLocation(mLocationProvider);
-                        if(location != null) {
-                            returnList.add(location.getLatitude());
-                            returnList.add(location.getLongitude());
-                            return returnList;
-                        } else {
-                            Snackbar.make(mRootView, "Location unavailable", Snackbar.LENGTH_SHORT)
-                                    .show();
-                        }
+                    Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+                    List<Address> addresses = geocoder.getFromLocationName(location, 1);
+                    if (addresses.size() > 0) {
+                        Address address = addresses.get(0);
+                        returnList.add(address.getLatitude());
+                        returnList.add(address.getLongitude());
+                        return returnList;
                     }
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());
-                    Snackbar.make(mRootView, "Geocoder error", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(contentView, "Geocoder error", Snackbar.LENGTH_LONG).show();
                 }
                 return null;
             }
@@ -357,7 +349,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                 if(results != null && listener != null) {
                     listener.onFinished(results);
                 } else {
-                    Snackbar.make(mRootView, "Invalid input", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(contentView, "Invalid input", Snackbar.LENGTH_LONG).show();
                 }
             }
         }.execute();

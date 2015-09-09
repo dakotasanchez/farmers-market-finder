@@ -55,6 +55,7 @@ public class MarketListActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
         if (null != placeTitle) {
             getSupportActionBar().setTitle(placeTitle);
         } else {
