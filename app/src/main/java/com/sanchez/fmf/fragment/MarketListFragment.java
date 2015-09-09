@@ -1,26 +1,22 @@
 package com.sanchez.fmf.fragment;
 
-import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.PlacePhotoMetadata;
-import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
-import com.google.android.gms.location.places.PlacePhotoMetadataResult;
-import com.google.android.gms.location.places.PlacePhotoResult;
-import com.google.android.gms.location.places.Places;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.MarketListAdapter;
@@ -30,8 +26,10 @@ import com.sanchez.fmf.service.MarketService;
 import com.sanchez.fmf.service.RestClient;
 import com.sanchez.fmf.util.ViewUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -43,14 +41,18 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
 
     public static final String TAG = MarketListFragment.class.getSimpleName();
 
+    @Bind(R.id.toolbar_market_list_fragment)
+    Toolbar mToolbar;
     @Bind(R.id.market_list)
     RecyclerView mMarketList;
     @Bind(R.id.fragment_default_suggestion)
     View mSuggestion;
     @Bind(R.id.progress_bar)
     View mProgressBar;
-    @Bind(R.id.test_image)
-    ImageView mImageView;
+
+    public abstract class OnGetLocationFinishedListener {
+        public abstract void onFinished(String result);
+    }
 
     private static final int GOOGLE_API_CLIENT_ID = 0;
 
@@ -61,16 +63,19 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     private MarketService mMarketService;
 
     private double[] mCoordinates = new double[2];
+    private String mPlaceTitle = null;
     private String mPlaceId = null;
     private boolean mCalculateDistances;
 
     // grab coordinates sent from MainFragment intent
     public static MarketListFragment newInstance(double[] coords,
+                                                 String placeTitle,
                                                  String placeId,
                                                  boolean needToCalculateDistances) {
         MarketListFragment fragment = new MarketListFragment();
         Bundle args = new Bundle();
         args.putDoubleArray(MarketListActivity.EXTRA_COORDINATES, coords);
+        args.putString(MarketListActivity.EXTRA_PLACE_TITLE, placeTitle);
         args.putString(MarketListActivity.EXTRA_PLACE_ID, placeId);
         args.putBoolean(MarketListActivity.EXTRA_CALCULATE_DISTANCES, needToCalculateDistances);
         fragment.setArguments(args);
@@ -89,6 +94,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
 
         if (getArguments() != null) {
             mCoordinates = getArguments().getDoubleArray(MarketListActivity.EXTRA_COORDINATES);
+            mPlaceTitle = getArguments().getString(MarketListActivity.EXTRA_PLACE_TITLE);
             mPlaceId = getArguments().getString(MarketListActivity.EXTRA_PLACE_ID);
             mCalculateDistances = getArguments().getBoolean(MarketListActivity.EXTRA_CALCULATE_DISTANCES);
         }
@@ -113,6 +119,23 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_market_list, container, false);
         ButterKnife.bind(this, v);
+
+        AppCompatActivity a = (AppCompatActivity)getActivity();
+        a.setSupportActionBar(mToolbar);
+        a.getSupportActionBar().setTitle("");
+        a.getSupportActionBar().setDisplayShowHomeEnabled(true);
+        a.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (null != mPlaceTitle) {
+            a.getSupportActionBar().setTitle(mPlaceTitle);
+        } else {
+            // user clicked "use current location button", meaning we need to reverse geocode
+            getLocationName(mCoordinates, new OnGetLocationFinishedListener() {
+                @Override
+                public void onFinished(String result) {
+                    a.getSupportActionBar().setTitle(result);
+                }
+            });
+        }
 
         // linear RecyclerView
         RecyclerView.LayoutManager linearLM = new LinearLayoutManager(getContext());
@@ -192,5 +215,41 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.e(TAG, "Google Places API connection failed with error code: "
                 + connectionResult.getErrorCode());
+    }
+
+    public void getLocationName(final double[] coords, final OnGetLocationFinishedListener listener) {
+        new AsyncTask<Void, Integer, String>() {
+            @Override
+            protected String doInBackground(Void... arg0) {
+                Geocoder coder = new Geocoder(getActivity(), Locale.ENGLISH);
+                List<Address> results = null;
+                try {
+                    results = coder.getFromLocation(coords[0], coords[1], 1);
+                } catch (IOException e) {
+                    Log.e("FarmersMarketFinder", "Error getting location from coordinates");
+                }
+
+                if(results == null || results.size() < 1) {
+                    return getResources().getString(R.string.markets);
+                }
+
+                String result;
+                if (null != results.get(0).getLocality()) {
+                    result = results.get(0).getLocality();
+                } else if (null != results.get(0).getSubLocality()) {
+                    result = results.get(0).getSubLocality();
+                } else {
+                    result = getResources().getString(R.string.markets);
+                }
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                if (result != null && listener != null) {
+                    listener.onFinished(result);
+                }
+            }
+        }.execute();
     }
 }
