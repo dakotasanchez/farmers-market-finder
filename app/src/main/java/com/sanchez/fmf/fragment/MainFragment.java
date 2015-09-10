@@ -189,6 +189,13 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             }
         });
 
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mUseLocationButton.setBackgroundColor(getResources().getColor(R.color.primary));
+            int pxPadding = (int)(ViewUtils.dpToPx(getContext(),
+                    getResources().getDimension(R.dimen.button_padding)) / 3);
+            mUseLocationButton.setPadding(pxPadding, pxPadding, pxPadding, pxPadding);
+        }
+
         mUseLocationButton.setOnClickListener((v) -> {
             boolean locEnabled = new LocationUtil().getLocation(getContext(),
                     new LocationUtil.LocationResult() {

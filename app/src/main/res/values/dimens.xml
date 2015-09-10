@@ -9,5 +9,7 @@
     <dimen name="cardview_radius">2dp</dimen>
     <dimen name="cardview_elevation">2dp</dimen>
 
+    <dimen name="button_padding">24dp</dimen>
+
     <dimen name="fab_margin">0dp</dimen>
 </resources>
