@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -48,6 +49,16 @@ public class ViewUtils {
     public static void showKeyboard(Context context, View v) {
         InputMethodManager iMM = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         iMM.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    public static float dpToPx(Context c, float dp) {
+        Resources r = c.getResources();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
+    }
+
+    public static float pxToDp(Context c, float px) {
+        Resources r = c.getResources();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, px, r.getDisplayMetrics());
     }
 
     public static int colorGenerator(Activity activity) {
