@@ -54,9 +54,9 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         public abstract void onFinished(String result);
     }
 
-    private static final int GOOGLE_API_CLIENT_ID = 0;
+    //private static final int GOOGLE_API_CLIENT_ID = 0;
 
-    private GoogleApiClient mGoogleApiClient = null;
+    //private GoogleApiClient mGoogleApiClient = null;
     private RecyclerView.Adapter mAdapter;
 
     // service for USDA API

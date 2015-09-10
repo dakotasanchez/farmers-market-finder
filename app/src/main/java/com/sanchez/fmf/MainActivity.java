@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
-import android.view.WindowManager;
 
 import com.sanchez.fmf.fragment.MainFragment;
 
@@ -32,9 +31,6 @@ public class MainActivity extends AppCompatActivity {
         // color nav and status bar with app color
         Window w = getWindow();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            w.setStatusBarColor(getResources().getColor(R.color.primary_dark));
             w.setNavigationBarColor(getResources().getColor(R.color.primary_dark));
         }
 
