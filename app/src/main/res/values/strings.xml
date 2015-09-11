@@ -3,7 +3,7 @@
 
     <string name="title_activity_market_list">MarketListActivity</string>
 
-    <string name="main_hint">No markets! Try searching above.</string>
+    <string name="no_markets">No markets!</string>
 
     <string name="action_example">Search</string>
 

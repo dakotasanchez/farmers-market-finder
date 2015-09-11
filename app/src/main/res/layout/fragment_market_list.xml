@@ -59,12 +59,24 @@
         android:layout_gravity="center"/>
 
     <TextView
-        android:id="@+id/fragment_default_suggestion"
+        android:id="@+id/fragment_no_markets"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/Base.TextAppearance.AppCompat.Medium"
-        android:layout_centerInParent="true"
-        android:text="@string/main_hint"
+        android:layout_gravity="center"
+        android:text="@string/no_markets"
         android:visibility="gone"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/map_view_fab"
+        android:src="@drawable/ic_map_white_36dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
+        app:layout_anchor="@id/appbar_market_list_fragment"
+        app:layout_anchorGravity="bottom|right|end"
+        app:fabSize="normal"
+        app:borderWidth="0dp"/>
 
 </android.support.design.widget.CoordinatorLayout>
