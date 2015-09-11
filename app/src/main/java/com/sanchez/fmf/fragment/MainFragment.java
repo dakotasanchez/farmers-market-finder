@@ -1,6 +1,7 @@
 package com.sanchez.fmf.fragment;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -66,6 +68,9 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     private String mSelectedPlace = null;
     private String mSelectedPlaceId = null;
+
+    private Snackbar mFetchingSnackbar;
+    private Runnable delayedShowFetching = this::showFetching;
 
     public abstract class OnGetCoordinatesFromLocationListener {
         public abstract void onFinished(ArrayList<Double> results);
@@ -136,12 +141,14 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                     @Override
                     public void onFinished(ArrayList<Double> results) {
                         //TODO: checkout the coords to make sure they're valid
+                        cancelShowFetching();
                         launchMarketList(new double[] { results.get(0), results.get(1) });
                     }
                 });
 
                 ViewUtils.hideKeyboard(getActivity());
                 mSearchAutocomplete.dismissDropDown();
+                contentView.postDelayed(delayedShowFetching, 500);
 
                 return true;
             }
@@ -189,20 +196,21 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             }
         });
 
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mUseLocationButton.setBackgroundColor(getResources().getColor(R.color.primary));
-            int pxPadding = (int)(ViewUtils.dpToPx(getContext(),
-                    getResources().getDimension(R.dimen.button_padding)) / 3);
-            mUseLocationButton.setPadding(pxPadding, pxPadding, pxPadding, pxPadding);
-        }
+        // set backgroundTint programmatically as xml method is undefined...
+        int primaryColor = getResources().getColor(R.color.primary);
+        ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{primaryColor});
+        ((AppCompatButton)mUseLocationButton).setSupportBackgroundTintList(cSL);
 
+        //TODO
+        //SharedPreferences store gson favorites
+        //item on click webview
         mUseLocationButton.setOnClickListener((v) -> {
             boolean locEnabled = new LocationUtil().getLocation(getContext(),
                     new LocationUtil.LocationResult() {
                         @Override
                         public void gotLocation(Location location) {
                             getActivity().runOnUiThread(() -> {
-                                mSearchAutocomplete.setEnabled(true);
+                                cancelShowFetching();
                                 if (location == null) {
                                     Snackbar.make(contentView, R.string.location_error,
                                             Snackbar.LENGTH_LONG).show();
@@ -214,9 +222,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                         }
                     });
             if(locEnabled) {
-                Snackbar.make(contentView, R.string.fetching_location, Snackbar.LENGTH_LONG)
-                        .show();
-                mSearchAutocomplete.setEnabled(false);
+                contentView.postDelayed(delayedShowFetching, 1000);
             } else {
                 final Snackbar s = Snackbar.make(contentView,
                         R.string.enable_location_prompt,
@@ -235,6 +241,22 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         removeFocusFromAll();
 
         return rootView;
+    }
+
+    private void showFetching() {
+        mFetchingSnackbar = Snackbar.make(contentView, R.string.fetching_location, Snackbar.LENGTH_INDEFINITE);
+        mFetchingSnackbar.show();
+        mSearchAutocomplete.setEnabled(false);
+        mUseLocationButton.setEnabled(false);
+    }
+
+    private void cancelShowFetching() {
+        contentView.removeCallbacks(delayedShowFetching);
+        if(mFetchingSnackbar != null) {
+            mFetchingSnackbar.dismiss();
+        }
+        mSearchAutocomplete.setEnabled(true);
+        mUseLocationButton.setEnabled(true);
     }
 
     @Override
