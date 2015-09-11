@@ -4,6 +4,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -45,8 +46,10 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     Toolbar mToolbar;
     @Bind(R.id.market_list)
     RecyclerView mMarketList;
-    @Bind(R.id.fragment_default_suggestion)
-    View mSuggestion;
+    @Bind(R.id.fragment_no_markets)
+    View mNoMarkets;
+    @Bind(R.id.map_view_fab)
+    FloatingActionButton mMapFab;
     @Bind(R.id.progress_bar)
     View mProgressBar;
 
@@ -162,6 +165,8 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
             @Override
             public void failure(RetrofitError error) {
                 Snackbar.make(getView(), "Failed to get markets!", Snackbar.LENGTH_LONG).show();
+                int shortAnimation = getResources().getInteger(android.R.integer.config_mediumAnimTime);
+                ViewUtils.crossfadeTwoViews(mNoMarkets, mProgressBar, shortAnimation);
                 Log.e(TAG, error.getMessage());
             }
         });
@@ -204,11 +209,19 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
 //    };
 
     private void showMarkets(List<MarketListItemModel> markets) {
-        mAdapter = new MarketListAdapter(new ArrayList<>(markets));
-        mMarketList.setAdapter(mAdapter);
+
+        View incomingView;
+
+        if(markets.size() > 0) {
+            mAdapter = new MarketListAdapter(new ArrayList<>(markets));
+            mMarketList.setAdapter(mAdapter);
+            incomingView = mMarketList;
+        } else {
+            incomingView = mNoMarkets;
+        }
 
         int shortAnimation = getResources().getInteger(android.R.integer.config_mediumAnimTime);
-        ViewUtils.crossfadeTwoViews(mMarketList, mProgressBar, shortAnimation);
+        ViewUtils.crossfadeTwoViews(incomingView, mProgressBar, shortAnimation);
     }
 
     @Override
