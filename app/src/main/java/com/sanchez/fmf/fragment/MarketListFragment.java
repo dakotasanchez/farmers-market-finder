@@ -1,5 +1,6 @@
 package com.sanchez.fmf.fragment;
 
+import android.content.res.ColorStateList;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -139,6 +140,10 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
                 }
             });
         }
+        int marketColor = ViewUtils.colorGenerator(getActivity());
+        ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{marketColor});
+        mMapFab.setBackgroundTintList(cSL);
+
 
         // linear RecyclerView
         RecyclerView.LayoutManager linearLM = new LinearLayoutManager(getContext());

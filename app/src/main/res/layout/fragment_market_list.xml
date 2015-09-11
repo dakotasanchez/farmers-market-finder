@@ -46,7 +46,7 @@
         android:id="@+id/market_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/cardview_margin"
+        android:paddingTop="@dimen/market_list_padding_top"
         android:paddingBottom="@dimen/cardview_margin"
         android:clipToPadding="false"
         android:scrollbars="vertical"
