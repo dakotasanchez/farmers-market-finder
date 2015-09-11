@@ -44,7 +44,7 @@ public class LocationUtil {
             Log.e("LocationUtil", e.getMessage());
         }
         timer1 = new Timer();
-        timer1.schedule(new GetLastLocation(), 5000);
+        timer1.schedule(new GetLastLocation(), 7000);
         return true;
     }
 
