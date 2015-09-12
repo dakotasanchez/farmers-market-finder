@@ -16,10 +16,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.ViewHolder> {
-    private ArrayList<MarketListItemModel> mDataset;
 
-    public MarketListAdapter(ArrayList<MarketListItemModel> dataSet) {
+    private ArrayList<MarketListItemModel> mDataset;
+    private boolean mDisplayDistance;
+
+    public MarketListAdapter(ArrayList<MarketListItemModel> dataSet, boolean displayDistance) {
         mDataset = dataSet;
+        mDisplayDistance = displayDistance;
     }
 
     // Create new views (invoked by the layout manager)
@@ -43,8 +46,11 @@ public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.Vi
 
         holder.mMarketName.setText(name.substring(dist.length() + 1));
 
-        // TODO: change this to a calculated distance from phone position
-        holder.mDistance.setText(dist);
+        if(mDisplayDistance) {
+            holder.mDistance.setText(dist);
+            holder.mDistance.setVisibility(View.VISIBLE);
+            holder.mMiles.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -59,6 +65,8 @@ public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.Vi
         TextView mMarketName;
         @Bind(R.id.market_distance)
         TextView mDistance;
+        @Bind(R.id.miles)
+        TextView mMiles;
 
         public ViewHolder(View v) {
             super(v);
