@@ -12,6 +12,7 @@
     <dimen name="market_list_padding_top">24dp</dimen>
 
     <dimen name="button_padding">24dp</dimen>
+    <dimen name="button_padding_small">12dp</dimen>
 
     <dimen name="fab_margin">0dp</dimen>
 </resources>

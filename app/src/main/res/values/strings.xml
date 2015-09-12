@@ -4,6 +4,8 @@
     <string name="title_activity_market_list">MarketListActivity</string>
 
     <string name="no_markets">No markets!</string>
+    <string name="fail_markets">Failed to get markets!</string>
+    <string name="try_again">Try again</string>
 
     <string name="action_example">Search</string>
 

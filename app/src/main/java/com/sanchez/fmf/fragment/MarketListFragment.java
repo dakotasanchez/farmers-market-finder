@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -49,10 +51,16 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     RecyclerView mMarketList;
     @Bind(R.id.fragment_no_markets)
     View mNoMarkets;
+    @Bind(R.id.layout_try_again)
+    ViewGroup mTryAgain;
+    @Bind(R.id.try_again_button)
+    Button mTryAgainButton;
     @Bind(R.id.map_view_fab)
     FloatingActionButton mMapFab;
     @Bind(R.id.progress_bar)
     View mProgressBar;
+
+    private static int MED_ANIM_TIME;
 
     public abstract class OnGetLocationFinishedListener {
         public abstract void onFinished(String result);
@@ -103,6 +111,8 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
             mCalculateDistances = getArguments().getBoolean(MarketListActivity.EXTRA_CALCULATE_DISTANCES);
         }
 
+        MED_ANIM_TIME = getResources().getInteger(android.R.integer.config_mediumAnimTime);
+
         // TODO: use mCalculateDistances
 
         // register client for Google APIs
@@ -140,6 +150,12 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
                 }
             });
         }
+
+        // set backgroundTint programmatically as xml method is undefined...
+        int pureWhite = getResources().getColor(R.color.pure_white);
+        ColorStateList cSL2 = new ColorStateList(new int[][]{new int[0]}, new int[]{pureWhite});
+        ((AppCompatButton)mTryAgainButton).setSupportBackgroundTintList(cSL2);
+
         int marketColor = ViewUtils.colorGenerator(getActivity());
         ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{marketColor});
         mMapFab.setBackgroundTintList(cSL);
@@ -156,6 +172,15 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mTryAgainButton.setOnClickListener((v) -> {
+            ViewUtils.crossfadeTwoViews(mProgressBar, mTryAgain, MED_ANIM_TIME);
+            retrieveMarkets();
+        });
+
+        retrieveMarkets();
+    }
+
+    private void retrieveMarkets() {
         /**
          * get markets from USDA API
          * coordinates[0] is latitude
@@ -170,9 +195,8 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
             @Override
             public void failure(RetrofitError error) {
                 Snackbar.make(getView(), "Failed to get markets!", Snackbar.LENGTH_LONG).show();
-                int shortAnimation = getResources().getInteger(android.R.integer.config_mediumAnimTime);
-                ViewUtils.crossfadeTwoViews(mNoMarkets, mProgressBar, shortAnimation);
-                Log.e(TAG, error.getMessage());
+                ViewUtils.crossfadeTwoViews(mTryAgain, mProgressBar, MED_ANIM_TIME);
+                Log.e(TAG, error.toString());
             }
         });
     }
@@ -225,8 +249,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
             incomingView = mNoMarkets;
         }
 
-        int shortAnimation = getResources().getInteger(android.R.integer.config_mediumAnimTime);
-        ViewUtils.crossfadeTwoViews(incomingView, mProgressBar, shortAnimation);
+        ViewUtils.crossfadeTwoViews(incomingView, mProgressBar, MED_ANIM_TIME);
     }
 
     @Override

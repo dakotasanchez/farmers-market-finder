@@ -67,6 +67,35 @@
         android:text="@string/no_markets"
         android:visibility="gone"/>
 
+    <RelativeLayout
+        android:id="@+id/layout_try_again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/fail_markets_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_centerHorizontal="true"
+            android:text="@string/fail_markets" />
+
+        <Button
+            android:id="@+id/try_again_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/fail_markets_tv"
+            style="@style/Base.TextAppearance.AppCompat.Large"
+            android:layout_margin="@dimen/cardview_margin"
+            android:padding="@dimen/button_padding"
+            android:layout_centerHorizontal="true"
+            android:text="@string/try_again"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/map_view_fab"
         android:src="@drawable/ic_map_white_36dp"
