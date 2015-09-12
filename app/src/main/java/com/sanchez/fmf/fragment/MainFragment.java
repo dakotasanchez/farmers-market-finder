@@ -141,14 +141,15 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                     @Override
                     public void onFinished(ArrayList<Double> results) {
                         //TODO: checkout the coords to make sure they're valid
-                        cancelShowFetching();
                         launchMarketList(new double[] { results.get(0), results.get(1) });
                     }
                 });
 
                 ViewUtils.hideKeyboard(getActivity());
                 mSearchAutocomplete.dismissDropDown();
-                contentView.postDelayed(delayedShowFetching, 500);
+                contentView.postDelayed(delayedShowFetching, 200);
+                // As a fail safe if something errors out
+                contentView.postDelayed(this::cancelShowFetching, 8000);
 
                 return true;
             }
@@ -201,9 +202,6 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{primaryColor});
         ((AppCompatButton)mUseLocationButton).setSupportBackgroundTintList(cSL);
 
-        //TODO
-        //SharedPreferences store gson favorites
-        //item on click webview
         mUseLocationButton.setOnClickListener((v) -> {
             boolean locEnabled = new LocationUtil().getLocation(getContext(),
                     new LocationUtil.LocationResult() {
@@ -222,7 +220,9 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                         }
                     });
             if(locEnabled) {
-                contentView.postDelayed(delayedShowFetching, 1000);
+                contentView.postDelayed(delayedShowFetching, 200);
+                // As a fail safe if something errors out
+                contentView.postDelayed(this::cancelShowFetching, 8000);
             } else {
                 final Snackbar s = Snackbar.make(contentView,
                         R.string.enable_location_prompt,
@@ -368,18 +368,21 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                     }
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());
-                    Snackbar.make(contentView, "Geocoder error", Snackbar.LENGTH_LONG).show();
+                    return null;
                 }
-                return null;
+                return returnList;
             }
 
             @Override
             protected void onPostExecute(ArrayList<Double> results) {
-                if(results != null && listener != null) {
+                if(null == results) {
+                    Snackbar.make(contentView, "Server error", Snackbar.LENGTH_LONG).show();
+                } else if (results.size() > 0) {
                     listener.onFinished(results);
                 } else {
                     Snackbar.make(contentView, "Invalid input", Snackbar.LENGTH_LONG).show();
                 }
+                cancelShowFetching();
             }
         }.execute();
     }
