@@ -1,13 +1,13 @@
 package com.sanchez.fmf.preference;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Created by dakota on 9/10/15.
  */
 public interface GlobalPreferences {
     
-    void setFavoriteMarkets(HashMap<String, String> favoriteMarkets);
+    void setFavoriteMarkets(LinkedHashMap<String, String> favoriteMarkets);
 
-    HashMap<String, String> getFavoriteMarkets();
+    LinkedHashMap<String, String> getFavoriteMarkets();
 }

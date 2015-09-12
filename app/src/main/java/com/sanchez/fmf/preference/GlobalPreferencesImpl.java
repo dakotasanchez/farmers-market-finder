@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Created by dakota on 9/10/15.
@@ -24,16 +24,16 @@ public class GlobalPreferencesImpl implements GlobalPreferences {
     }
 
     @Override
-    public void setFavoriteMarkets(HashMap<String, String> favoriteMarkets) {
-        String favoriteMarketsJson = mGson.toJson(favoriteMarkets, HashMap.class);
+    public void setFavoriteMarkets(LinkedHashMap<String, String> favoriteMarkets) {
+        String favoriteMarketsJson = mGson.toJson(favoriteMarkets, LinkedHashMap.class);
         mPref.edit().putString(FAVORITE_MARKETS, favoriteMarketsJson).apply();
     }
 
     @Override
-    public HashMap<String, String> getFavoriteMarkets() {
+    public LinkedHashMap<String, String> getFavoriteMarkets() {
         String favoriteMarketsJson = mPref.getString(FAVORITE_MARKETS, null);
         if(null != favoriteMarketsJson) {
-            return mGson.fromJson(favoriteMarketsJson, HashMap.class);
+            return mGson.fromJson(favoriteMarketsJson, LinkedHashMap.class);
         }
         return null;
     }
