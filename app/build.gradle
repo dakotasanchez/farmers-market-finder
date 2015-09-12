@@ -63,7 +63,12 @@ dependencies {
     // rest api interface
     compile 'com.squareup.retrofit:retrofit:1.9.0'
 
+    // java http replacement
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+
+    // java object -> JSON and vice versa
     compile 'com.google.code.gson:gson:2.3.1'
 
+    // pub-sub
     compile 'de.greenrobot:eventbus:2.4.0'
 }
