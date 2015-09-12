@@ -25,5 +25,8 @@
     <string name="markets">Markets</string>
     <string name="miles">miles</string>
     <string name="or">or</string>
+    <string name="title_activity_market_detail">MarketDetailActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 
 </resources>

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sanchez.fmf.R;
+import com.sanchez.fmf.event.MarketClickEvent;
 import com.sanchez.fmf.model.MarketListItemModel;
 import com.sanchez.fmf.util.MarketUtils;
 
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.ViewHolder> {
 
@@ -29,10 +31,13 @@ public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.Vi
     @Override
     public MarketListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
+        View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_market, parent, false);
+
+        view.setOnClickListener((v) -> EventBus.getDefault().post(new MarketClickEvent(v)));
+
         // set the view's size, margins, paddings and layout parameters
-        ViewHolder vh = new ViewHolder(v);
+        ViewHolder vh = new ViewHolder(view);
         return vh;
     }
 
@@ -58,6 +63,10 @@ public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.Vi
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+    public ArrayList<MarketListItemModel> getDataSet() {
+        return mDataset;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

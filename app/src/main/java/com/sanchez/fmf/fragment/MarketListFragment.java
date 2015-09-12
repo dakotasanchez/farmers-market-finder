@@ -1,5 +1,6 @@
 package com.sanchez.fmf.fragment;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.location.Address;
 import android.location.Geocoder;
@@ -21,13 +22,16 @@ import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.sanchez.fmf.MarketDetailActivity;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.MarketListAdapter;
+import com.sanchez.fmf.event.MarketClickEvent;
 import com.sanchez.fmf.model.MarketListItemModel;
 import com.sanchez.fmf.model.MarketListModel;
 import com.sanchez.fmf.service.MarketService;
 import com.sanchez.fmf.service.RestClient;
+import com.sanchez.fmf.util.MarketUtils;
 import com.sanchez.fmf.util.ViewUtils;
 
 import java.io.IOException;
@@ -37,6 +41,7 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -69,7 +74,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     //private static final int GOOGLE_API_CLIENT_ID = 0;
 
     //private GoogleApiClient mGoogleApiClient = null;
-    private RecyclerView.Adapter mAdapter;
+    private MarketListAdapter mAdapter;
 
     // service for USDA API
     private MarketService mMarketService;
@@ -124,6 +129,18 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
 //            // change width & height params in future
 //            getPlacePhotoAsync(mPlaceId, 600, 400);
 //        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
@@ -291,5 +308,18 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
                 }
             }
         }.execute();
+    }
+
+    public void onEvent(MarketClickEvent event) {
+        int position = mMarketList.getChildAdapterPosition(event.getMarket());
+        MarketListItemModel market = mAdapter.getDataSet().get(position);
+
+        String marketName = market.getName();
+        String dist = MarketUtils.getDistanceFromName(marketName);
+
+        Intent i = new Intent(getActivity(), MarketDetailActivity.class);
+        i.putExtra(MarketDetailActivity.EXTRA_MARKET_ID, market.getId());
+        i.putExtra(MarketDetailActivity.EXTRA_MARKET_NAME, marketName.substring(dist.length() + 1));
+        startActivity(i);
     }
 }
