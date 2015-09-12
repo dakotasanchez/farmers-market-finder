@@ -18,7 +18,7 @@ public class MarketListActivity extends AppCompatActivity {
     public static final String EXTRA_COORDINATES = "com.sanchez.extra_coordinates";
     public static final String EXTRA_PLACE_TITLE = "com.sanchez.extra_place_title";
     public static final String EXTRA_PLACE_ID = "com.sanchez.extra_place_id";
-    public static final String EXTRA_CALCULATE_DISTANCES = "com.sanchez.extra_calculate_distances";
+    public static final String EXTRA_USED_DEVICE_COORDINATES = "com.sanchez.extra_used_device_coordinates";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +30,7 @@ public class MarketListActivity extends AppCompatActivity {
         double[] coordinates = getIntent().getDoubleArrayExtra(EXTRA_COORDINATES);
         String placeId = getIntent().getStringExtra(EXTRA_PLACE_ID);
         String placeTitle = getIntent().getStringExtra(EXTRA_PLACE_TITLE);
-
-        // flag whether to rely on distances returned from USDA API
-        boolean needToCalculateDistances = (null != placeTitle);
+        boolean usedDeviceCoordinates = getIntent().getBooleanExtra(EXTRA_USED_DEVICE_COORDINATES, false);
 
         // color nav and status bar with app color
         Window w = getWindow();
@@ -44,7 +42,7 @@ public class MarketListActivity extends AppCompatActivity {
         Fragment listFragment = fm.findFragmentById(R.id.container_market_list_activity);
 
         if (listFragment == null) {
-            listFragment = MarketListFragment.newInstance(coordinates, placeTitle, placeId, needToCalculateDistances);
+            listFragment = MarketListFragment.newInstance(coordinates, placeTitle, placeId, usedDeviceCoordinates);
             fm.beginTransaction()
                     .add(R.id.container_market_list_activity, listFragment)
                     .commit();

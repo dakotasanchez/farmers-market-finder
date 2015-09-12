@@ -141,7 +141,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                     @Override
                     public void onFinished(ArrayList<Double> results) {
                         //TODO: checkout the coords to make sure they're valid
-                        launchMarketList(new double[] { results.get(0), results.get(1) });
+                        launchMarketList(new double[] { results.get(0), results.get(1) }, false);
                     }
                 });
 
@@ -214,7 +214,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                                             Snackbar.LENGTH_LONG).show();
                                 } else {
                                     double[] coords = {location.getLatitude(), location.getLongitude()};
-                                    launchMarketList(coords);
+                                    launchMarketList(coords, true);
                                 }
                             });
                         }
@@ -264,12 +264,13 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void launchMarketList(double[] coords) {
+    private void launchMarketList(double[] coords, boolean usedDeviceCoordinates) {
         // start market list activity with coordinates from search
         Intent i = new Intent(getActivity(), MarketListActivity.class);
         i.putExtra(MarketListActivity.EXTRA_COORDINATES, coords);
         i.putExtra(MarketListActivity.EXTRA_PLACE_TITLE, mSelectedPlace);
         i.putExtra(MarketListActivity.EXTRA_PLACE_ID, mSelectedPlaceId);
+        i.putExtra(MarketListActivity.EXTRA_USED_DEVICE_COORDINATES, usedDeviceCoordinates);
         startActivity(i);
     }
 

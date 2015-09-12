@@ -77,19 +77,19 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     private double[] mCoordinates = new double[2];
     private String mPlaceTitle = null;
     private String mPlaceId = null;
-    private boolean mCalculateDistances;
+    private boolean mUsedDeviceCoordinates = false;
 
     // grab coordinates sent from MainFragment intent
     public static MarketListFragment newInstance(double[] coords,
                                                  String placeTitle,
                                                  String placeId,
-                                                 boolean needToCalculateDistances) {
+                                                 boolean usedDeviceCoordinates) {
         MarketListFragment fragment = new MarketListFragment();
         Bundle args = new Bundle();
         args.putDoubleArray(MarketListActivity.EXTRA_COORDINATES, coords);
         args.putString(MarketListActivity.EXTRA_PLACE_TITLE, placeTitle);
         args.putString(MarketListActivity.EXTRA_PLACE_ID, placeId);
-        args.putBoolean(MarketListActivity.EXTRA_CALCULATE_DISTANCES, needToCalculateDistances);
+        args.putBoolean(MarketListActivity.EXTRA_USED_DEVICE_COORDINATES, usedDeviceCoordinates);
         fragment.setArguments(args);
         return fragment;
     }
@@ -108,12 +108,10 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
             mCoordinates = getArguments().getDoubleArray(MarketListActivity.EXTRA_COORDINATES);
             mPlaceTitle = getArguments().getString(MarketListActivity.EXTRA_PLACE_TITLE);
             mPlaceId = getArguments().getString(MarketListActivity.EXTRA_PLACE_ID);
-            mCalculateDistances = getArguments().getBoolean(MarketListActivity.EXTRA_CALCULATE_DISTANCES);
+            mUsedDeviceCoordinates = getArguments().getBoolean(MarketListActivity.EXTRA_USED_DEVICE_COORDINATES);
         }
 
         MED_ANIM_TIME = getResources().getInteger(android.R.integer.config_mediumAnimTime);
-
-        // TODO: use mCalculateDistances
 
         // register client for Google APIs
 //        mGoogleApiClient = new GoogleApiClient
@@ -139,7 +137,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         a.getSupportActionBar().setTitle("");
         a.getSupportActionBar().setDisplayShowHomeEnabled(true);
         a.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if (null != mPlaceTitle) {
+        if (!mUsedDeviceCoordinates) {
             a.getSupportActionBar().setTitle(mPlaceTitle);
         } else {
             // user clicked "use current location button", meaning we need to reverse geocode
@@ -242,7 +240,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         View incomingView;
 
         if(markets.size() > 0) {
-            mAdapter = new MarketListAdapter(new ArrayList<>(markets));
+            mAdapter = new MarketListAdapter(new ArrayList<>(markets), mUsedDeviceCoordinates);
             mMarketList.setAdapter(mAdapter);
             incomingView = mMarketList;
         } else {
