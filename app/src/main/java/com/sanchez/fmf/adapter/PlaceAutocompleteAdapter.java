@@ -127,8 +127,11 @@ public class PlaceAutocompleteAdapter
             ArrayList resultList = new ArrayList<>(autocompletePredictions.getCount());
             while (iterator.hasNext()) {
                 AutocompletePrediction prediction = iterator.next();
-                // Get the details of this prediction and copy it into a new PlaceAutocomplete object.
-                if(prediction.getDescription().contains("United States")) {
+                // Only include U.S. cities
+                // States only have 1 comma (e.g. AK, United States). Don't include states.
+                if(prediction.getDescription().contains("United States")
+                        && prediction.getDescription().replaceAll("[^,]", "").length() > 1 ) {
+
                     resultList.add(new PlaceAutocomplete(prediction.getPlaceId(),
                             prediction.getDescription()));
                 }

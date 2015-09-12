@@ -258,6 +258,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
                 + connectionResult.getErrorCode());
     }
 
+    // get a location name based on latitude and longitude (reverse geocoding)
     public void getLocationName(final double[] coords, final OnGetLocationFinishedListener listener) {
         new AsyncTask<Void, Integer, String>() {
             @Override
