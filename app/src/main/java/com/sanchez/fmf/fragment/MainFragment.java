@@ -147,7 +147,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
 
                 ViewUtils.hideKeyboard(getActivity());
                 mSearchAutocomplete.dismissDropDown();
-                contentView.postDelayed(delayedShowFetching, 200);
+                contentView.postDelayed(delayedShowFetching, 300);
                 // As a fail safe if something errors out
                 contentView.postDelayed(this::cancelShowFetching, 8000);
 
@@ -208,7 +208,6 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                         @Override
                         public void gotLocation(Location location) {
                             getActivity().runOnUiThread(() -> {
-                                cancelShowFetching();
                                 if (location == null) {
                                     Snackbar.make(contentView, R.string.location_error,
                                             Snackbar.LENGTH_LONG).show();
@@ -220,7 +219,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                         }
                     });
             if(locEnabled) {
-                contentView.postDelayed(delayedShowFetching, 200);
+                contentView.postDelayed(delayedShowFetching, 300);
                 // As a fail safe if something errors out
                 contentView.postDelayed(this::cancelShowFetching, 8000);
             } else {
@@ -272,6 +271,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         i.putExtra(MarketListActivity.EXTRA_PLACE_ID, mSelectedPlaceId);
         i.putExtra(MarketListActivity.EXTRA_USED_DEVICE_COORDINATES, usedDeviceCoordinates);
         startActivity(i);
+        cancelShowFetching();
     }
 
     private void removeFocusFromAll() {

@@ -30,13 +30,18 @@ public class MarketUtils {
 //    }
 
     // get distance (in miles) from 'marketName' json key
-    public static String getDistanceFromName(String marketName) {
+    public static String getDistanceFromMarketString(String marketString) {
         StringBuilder dist = new StringBuilder();
         int i = 0;
-        while (marketName.charAt(i) != ' ') {
-            dist.append(marketName.charAt(i));
+        while (marketString.charAt(i) != ' ') {
+            dist.append(marketString.charAt(i));
             i++;
         }
         return dist.toString();
+    }
+
+    // strip distance (in miles) from 'marketName' json key
+    public static String getNameFromMarketString(String marketString) {
+        return marketString.substring(marketString.indexOf(' ') + 1);
     }
 }
