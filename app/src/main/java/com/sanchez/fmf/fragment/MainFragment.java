@@ -33,11 +33,13 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.PlaceAutocompleteAdapter;
+import com.sanchez.fmf.application.FMFApplication;
 import com.sanchez.fmf.util.LocationUtil;
 import com.sanchez.fmf.util.RippleForegroundListener;
 import com.sanchez.fmf.util.ViewUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -98,14 +100,16 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     @Override
     public void onResume() {
         super.onResume();
-//        // in case user left to turn on GPS
-//        boolean isGpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-//        boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-//        if(isGpsEnabled) {
-//            mLocationProvider = LocationManager.GPS_PROVIDER;
-//        } else if (isNetworkEnabled) {
-//            mLocationProvider = LocationManager.NETWORK_PROVIDER;
-//        }
+        // testing
+        // TODO: put recyclerview in card for favorites
+        // TODO: add x buttons so favorites can be deleted
+        // TODO: update adapter whenever activity is reached (onResume() ?)
+        LinkedHashMap<String, String> f = FMFApplication.getGlobalPreferences().getFavoriteMarkets();
+        if(null != f) {
+            for (String s : f.values()) {
+                Log.e(TAG, s);
+            }
+        }
     }
 
     @Override

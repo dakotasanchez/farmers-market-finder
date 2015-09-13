@@ -1,6 +1,8 @@
 package com.sanchez.fmf;
 
+import android.content.res.ColorStateList;
 import android.os.Build;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,7 +13,11 @@ import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.sanchez.fmf.application.FMFApplication;
+import com.sanchez.fmf.util.MarketUtils;
 import com.sanchez.fmf.util.ViewUtils;
+
+import java.util.LinkedHashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,6 +37,8 @@ public class MarketDetailActivity extends AppCompatActivity {
     View mProgressBar;
     @Bind(R.id.market_detail_webview)
     WebView mWebView;
+    @Bind(R.id.favorite_fab)
+    FloatingActionButton mFavoriteFab;
 
     private static int MED_ANIM_TIME;
 
@@ -55,6 +63,23 @@ public class MarketDetailActivity extends AppCompatActivity {
         String marketId = getIntent().getStringExtra(EXTRA_MARKET_ID);
         String marketName = getIntent().getStringExtra(EXTRA_MARKET_NAME);
         getSupportActionBar().setTitle(marketName);
+
+        int marketColor = getResources().getColor(MarketUtils.getRandomMarketColor());
+        ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{marketColor});
+        mFavoriteFab.setBackgroundTintList(cSL);
+
+        mFavoriteFab.setOnClickListener((v) -> {
+            // update favorite markets list
+            LinkedHashMap<String, String> favorites = FMFApplication
+                    .getGlobalPreferences()
+                    .getFavoriteMarkets();
+            if(null != favorites) {
+                favorites.put(marketId, marketName);
+            } else {
+                favorites = new LinkedHashMap<>();
+            }
+            FMFApplication.getGlobalPreferences().setFavoriteMarkets(favorites);
+        });
 
         mWebView.getSettings().setJavaScriptEnabled(false);
         mWebView.setWebViewClient(new WebViewClient() {
