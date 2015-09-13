@@ -60,26 +60,4 @@ public class ViewUtils {
         Resources r = c.getResources();
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, px, r.getDisplayMetrics());
     }
-
-    public static int colorGenerator(Activity activity) {
-        Random r = new Random();
-        Resources res = activity.getResources();
-
-        int randInt = r.nextInt(5);
-
-        switch (randInt) {
-            case 0:
-                return res.getColor(R.color.market_blue);
-            case 1:
-                return res.getColor(R.color.market_red);
-            case 2:
-                return res.getColor(R.color.market_green);
-            case 3:
-                return res.getColor(R.color.market_orange);
-            case 4:
-                return res.getColor(R.color.market_pink);
-            default:
-                return res.getColor(R.color.market_red);
-        }
-    }
 }

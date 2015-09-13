@@ -19,7 +19,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.sanchez.fmf.MarketDetailActivity;
@@ -60,6 +62,8 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     ViewGroup mTryAgain;
     @Bind(R.id.try_again_button)
     Button mTryAgainButton;
+    @Bind(R.id.market_backdrop)
+    ImageView mMarketBackDrop;
     @Bind(R.id.map_view_fab)
     FloatingActionButton mMapFab;
     @Bind(R.id.progress_bar)
@@ -171,7 +175,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         ColorStateList cSL2 = new ColorStateList(new int[][]{new int[0]}, new int[]{pureWhite});
         ((AppCompatButton)mTryAgainButton).setSupportBackgroundTintList(cSL2);
 
-        int marketColor = ViewUtils.colorGenerator(getActivity());
+        int marketColor = getResources().getColor(MarketUtils.getRandomMarketColor());
         ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{marketColor});
         mMapFab.setBackgroundTintList(cSL);
 
@@ -179,6 +183,8 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         // linear RecyclerView
         RecyclerView.LayoutManager linearLM = new LinearLayoutManager(getContext());
         mMarketList.setLayoutManager(linearLM);
+        // dummy adapter so Android doesn't complain
+        mMarketList.setAdapter(new MarketListAdapter(new ArrayList<>(), false));
 
         return v;
     }
@@ -193,6 +199,8 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         });
 
         retrieveMarkets();
+
+        loadBackdrop();
     }
 
     private void retrieveMarkets() {
@@ -216,6 +224,11 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         });
     }
 
+    private void loadBackdrop() {
+        Glide.with(getActivity()).load(MarketUtils.getRandomMarketDrawable())
+                .centerCrop()
+                .into(mMarketBackDrop);
+    }
 
     // TODO: check to see if this photo API is usable in future
     // current state: most place IDs don't return any photos....
@@ -310,16 +323,15 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         }.execute();
     }
 
+    // use clicked on a market card
     public void onEvent(MarketClickEvent event) {
         int position = mMarketList.getChildAdapterPosition(event.getMarket());
         MarketListItemModel market = mAdapter.getDataSet().get(position);
 
-        String marketName = market.getName();
-        String dist = MarketUtils.getDistanceFromName(marketName);
-
         Intent i = new Intent(getActivity(), MarketDetailActivity.class);
         i.putExtra(MarketDetailActivity.EXTRA_MARKET_ID, market.getId());
-        i.putExtra(MarketDetailActivity.EXTRA_MARKET_NAME, marketName.substring(dist.length() + 1));
+        i.putExtra(MarketDetailActivity.EXTRA_MARKET_NAME,
+                MarketUtils.getNameFromMarketString(market.getName()));
         startActivity(i);
     }
 }

@@ -1,5 +1,9 @@
 package com.sanchez.fmf.util;
 
+import android.app.Activity;
+import android.content.res.Resources;
+
+import com.sanchez.fmf.R;
 import com.sanchez.fmf.model.MarketListItemModel;
 
 import java.text.DecimalFormat;
@@ -11,23 +15,7 @@ import java.util.Random;
  */
 public class MarketUtils {
 
-//    public static ArrayList<MarketListItemModel> getExampleMarkets() {
-//        ArrayList<MarketListItemModel> mModels = new ArrayList<>();
-//        String alphabet = " 1234567890 abcdefghijklmnopqrstuvwxyz ";
-//        Random r = new Random();
-//        DecimalFormat df = new DecimalFormat("#.0");
-//        for (int i = 0; i < 50; i++) {
-//            double dist = r.nextDouble() * 50;
-//            int marketLength = r.nextInt(50) + 1;
-//            StringBuilder sb = new StringBuilder();
-//            sb.append(Double.parseDouble(df.format(dist)) + " ");
-//            for(int j = 0; j < marketLength; j++) {
-//                sb.append(alphabet.charAt(r.nextInt(alphabet.length())));
-//            }
-//            mModels.add(new MarketListItemModel(Integer.toString(i), sb.toString()));
-//        }
-//        return mModels;
-//    }
+    private static final Random RANDOM = new Random();
 
     // get distance (in miles) from 'marketName' json key
     public static String getDistanceFromMarketString(String marketString) {
@@ -43,5 +31,31 @@ public class MarketUtils {
     // strip distance (in miles) from 'marketName' json key
     public static String getNameFromMarketString(String marketString) {
         return marketString.substring(marketString.indexOf(' ') + 1);
+    }
+
+    public static int getRandomMarketColor() {
+
+        switch (RANDOM.nextInt(5)) {
+            default:
+            case 0:
+                return R.color.market_blue;
+            case 1:
+                return R.color.market_red;
+            case 2:
+                return R.color.market_green;
+            case 3:
+                return R.color.market_orange;
+            case 4:
+                return R.color.market_pink;
+        }
+    }
+
+    public static int getRandomMarketDrawable() {
+        switch (RANDOM.nextInt(5)) {
+            default:
+            case 0:
+                return R.drawable.market_1;
+
+        }
     }
 }
