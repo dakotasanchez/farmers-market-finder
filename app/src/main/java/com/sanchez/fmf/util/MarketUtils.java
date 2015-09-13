@@ -51,11 +51,16 @@ public class MarketUtils {
     }
 
     public static int getRandomMarketDrawable() {
-        switch (RANDOM.nextInt(5)) {
+        switch (RANDOM.nextInt(4)) {
             default:
             case 0:
                 return R.drawable.market_1;
-
+            case 1:
+                return R.drawable.market_2;
+            case 2:
+                return R.drawable.market_3;
+            case 3:
+                return R.drawable.market_4;
         }
     }
 }
