@@ -71,4 +71,7 @@ dependencies {
 
     // pub-sub
     compile 'de.greenrobot:eventbus:2.4.0'
+
+    // image loading framework
+    compile 'com.github.bumptech.glide:glide:3.6.1'
 }
