@@ -34,16 +34,20 @@
         android:layout_below="@id/appbar_market_detail"
         android:visibility="gone" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/favorite_fab"
-        android:src="@drawable/ic_favorite_white_36dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/fab_margin"
-        android:clickable="true"
-        app:fabSize="normal"
-        app:borderWidth="0dp"/>
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/favorite_fab"
+            android:src="@drawable/ic_favorite_white_36dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:layout_margin="@dimen/fab_margin"
+            android:clickable="true"
+            app:fabSize="normal"
+            app:borderWidth="0dp"/>
+    </android.support.design.widget.CoordinatorLayout>
 
 </RelativeLayout>

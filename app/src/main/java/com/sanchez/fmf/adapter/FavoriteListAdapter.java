@@ -10,12 +10,10 @@ import android.widget.TextView;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.event.FavoriteClickEvent;
 import com.sanchez.fmf.event.FavoriteRemoveEvent;
-import com.sanchez.fmf.model.FavoriteMarketModel;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

@@ -1,8 +1,10 @@
 package com.sanchez.fmf;
 
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -64,11 +66,25 @@ public class MarketDetailActivity extends AppCompatActivity {
         String marketName = getIntent().getStringExtra(EXTRA_MARKET_NAME);
         getSupportActionBar().setTitle(marketName);
 
+        if (FMFApplication.getGlobalPreferences().getFavoriteMarkets().containsKey(marketId)) {
+            mFavoriteFab.setEnabled(false);
+            mFavoriteFab.setBackgroundTintList(
+                    new ColorStateList(new int[][]{new int[0]}, new int[]{Color.GRAY})
+            );
+        }
+
         int marketColor = getResources().getColor(MarketUtils.getRandomMarketColor());
         ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{marketColor});
         mFavoriteFab.setBackgroundTintList(cSL);
 
         mFavoriteFab.setOnClickListener((v) -> {
+
+            Snackbar.make(v, R.string.added_to_favorites, Snackbar.LENGTH_LONG).show();
+            v.setEnabled(false);
+            mFavoriteFab.setBackgroundTintList(
+                    new ColorStateList(new int[][]{new int[0]}, new int[]{Color.GRAY})
+            );
+            
             // update favorite markets list
             LinkedHashMap<String, String> favorites = FMFApplication
                     .getGlobalPreferences()

@@ -8,6 +8,8 @@
     <string name="try_again">Try again</string>
     <string name="no_favorites">Nothing appears to be here!</string>
 
+    <string name="added_to_favorites">Added to favorites</string>
+
     <string name="action_example">Search</string>
 
     <string name="action_settings">Settings</string>

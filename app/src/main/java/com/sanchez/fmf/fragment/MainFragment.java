@@ -40,7 +40,6 @@ import com.sanchez.fmf.adapter.PlaceAutocompleteAdapter;
 import com.sanchez.fmf.application.FMFApplication;
 import com.sanchez.fmf.event.FavoriteClickEvent;
 import com.sanchez.fmf.event.FavoriteRemoveEvent;
-import com.sanchez.fmf.model.FavoriteMarketModel;
 import com.sanchez.fmf.util.LocationUtil;
 import com.sanchez.fmf.util.ViewUtils;
 
