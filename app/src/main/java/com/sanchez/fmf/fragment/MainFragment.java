@@ -32,6 +32,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.sanchez.fmf.MarketDetailActivity;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.FavoriteListAdapter;
@@ -122,7 +123,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     @Override
     public void onResume() {
         super.onResume();
-        // TODO: update favorites adapter onResume()
+        updateFavoritesList(null);
     }
 
     @Override
@@ -131,6 +132,12 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, rootView);
         contentView = getActivity().findViewById(android.R.id.content);
+
+        // linear RecyclerView
+        RecyclerView.LayoutManager linearLM = new LinearLayoutManager(getContext());
+        mFavoritesList.setLayoutManager(linearLM);
+        mFavoritesList.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_LEFT);
+        mFavoritesList.setAdapter(new FavoriteListAdapter(new LinkedHashMap<>()));
 
         // customize place autocomplete adapter
         mAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(),
@@ -248,29 +255,17 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             }
         });
 
-        LinkedHashMap<String, String> favorites = FMFApplication
-                .getGlobalPreferences()
-                .getFavoriteMarkets();
-
-        if (null == favorites) {
-            mNoFavorites.setVisibility(View.VISIBLE);
-        } else {
-            // linear RecyclerView
-            RecyclerView.LayoutManager linearLM = new LinearLayoutManager(getContext());
-            mFavoritesList.setLayoutManager(linearLM);
-
-            ArrayList<FavoriteMarketModel> favoritesList = new ArrayList<>();
-            for (String key : favorites.keySet()) {
-                favoritesList.add(new FavoriteMarketModel(key, favorites.get(key)));
-            }
-            mFavoritesList.setAdapter(new FavoriteListAdapter(favoritesList));
-            mFavoritesList.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_LEFT);
-        }
+        updateFavoritesList(null);
 
         // no keyboard popup on launch
         removeFocusFromAll();
 
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     private void showFetching() {
@@ -289,9 +284,25 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         mUseLocationButton.setEnabled(true);
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    private void updateFavoritesList(LinkedHashMap<String, String> favorites) {
+        // check to see if we got a parameter
+        if(null == favorites) {
+            favorites = FMFApplication
+                    .getGlobalPreferences()
+                    .getFavoriteMarkets();
+        }
+
+        // see if the persistent data lookup returned anything
+        if (null == favorites) {
+            mNoFavorites.setVisibility(View.VISIBLE);
+        } else {
+            ((FavoriteListAdapter)mFavoritesList.getAdapter()).replaceData(favorites);
+            if(favorites.size() > 0) {
+                mNoFavorites.setVisibility(View.GONE);
+            } else {
+                mNoFavorites.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private void launchMarketList(double[] coords, boolean usedDeviceCoordinates) {
@@ -420,11 +431,19 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     }
 
     public void onEvent(FavoriteClickEvent event) {
-        // launch Row.aspx?ID=event.getId()
-        // similar to market list item launch
+        Intent i = new Intent(getActivity(), MarketDetailActivity.class);
+        i.putExtra(MarketDetailActivity.EXTRA_MARKET_ID, event.getId());
+        i.putExtra(MarketDetailActivity.EXTRA_MARKET_NAME, event.getName());
+        startActivity(i);
     }
 
     public void onEvent(FavoriteRemoveEvent event) {
-        // remove event.getId() from global pref then update adapter
+        LinkedHashMap<String, String> favoritesMap =
+            FMFApplication.getGlobalPreferences().getFavoriteMarkets();
+        favoritesMap.remove(event.getId());
+
+        FMFApplication.getGlobalPreferences().setFavoriteMarkets(favoritesMap);
+
+        updateFavoritesList(favoritesMap);
     }
 }

@@ -14,10 +14,11 @@
             android:id="@+id/favorite_market_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
             style="@style/Base.TextAppearance.AppCompat.Medium"
-            android:paddingLeft="@dimen/cardview_padding"
-            android:paddingRight="@dimen/cardview_padding"
-            android:layout_centerVertical="true"
+            android:padding="@dimen/cardview_padding"
+            android:singleLine="true"
+            android:maxLines="1"
             android:layout_toLeftOf="@+id/favorite_market_remove"
             android:layout_alignParentLeft="true"/>
 

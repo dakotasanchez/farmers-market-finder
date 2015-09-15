@@ -6,7 +6,7 @@
     <string name="no_markets">No markets!</string>
     <string name="fail_markets">Failed to get markets!</string>
     <string name="try_again">Try again</string>
-    <string name="none_yet">None yet!</string>
+    <string name="no_favorites">Nothing appears to be here!</string>
 
     <string name="action_example">Search</string>
 

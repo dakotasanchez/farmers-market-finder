@@ -13,6 +13,9 @@ import com.sanchez.fmf.event.FavoriteRemoveEvent;
 import com.sanchez.fmf.model.FavoriteMarketModel;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,10 +26,13 @@ import de.greenrobot.event.EventBus;
  */
 public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapter.ViewHolder> {
 
-    private ArrayList<FavoriteMarketModel> mDataset;
+    private LinkedHashMap<String, String> mDataset;
+    private List<String> mKeys;
 
-    public FavoriteListAdapter(ArrayList<FavoriteMarketModel> dataset) {
+    public FavoriteListAdapter(LinkedHashMap<String, String> dataset) {
         mDataset = dataset;
+        mKeys = new ArrayList<>(dataset.keySet());
+        dataset.toString();
     }
 
     @Override
@@ -41,8 +47,8 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String id = mDataset.get(position).getId();
-        String name = mDataset.get(position).getName();
+        String id = mKeys.get(position);
+        String name = mDataset.get(id);
 
         holder.mMarketName.setText(name);
 
@@ -66,7 +72,15 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
         return mDataset.size();
     }
 
-    public ArrayList<FavoriteMarketModel> getDataSet() {
+    public void replaceData(LinkedHashMap<String, String> newData) {
+        mDataset.clear();
+        mDataset.putAll(newData);
+        mKeys.clear();
+        mKeys.addAll(newData.keySet());
+        notifyDataSetChanged();
+    }
+
+    public LinkedHashMap<String, String> getDataSet() {
         return mDataset;
     }
 
