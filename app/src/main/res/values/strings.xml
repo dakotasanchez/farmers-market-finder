@@ -6,6 +6,7 @@
     <string name="no_markets">No markets!</string>
     <string name="fail_markets">Failed to get markets!</string>
     <string name="try_again">Try again</string>
+    <string name="none_yet">None yet!</string>
 
     <string name="action_example">Search</string>
 
@@ -21,12 +22,10 @@
     <string name="location_error">Error getting location...</string>
 
     <string name="search_markets">Search for markets</string>
-    <string name="pinned_markets">Pinned markets</string>
+    <string name="favorite_markets">Favorite markets</string>
     <string name="markets">Markets</string>
     <string name="miles">miles</string>
     <string name="or">or</string>
     <string name="title_activity_market_detail">MarketDetailActivity</string>
-
-    <string name="hello_world">Hello world!</string>
 
 </resources>

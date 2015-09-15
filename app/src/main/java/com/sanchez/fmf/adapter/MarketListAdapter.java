@@ -22,8 +22,8 @@ public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.Vi
     private ArrayList<MarketListItemModel> mDataset;
     private boolean mDisplayDistance;
 
-    public MarketListAdapter(ArrayList<MarketListItemModel> dataSet, boolean displayDistance) {
-        mDataset = dataSet;
+    public MarketListAdapter(ArrayList<MarketListItemModel> dataset, boolean displayDistance) {
+        mDataset = dataset;
         mDisplayDistance = displayDistance;
     }
 
@@ -32,7 +32,7 @@ public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.Vi
     public MarketListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_market, parent, false);
+                .inflate(R.layout.row_card_market, parent, false);
 
         view.setOnClickListener((v) -> EventBus.getDefault().post(new MarketClickEvent(v)));
 

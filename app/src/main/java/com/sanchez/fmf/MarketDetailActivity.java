@@ -73,11 +73,11 @@ public class MarketDetailActivity extends AppCompatActivity {
             LinkedHashMap<String, String> favorites = FMFApplication
                     .getGlobalPreferences()
                     .getFavoriteMarkets();
-            if(null != favorites) {
-                favorites.put(marketId, marketName);
-            } else {
+            if(null == favorites) {
                 favorites = new LinkedHashMap<>();
             }
+            favorites.put(marketId, marketName);
+
             FMFApplication.getGlobalPreferences().setFavoriteMarkets(favorites);
         });
 

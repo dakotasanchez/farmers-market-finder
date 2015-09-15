@@ -13,6 +13,8 @@ import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -32,10 +34,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
+import com.sanchez.fmf.adapter.FavoriteListAdapter;
 import com.sanchez.fmf.adapter.PlaceAutocompleteAdapter;
 import com.sanchez.fmf.application.FMFApplication;
+import com.sanchez.fmf.event.FavoriteClickEvent;
+import com.sanchez.fmf.event.FavoriteRemoveEvent;
+import com.sanchez.fmf.model.FavoriteMarketModel;
 import com.sanchez.fmf.util.LocationUtil;
-import com.sanchez.fmf.util.RippleForegroundListener;
 import com.sanchez.fmf.util.ViewUtils;
 
 import java.util.ArrayList;
@@ -45,6 +50,7 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 public class MainFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -58,6 +64,10 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     View mClearSearch;
     @Bind(R.id.use_location_button)
     Button mUseLocationButton;
+    @Bind(R.id.market_favorites_list)
+    RecyclerView mFavoritesList;
+    @Bind(R.id.no_favorites_text)
+    View mNoFavorites;
 
     View contentView;
 
@@ -98,18 +108,21 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        // testing
-        // TODO: put recyclerview in card for favorites
-        // TODO: add x buttons so favorites can be deleted
-        // TODO: update adapter whenever activity is reached (onResume() ?)
-        LinkedHashMap<String, String> f = FMFApplication.getGlobalPreferences().getFavoriteMarkets();
-        if(null != f) {
-            for (String s : f.values()) {
-                Log.e(TAG, s);
-            }
-        }
+        // TODO: update favorites adapter onResume()
     }
 
     @Override
@@ -182,11 +195,6 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             }
         });
 
-        // necessary to pass touch events through to parent card view to trigger ripple animation
-        RippleForegroundListener rFL = new RippleForegroundListener(getActivity(), R.id.card_search);
-        mSearchAutocomplete.setOnTouchListener(rFL);
-        mSearchIcon.setOnTouchListener(rFL);
-
         // icon press triggers search also
         mSearchIcon.setOnClickListener((v) -> {
             mSearchAutocomplete.requestFocus();
@@ -222,7 +230,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                             });
                         }
                     });
-            if(locEnabled) {
+            if (locEnabled) {
                 contentView.postDelayed(delayedShowFetching, 300);
                 // As a fail safe if something errors out
                 contentView.postDelayed(this::cancelShowFetching, 8000);
@@ -239,6 +247,25 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                 s.show();
             }
         });
+
+        LinkedHashMap<String, String> favorites = FMFApplication
+                .getGlobalPreferences()
+                .getFavoriteMarkets();
+
+        if (null == favorites) {
+            mNoFavorites.setVisibility(View.VISIBLE);
+        } else {
+            // linear RecyclerView
+            RecyclerView.LayoutManager linearLM = new LinearLayoutManager(getContext());
+            mFavoritesList.setLayoutManager(linearLM);
+
+            ArrayList<FavoriteMarketModel> favoritesList = new ArrayList<>();
+            for (String key : favorites.keySet()) {
+                favoritesList.add(new FavoriteMarketModel(key, favorites.get(key)));
+            }
+            mFavoritesList.setAdapter(new FavoriteListAdapter(favoritesList));
+            mFavoritesList.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_LEFT);
+        }
 
         // no keyboard popup on launch
         removeFocusFromAll();
@@ -390,5 +417,14 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                 cancelShowFetching();
             }
         }.execute();
+    }
+
+    public void onEvent(FavoriteClickEvent event) {
+        // launch Row.aspx?ID=event.getId()
+        // similar to market list item launch
+    }
+
+    public void onEvent(FavoriteRemoveEvent event) {
+        // remove event.getId() from global pref then update adapter
     }
 }
