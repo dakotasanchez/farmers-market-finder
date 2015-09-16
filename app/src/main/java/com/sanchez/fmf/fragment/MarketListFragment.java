@@ -7,7 +7,6 @@ import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
@@ -185,7 +184,8 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         super.onViewCreated(view, savedInstanceState);
 
         mTryAgainButton.setOnClickListener((v) -> {
-            ViewUtils.crossfadeTwoViews(mProgressBar, mTryAgain, MED_ANIM_TIME);
+            mProgressBar.setVisibility(View.VISIBLE);
+            mTryAgain.setVisibility(View.GONE);
             EventBus.getDefault().post(new RetryGetMarketListEvent());
         });
 
@@ -297,8 +297,8 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     }
 
     public void onEvent(GetMarketListFailEvent event) {
-        Snackbar.make(getView(), "Failed to get markets!", Snackbar.LENGTH_LONG).show();
-        ViewUtils.crossfadeTwoViews(mTryAgain, mProgressBar, MED_ANIM_TIME);
+        mProgressBar.setVisibility(View.GONE);
+        mTryAgain.setVisibility(View.VISIBLE);
         EventBus.getDefault().removeStickyEvent(GetMarketListFailEvent.class);
     }
 
