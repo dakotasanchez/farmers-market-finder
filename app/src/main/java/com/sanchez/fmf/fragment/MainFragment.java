@@ -416,13 +416,14 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             @Override
             protected void onPostExecute(ArrayList<Double> results) {
                 if(null == results) {
-                    Snackbar.make(contentView, "Server error", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(contentView, "Network error", Snackbar.LENGTH_LONG).show();
+                    cancelShowFetching();
                 } else if (results.size() > 0) {
                     listener.onFinished(results);
                 } else {
                     Snackbar.make(contentView, "Invalid input", Snackbar.LENGTH_LONG).show();
+                    cancelShowFetching();
                 }
-                cancelShowFetching();
             }
         }.execute();
     }
