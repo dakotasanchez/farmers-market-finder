@@ -66,7 +66,11 @@ public class MarketDetailActivity extends AppCompatActivity {
         String marketName = getIntent().getStringExtra(EXTRA_MARKET_NAME);
         getSupportActionBar().setTitle(marketName);
 
-        if (FMFApplication.getGlobalPreferences().getFavoriteMarkets().containsKey(marketId)) {
+
+        LinkedHashMap<String, String> favoriteMarkets =
+                FMFApplication.getGlobalPreferences().getFavoriteMarkets();
+
+        if (null != favoriteMarkets && favoriteMarkets.containsKey(marketId)) {
             mFavoriteFab.setEnabled(false);
             mFavoriteFab.setBackgroundTintList(
                     new ColorStateList(new int[][]{new int[0]}, new int[]{Color.GRAY})
@@ -80,7 +84,7 @@ public class MarketDetailActivity extends AppCompatActivity {
         mFavoriteFab.setOnClickListener((v) -> {
 
             Snackbar.make(v, R.string.added_to_favorites, Snackbar.LENGTH_LONG).show();
-            v.setEnabled(false);
+            mFavoriteFab.setEnabled(false);
             mFavoriteFab.setBackgroundTintList(
                     new ColorStateList(new int[][]{new int[0]}, new int[]{Color.GRAY})
             );
