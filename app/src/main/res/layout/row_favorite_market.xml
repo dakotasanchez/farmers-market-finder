@@ -39,6 +39,6 @@
         android:paddingTop="@dimen/cardview_padding"
         android:layout_marginLeft="@dimen/cardview_padding"
         android:layout_marginRight="@dimen/cardview_padding"
-        android:background="@color/accent" />
+        android:background="@color/material_gray_dark" />
 
 </LinearLayout>
