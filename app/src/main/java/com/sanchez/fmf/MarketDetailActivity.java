@@ -1,7 +1,9 @@
 package com.sanchez.fmf;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -106,6 +108,13 @@ public class MarketDetailActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 ViewUtils.crossfadeTwoViews(mWebView, mProgressBar, MED_ANIM_TIME);
+            }
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                // Don't load links in the web view
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+                return true;
             }
         });
         mWebView.loadUrl(BASE_URL + marketId);
