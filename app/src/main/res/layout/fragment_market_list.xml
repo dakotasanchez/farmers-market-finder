@@ -10,7 +10,7 @@
         android:id="@+id/appbar_market_list_fragment"
         android:layout_width="match_parent"
         android:layout_height="192dp"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
