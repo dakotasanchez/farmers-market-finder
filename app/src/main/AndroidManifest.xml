@@ -19,7 +19,8 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,6 +30,7 @@
         <activity
             android:name=".MarketListActivity"
             android:label="@string/title_activity_market_list"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"
             android:theme="@style/TranslucentStatus.AppTheme" >
             <meta-data
@@ -38,6 +40,7 @@
         <activity
             android:name=".MarketDetailActivity"
             android:label="@string/title_activity_market_detail"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MarketListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
