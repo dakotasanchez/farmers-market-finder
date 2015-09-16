@@ -254,8 +254,6 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             }
         });
 
-        updateFavoritesList(null);
-
         // no keyboard popup on launch
         removeFocusFromAll();
 
