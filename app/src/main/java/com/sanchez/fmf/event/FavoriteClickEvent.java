@@ -4,8 +4,8 @@ package com.sanchez.fmf.event;
  * Created by dakota on 9/14/15.
  */
 public class FavoriteClickEvent {
-    public final String id;
-    public final String name;
+    private final String id;
+    private final String name;
 
     public FavoriteClickEvent(String id, String name) {
         this.id = id;
