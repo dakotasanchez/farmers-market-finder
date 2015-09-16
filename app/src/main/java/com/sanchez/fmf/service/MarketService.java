@@ -1,10 +1,7 @@
 package com.sanchez.fmf.service;
 
-import com.sanchez.fmf.model.MarketDetailModel;
-import com.sanchez.fmf.model.MarketListItemModel;
-import com.sanchez.fmf.model.MarketListModel;
-
-import java.util.List;
+import com.sanchez.fmf.model.MarketDetailResponseModel;
+import com.sanchez.fmf.model.MarketListResponseModel;
 
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -16,11 +13,11 @@ import retrofit.http.Query;
 public interface MarketService {
 
     @GET("/v1/data.svc/locSearch")
-    void getMarkets(@Query("lat") double lat, @Query("lng") double lng, Callback<MarketListModel> cb);
+    void getMarkets(@Query("lat") double lat, @Query("lng") double lng, Callback<MarketListResponseModel> cb);
 
-    @GET("/v1/data.svc/zipSearch")
-    void getMarkets(@Query("zip") int zip, Callback<MarketListItemModel[]> cb);
+//    @GET("/v1/data.svc/zipSearch")
+//    void getMarkets(@Query("zip") int zip, Callback<MarketListResponseModel> cb);
 
     @GET("/v1/data.svc/mktDetail")
-    void getMarket(@Query("id") int id, Callback<MarketDetailModel> cb);
+    void getMarket(@Query("id") String id, Callback<MarketDetailResponseModel> cb);
 }

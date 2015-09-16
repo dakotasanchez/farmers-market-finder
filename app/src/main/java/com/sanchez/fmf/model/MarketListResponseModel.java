@@ -5,11 +5,11 @@ import java.util.List;
 /**
  * Created by dakota on 9/4/15.
  */
-public class MarketListModel {
+public class MarketListResponseModel {
 
     private List<MarketListItemModel> results;
 
-    public MarketListModel() {}
+    public MarketListResponseModel() {}
 
     public List<MarketListItemModel> getMarkets() {
         return results;

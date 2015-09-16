@@ -14,9 +14,13 @@ import com.sanchez.fmf.event.GetMarketListFailEvent;
 import com.sanchez.fmf.event.GetMarketListSuccessEvent;
 import com.sanchez.fmf.event.RetryGetMarketListEvent;
 import com.sanchez.fmf.fragment.MarketListFragment;
-import com.sanchez.fmf.model.MarketListModel;
+import com.sanchez.fmf.model.MarketDetailModel;
+import com.sanchez.fmf.model.MarketDetailResponseModel;
+import com.sanchez.fmf.model.MarketListResponseModel;
 import com.sanchez.fmf.service.MarketService;
 import com.sanchez.fmf.service.RestClient;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -35,6 +39,9 @@ public class MarketListActivity extends AppCompatActivity {
 
     // service for USDA API
     private MarketService mMarketService;
+
+    private volatile List<MarketDetailModel> mMarketDetailResponses;
+    private volatile int mDetailResponses;
 
     private double[] mCoordinates;
 
@@ -83,16 +90,18 @@ public class MarketListActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    // TODO: Stuff this in a worker fragment with setRetainInstance(true)
     private void retrieveMarkets() {
         /**
          * get markets from USDA API
          * coordinates[0] is latitude
          * coordinates[1] is longitude
          */
-        mMarketService.getMarkets(mCoordinates[0], mCoordinates[1], new Callback<MarketListModel>() {
+        mMarketService.getMarkets(mCoordinates[0], mCoordinates[1], new Callback<MarketListResponseModel>() {
             @Override
-            public void success(MarketListModel marketListModel, Response response) {
+            public void success(MarketListResponseModel marketListModel, Response response) {
                 EventBus.getDefault().postSticky(new GetMarketListSuccessEvent(marketListModel));
+                retrieveMarketsDetails(marketListModel);
             }
 
             @Override
@@ -101,6 +110,30 @@ public class MarketListActivity extends AppCompatActivity {
                 Log.e(TAG, error.toString());
             }
         });
+    }
+
+    private void retrieveMarketsDetails(MarketListResponseModel marketList) {
+        for (int i = 0; i < marketList.getMarkets().size(); i++) {
+            mMarketService.getMarket(marketList.getMarkets().get(i).getId(), new Callback<MarketDetailResponseModel>() {
+                @Override
+                public void success(MarketDetailResponseModel marketDetailResponseModel, Response response) {
+                    MarketDetailModel details = marketDetailResponseModel.getMarketdetails();
+                    Log.i(TAG, details.getAddress() + "\n"
+                    + details.getMapLink() + "\n"
+                    + details.getProducts() + "\n"
+                    + details.getSchedule() +"\n\n");
+                    mDetailResponses++;
+                    if(mDetailResponses == marketList.getMarkets().size()) {
+                        Log.e(TAG, "Done with requests!");
+                    }
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.e(TAG, error.toString());
+                }
+            });
+        }
     }
 
     @Override

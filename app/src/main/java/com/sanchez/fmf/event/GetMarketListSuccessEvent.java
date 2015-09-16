@@ -1,18 +1,18 @@
 package com.sanchez.fmf.event;
 
-import com.sanchez.fmf.model.MarketListModel;
+import com.sanchez.fmf.model.MarketListResponseModel;
 
 /**
  * Created by dakota on 9/15/15.
  */
 public class GetMarketListSuccessEvent {
-    private final MarketListModel marketList;
+    private final MarketListResponseModel marketList;
 
-    public GetMarketListSuccessEvent(MarketListModel marketList) {
+    public GetMarketListSuccessEvent(MarketListResponseModel marketList) {
         this.marketList = marketList;
     }
 
-    public MarketListModel getMarketList() {
+    public MarketListResponseModel getMarketList() {
         return marketList;
     }
 }

@@ -5,43 +5,43 @@ package com.sanchez.fmf.model;
  */
 public class MarketDetailModel {
 
-    private String mAddress;
-    private String mMapLink;
-    private String mProducts;
-    private String mSchedule;
+    private String Address;
+    private String GoogleLink;
+    private String Products;
+    private String Schedule;
 
     public MarketDetailModel() {
     }
 
     public String getAddress() {
-        return mAddress;
+        return Address;
     }
 
     public void setAddress(String address) {
-        mAddress = address;
+        Address = address;
     }
 
     public String getMapLink() {
-        return mMapLink;
+        return GoogleLink;
     }
 
     public void setMapLink(String mapLink) {
-        mMapLink = mapLink;
+        GoogleLink = mapLink;
     }
 
     public String getProducts() {
-        return mProducts;
+        return Products;
     }
 
     public void setProducts(String products) {
-        mProducts = products;
+        Products = products;
     }
 
     public String getSchedule() {
-        return mSchedule;
+        return Schedule;
     }
 
     public void setSchedule(String schedule) {
-        mSchedule = schedule;
+        Schedule = schedule;
     }
 }
