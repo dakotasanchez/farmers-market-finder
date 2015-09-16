@@ -28,11 +28,11 @@ import com.sanchez.fmf.MarketDetailActivity;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.MarketListAdapter;
+import com.sanchez.fmf.event.GetMarketListFailEvent;
+import com.sanchez.fmf.event.GetMarketListSuccessEvent;
 import com.sanchez.fmf.event.MarketClickEvent;
+import com.sanchez.fmf.event.RetryGetMarketListEvent;
 import com.sanchez.fmf.model.MarketListItemModel;
-import com.sanchez.fmf.model.MarketListModel;
-import com.sanchez.fmf.service.MarketService;
-import com.sanchez.fmf.service.RestClient;
 import com.sanchez.fmf.util.MarketUtils;
 import com.sanchez.fmf.util.ViewUtils;
 
@@ -44,9 +44,6 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class MarketListFragment extends Fragment  implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -80,9 +77,6 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     //private GoogleApiClient mGoogleApiClient = null;
     private MarketListAdapter mAdapter;
 
-    // service for USDA API
-    private MarketService mMarketService;
-
     private double[] mCoordinates = new double[2];
     private String mPlaceTitle = null;
     private String mPlaceId = null;
@@ -110,9 +104,6 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        RestClient client = new RestClient();
-        mMarketService = client.getMarketService();
-
         if (getArguments() != null) {
             mCoordinates = getArguments().getDoubleArray(MarketListActivity.EXTRA_COORDINATES);
             mPlaceTitle = getArguments().getString(MarketListActivity.EXTRA_PLACE_TITLE);
@@ -138,7 +129,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     @Override
     public void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().registerSticky(this);
     }
 
     @Override
@@ -195,33 +186,10 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
 
         mTryAgainButton.setOnClickListener((v) -> {
             ViewUtils.crossfadeTwoViews(mProgressBar, mTryAgain, MED_ANIM_TIME);
-            retrieveMarkets();
+            EventBus.getDefault().post(new RetryGetMarketListEvent());
         });
-
-        retrieveMarkets();
 
         loadBackdrop();
-    }
-
-    private void retrieveMarkets() {
-        /**
-         * get markets from USDA API
-         * coordinates[0] is latitude
-         * coordinates[1] is longitude
-         */
-        mMarketService.getMarkets(mCoordinates[0], mCoordinates[1], new Callback<MarketListModel>() {
-            @Override
-            public void success(MarketListModel marketListModel, Response response) {
-                showMarkets(marketListModel.getMarkets());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Snackbar.make(getView(), "Failed to get markets!", Snackbar.LENGTH_LONG).show();
-                ViewUtils.crossfadeTwoViews(mTryAgain, mProgressBar, MED_ANIM_TIME);
-                Log.e(TAG, error.toString());
-            }
-        });
     }
 
     private void loadBackdrop() {
@@ -321,6 +289,17 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
                 }
             }
         }.execute();
+    }
+
+    public void onEvent(GetMarketListSuccessEvent event) {
+        showMarkets(event.getMarketList().getMarkets());
+        EventBus.getDefault().removeStickyEvent(GetMarketListSuccessEvent.class);
+    }
+
+    public void onEvent(GetMarketListFailEvent event) {
+        Snackbar.make(getView(), "Failed to get markets!", Snackbar.LENGTH_LONG).show();
+        ViewUtils.crossfadeTwoViews(mTryAgain, mProgressBar, MED_ANIM_TIME);
+        EventBus.getDefault().removeStickyEvent(GetMarketListFailEvent.class);
     }
 
     // use clicked on a market card
