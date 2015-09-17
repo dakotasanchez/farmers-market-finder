@@ -12,6 +12,7 @@ import android.view.Window;
 
 import com.sanchez.fmf.event.GetMarketListFailEvent;
 import com.sanchez.fmf.event.GetMarketListSuccessEvent;
+import com.sanchez.fmf.event.MarketsDetailsRetrievedEvent;
 import com.sanchez.fmf.event.RetryGetMarketListEvent;
 import com.sanchez.fmf.fragment.MarketListFragment;
 import com.sanchez.fmf.model.MarketDetailModel;
@@ -118,13 +119,11 @@ public class MarketListActivity extends AppCompatActivity {
                 @Override
                 public void success(MarketDetailResponseModel marketDetailResponseModel, Response response) {
                     MarketDetailModel details = marketDetailResponseModel.getMarketdetails();
-                    Log.i(TAG, details.getAddress() + "\n"
-                    + details.getMapLink() + "\n"
-                    + details.getProducts() + "\n"
-                    + details.getSchedule() +"\n\n");
+                    mMarketDetailResponses.add(details);
+
                     mDetailResponses++;
                     if(mDetailResponses == marketList.getMarkets().size()) {
-                        Log.e(TAG, "Done with requests!");
+                        EventBus.getDefault().postSticky(new MarketsDetailsRetrievedEvent(mMarketDetailResponses));
                     }
                 }
 
