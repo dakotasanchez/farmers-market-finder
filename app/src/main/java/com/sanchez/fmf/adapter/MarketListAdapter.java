@@ -36,9 +36,7 @@ public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.Vi
 
         view.setOnClickListener((v) -> EventBus.getDefault().post(new MarketClickEvent(v)));
 
-        // set the view's size, margins, paddings and layout parameters
-        ViewHolder vh = new ViewHolder(view);
-        return vh;
+        return new ViewHolder(view);
     }
 
     // Replace the contents of a view (invoked by the layout manager)

@@ -240,6 +240,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         if(markets.size() > 0) {
             mAdapter = new MarketListAdapter(new ArrayList<>(markets), mUsedDeviceCoordinates);
             mMarketList.setAdapter(mAdapter);
+            mMarketList.setHasFixedSize(true);
             incomingView = mMarketList;
         } else {
             incomingView = mNoMarkets;
