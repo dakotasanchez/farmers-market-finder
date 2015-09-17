@@ -30,7 +30,6 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
     public FavoriteListAdapter(LinkedHashMap<String, String> dataset) {
         mDataset = dataset;
         mKeys = new ArrayList<>(dataset.keySet());
-        dataset.toString();
     }
 
     @Override
@@ -39,13 +38,12 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.row_favorite_market, parent, false);
 
-        ViewHolder vh = new ViewHolder(view);
-        return vh;
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String id = mKeys.get(position);
+        String id = mKeys.get(mKeys.size() - position - 1); // Sort list by most recently added
         String name = mDataset.get(id);
 
         holder.mMarketName.setText(name);
