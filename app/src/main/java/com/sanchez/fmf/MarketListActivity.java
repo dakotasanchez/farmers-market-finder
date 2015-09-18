@@ -21,6 +21,7 @@ import com.sanchez.fmf.event.MarketsDetailsRetrievedEvent;
 import com.sanchez.fmf.event.PlaceTitleResolvedEvent;
 import com.sanchez.fmf.event.RetryGetMarketListEvent;
 import com.sanchez.fmf.fragment.MarketListFragment;
+import com.sanchez.fmf.fragment.MarketMapFragment;
 import com.sanchez.fmf.model.MarketDetailModel;
 import com.sanchez.fmf.model.MarketDetailResponseModel;
 import com.sanchez.fmf.model.MarketListResponseModel;
@@ -59,6 +60,8 @@ public class MarketListActivity extends AppCompatActivity {
 
     private double[] mCoordinates;
 
+    private Fragment mModalFrag;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +74,7 @@ public class MarketListActivity extends AppCompatActivity {
         String placeTitle = getIntent().getStringExtra(EXTRA_PLACE_TITLE);
         boolean usedDeviceCoordinates = getIntent().getBooleanExtra(EXTRA_USED_DEVICE_COORDINATES, false);
 
-        // color nav and status bar with app color
+        // color nav bar with app color
         Window w = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             w.setNavigationBarColor(getResources().getColor(R.color.primary_dark));
@@ -141,7 +144,7 @@ public class MarketListActivity extends AppCompatActivity {
 
                     mDetailResponses++;
                     if(mDetailResponses == marketList.getMarkets().size()) {
-                        EventBus.getDefault().postSticky(new MarketsDetailsRetrievedEvent(mMarketDetailResponses));
+                        EventBus.getDefault().postSticky(new MarketsDetailsRetrievedEvent(mMarketDetailResponses, mCoordinates));
                     }
                 }
 
@@ -154,11 +157,12 @@ public class MarketListActivity extends AppCompatActivity {
     }
 
     private void showMap() {
-//        MarketMapFragment frag = MarketMapFragment.newInstance();
-//        FragmentManager fm = getSupportFragmentManager();
-//        fm.beginTransaction()
-//                .replace(R.id.container_market_list_activity, frag)
-//                .commit();
+        MarketMapFragment frag = MarketMapFragment.newInstance();
+        mModalFrag = frag;
+        FragmentManager fm = getSupportFragmentManager();
+        fm.beginTransaction()
+                .add(R.id.container_market_list_activity, frag)
+                .commit();
     }
 
     @Override
@@ -214,6 +218,16 @@ public class MarketListActivity extends AppCompatActivity {
                 }
             }
         }.execute();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (null != mModalFrag) {
+            FragmentManager fm = getSupportFragmentManager();
+            fm.beginTransaction().remove(mModalFrag).commit();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public void onEvent(RetryGetMarketListEvent event) {
