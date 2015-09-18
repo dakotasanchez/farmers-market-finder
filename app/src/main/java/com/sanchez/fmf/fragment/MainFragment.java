@@ -156,6 +156,9 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         // search when search IME option pressed
         mSearchAutocomplete.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                mSearchAutocomplete.setEnabled(false);
+                mUseLocationButton.setEnabled(false);
+
                 String searchText = mSearchAutocomplete.getText().toString();
                 String[] tokens = searchText.split(",");
                 mSelectedPlace = tokens[0];
@@ -221,6 +224,8 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         ((AppCompatButton)mUseLocationButton).setSupportBackgroundTintList(cSL);
 
         mUseLocationButton.setOnClickListener((v) -> {
+            mSearchAutocomplete.setEnabled(false);
+            mUseLocationButton.setEnabled(false);
             boolean locEnabled = new LocationUtil().getLocation(getContext(),
                     new LocationUtil.LocationResult() {
                         @Override
@@ -268,8 +273,6 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     private void showFetching() {
         mFetchingSnackbar = Snackbar.make(contentView, R.string.fetching_location, Snackbar.LENGTH_INDEFINITE);
         mFetchingSnackbar.show();
-        mSearchAutocomplete.setEnabled(false);
-        mUseLocationButton.setEnabled(false);
     }
 
     private void cancelShowFetching() {
