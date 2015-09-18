@@ -29,6 +29,7 @@ import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.MarketListAdapter;
 import com.sanchez.fmf.event.GetMarketListFailEvent;
 import com.sanchez.fmf.event.GetMarketListSuccessEvent;
+import com.sanchez.fmf.event.MapFABClickEvent;
 import com.sanchez.fmf.event.MarketClickEvent;
 import com.sanchez.fmf.event.RetryGetMarketListEvent;
 import com.sanchez.fmf.model.MarketListItemModel;
@@ -140,8 +141,8 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_market_list, container, false);
-        ButterKnife.bind(this, v);
+        View view = inflater.inflate(R.layout.fragment_market_list, container, false);
+        ButterKnife.bind(this, view);
 
         AppCompatActivity a = (AppCompatActivity)getActivity();
         a.setSupportActionBar(mToolbar);
@@ -168,6 +169,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         int marketColor = getResources().getColor(MarketUtils.getRandomMarketColor());
         ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{marketColor});
         mMapFab.setBackgroundTintList(cSL);
+        mMapFab.setOnClickListener((v) -> EventBus.getDefault().post(new MapFABClickEvent()));
 
 
         // linear RecyclerView
@@ -176,7 +178,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         // dummy adapter so Android doesn't complain
         mMarketList.setAdapter(new MarketListAdapter(new ArrayList<>(), false));
 
-        return v;
+        return view;
     }
 
     @Override

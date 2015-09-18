@@ -68,6 +68,9 @@ public class MarketDetailActivity extends AppCompatActivity {
         String marketName = getIntent().getStringExtra(EXTRA_MARKET_NAME);
         getSupportActionBar().setTitle(marketName);
 
+        int marketColor = getResources().getColor(MarketUtils.getRandomMarketColor());
+        ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{marketColor});
+        mFavoriteFab.setBackgroundTintList(cSL);
 
         LinkedHashMap<String, String> favoriteMarkets =
                 FMFApplication.getGlobalPreferences().getFavoriteMarkets();
@@ -78,10 +81,6 @@ public class MarketDetailActivity extends AppCompatActivity {
                     new ColorStateList(new int[][]{new int[0]}, new int[]{Color.GRAY})
             );
         }
-
-        int marketColor = getResources().getColor(MarketUtils.getRandomMarketColor());
-        ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{marketColor});
-        mFavoriteFab.setBackgroundTintList(cSL);
 
         mFavoriteFab.setOnClickListener((v) -> {
 

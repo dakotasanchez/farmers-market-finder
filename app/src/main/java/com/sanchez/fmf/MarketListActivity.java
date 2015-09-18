@@ -12,6 +12,7 @@ import android.view.Window;
 
 import com.sanchez.fmf.event.GetMarketListFailEvent;
 import com.sanchez.fmf.event.GetMarketListSuccessEvent;
+import com.sanchez.fmf.event.MapFABClickEvent;
 import com.sanchez.fmf.event.MarketsDetailsRetrievedEvent;
 import com.sanchez.fmf.event.RetryGetMarketListEvent;
 import com.sanchez.fmf.fragment.MarketListFragment;
@@ -21,6 +22,7 @@ import com.sanchez.fmf.model.MarketListResponseModel;
 import com.sanchez.fmf.service.MarketService;
 import com.sanchez.fmf.service.RestClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -41,7 +43,7 @@ public class MarketListActivity extends AppCompatActivity {
     // service for USDA API
     private MarketService mMarketService;
 
-    private volatile List<MarketDetailModel> mMarketDetailResponses;
+    private volatile List<MarketDetailModel> mMarketDetailResponses = new ArrayList<>();
     private volatile int mDetailResponses;
 
     private double[] mCoordinates;
@@ -135,6 +137,14 @@ public class MarketListActivity extends AppCompatActivity {
         }
     }
 
+    private void showMap() {
+//        MarketMapFragment frag = MarketMapFragment.newInstance();
+//        FragmentManager fm = getSupportFragmentManager();
+//        fm.beginTransaction()
+//                .replace(R.id.container_market_list_activity, frag)
+//                .commit();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -155,5 +165,9 @@ public class MarketListActivity extends AppCompatActivity {
 
     public void onEvent(RetryGetMarketListEvent event) {
         retrieveMarkets();
+    }
+
+    public void onEvent(MapFABClickEvent event) {
+        showMap();
     }
 }
