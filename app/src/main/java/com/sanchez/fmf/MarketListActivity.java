@@ -1,5 +1,9 @@
 package com.sanchez.fmf;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +18,7 @@ import com.sanchez.fmf.event.GetMarketListFailEvent;
 import com.sanchez.fmf.event.GetMarketListSuccessEvent;
 import com.sanchez.fmf.event.MapFABClickEvent;
 import com.sanchez.fmf.event.MarketsDetailsRetrievedEvent;
+import com.sanchez.fmf.event.PlaceTitleResolvedEvent;
 import com.sanchez.fmf.event.RetryGetMarketListEvent;
 import com.sanchez.fmf.fragment.MarketListFragment;
 import com.sanchez.fmf.model.MarketDetailModel;
@@ -22,8 +27,10 @@ import com.sanchez.fmf.model.MarketListResponseModel;
 import com.sanchez.fmf.service.MarketService;
 import com.sanchez.fmf.service.RestClient;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -39,6 +46,10 @@ public class MarketListActivity extends AppCompatActivity {
     public static final String EXTRA_PLACE_TITLE = "com.sanchez.extra_place_title";
     public static final String EXTRA_PLACE_ID = "com.sanchez.extra_place_id";
     public static final String EXTRA_USED_DEVICE_COORDINATES = "com.sanchez.extra_used_device_coordinates";
+
+    public abstract class OnGetLocationFinishedListener {
+        public abstract void onFinished(String result);
+    }
 
     // service for USDA API
     private MarketService mMarketService;
@@ -65,6 +76,9 @@ public class MarketListActivity extends AppCompatActivity {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             w.setNavigationBarColor(getResources().getColor(R.color.primary_dark));
         }
+
+        // user clicked "use current location button", meaning we need to reverse geocode
+        getLocationName(mCoordinates, this);
 
         RestClient client = new RestClient();
         mMarketService = client.getMarketService();
@@ -161,6 +175,43 @@ public class MarketListActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    // get a location name based on latitude and longitude (reverse geocoding)
+    public void getLocationName(final double[] coords, Context c) {
+        new AsyncTask<Void, Integer, String>() {
+            @Override
+            protected String doInBackground(Void... arg0) {
+                Geocoder coder = new Geocoder(c, Locale.ENGLISH);
+                List<Address> results = null;
+                try {
+                    results = coder.getFromLocation(coords[0], coords[1], 1);
+                } catch (IOException e) {
+                    Log.e("FarmersMarketFinder", "Error getting location from coordinates");
+                }
+
+                if(results == null || results.size() < 1) {
+                    return getResources().getString(R.string.markets);
+                }
+
+                String result;
+                if (null != results.get(0).getLocality()) {
+                    result = results.get(0).getLocality();
+                } else if (null != results.get(0).getSubLocality()) {
+                    result = results.get(0).getSubLocality();
+                } else {
+                    result = getResources().getString(R.string.markets);
+                }
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                if (result != null) {
+                    EventBus.getDefault().postSticky(new PlaceTitleResolvedEvent(result));
+                }
+            }
+        }.execute();
     }
 
     public void onEvent(RetryGetMarketListEvent event) {

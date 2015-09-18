@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,6 +32,7 @@ import com.sanchez.fmf.event.GetMarketListFailEvent;
 import com.sanchez.fmf.event.GetMarketListSuccessEvent;
 import com.sanchez.fmf.event.MapFABClickEvent;
 import com.sanchez.fmf.event.MarketClickEvent;
+import com.sanchez.fmf.event.PlaceTitleResolvedEvent;
 import com.sanchez.fmf.event.RetryGetMarketListEvent;
 import com.sanchez.fmf.model.MarketListItemModel;
 import com.sanchez.fmf.util.MarketUtils;
@@ -67,10 +69,6 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     View mProgressBar;
 
     private static int MED_ANIM_TIME;
-
-    public abstract class OnGetLocationFinishedListener {
-        public abstract void onFinished(String result);
-    }
 
     //private static final int GOOGLE_API_CLIENT_ID = 0;
 
@@ -134,6 +132,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
 
     @Override
     public void onStop() {
+        EventBus.getDefault().removeStickyEvent(PlaceTitleResolvedEvent.class);
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
@@ -151,14 +150,6 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         a.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (!mUsedDeviceCoordinates) {
             a.getSupportActionBar().setTitle(mPlaceTitle);
-        } else {
-            // user clicked "use current location button", meaning we need to reverse geocode
-            getLocationName(mCoordinates, new OnGetLocationFinishedListener() {
-                @Override
-                public void onFinished(String result) {
-                    a.getSupportActionBar().setTitle(result);
-                }
-            });
         }
 
         // set backgroundTint programmatically as xml method is undefined...
@@ -257,43 +248,6 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
                 + connectionResult.getErrorCode());
     }
 
-    // get a location name based on latitude and longitude (reverse geocoding)
-    public void getLocationName(final double[] coords, final OnGetLocationFinishedListener listener) {
-        new AsyncTask<Void, Integer, String>() {
-            @Override
-            protected String doInBackground(Void... arg0) {
-                Geocoder coder = new Geocoder(getActivity(), Locale.ENGLISH);
-                List<Address> results = null;
-                try {
-                    results = coder.getFromLocation(coords[0], coords[1], 1);
-                } catch (IOException e) {
-                    Log.e("FarmersMarketFinder", "Error getting location from coordinates");
-                }
-
-                if(results == null || results.size() < 1) {
-                    return getResources().getString(R.string.markets);
-                }
-
-                String result;
-                if (null != results.get(0).getLocality()) {
-                    result = results.get(0).getLocality();
-                } else if (null != results.get(0).getSubLocality()) {
-                    result = results.get(0).getSubLocality();
-                } else {
-                    result = getResources().getString(R.string.markets);
-                }
-                return result;
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                if (result != null && listener != null) {
-                    listener.onFinished(result);
-                }
-            }
-        }.execute();
-    }
-
     public void onEvent(GetMarketListSuccessEvent event) {
         showMarkets(event.getMarketList().getMarkets());
         EventBus.getDefault().removeStickyEvent(GetMarketListSuccessEvent.class);
@@ -303,6 +257,13 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         mProgressBar.setVisibility(View.GONE);
         mTryAgain.setVisibility(View.VISIBLE);
         EventBus.getDefault().removeStickyEvent(GetMarketListFailEvent.class);
+    }
+
+    public void onEvent(PlaceTitleResolvedEvent event) {
+        ActionBar ab = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if(null != ab) {
+            ab.setTitle(event.getPlaceTitle());
+        }
     }
 
     // use clicked on a market card
