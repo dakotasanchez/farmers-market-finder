@@ -1,15 +1,19 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
     tools:context="com.sanchez.fmf.fragment.MarketMapFragment">
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/market_map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        map:uiCompass="false"
+        map:uiRotateGestures="false"
+        map:uiTiltGestures="false"
+        map:uiMapToolbar="false"/>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_market_map_fragment"
