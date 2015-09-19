@@ -9,18 +9,12 @@ import java.util.List;
  */
 public class MarketsDetailsRetrievedEvent {
     private List<MarketDetailModel> marketDetailModels;
-    private double[] coordinates;
 
-    public MarketsDetailsRetrievedEvent(List<MarketDetailModel> marketDetailModels, double[] coordinates) {
+    public MarketsDetailsRetrievedEvent(List<MarketDetailModel> marketDetailModels) {
         this.marketDetailModels = marketDetailModels;
-        this.coordinates = coordinates;
     }
 
     public List<MarketDetailModel> getMarketDetailModels() {
         return marketDetailModels;
-    }
-
-    public double[] getCoordinates() {
-        return coordinates;
     }
 }
