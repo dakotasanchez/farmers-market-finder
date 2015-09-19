@@ -13,19 +13,25 @@ import android.view.Window;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.event.MarketsDetailsRetrievedEvent;
 import com.sanchez.fmf.event.PlaceTitleResolvedEvent;
 import com.sanchez.fmf.model.MarketDetailModel;
+import com.sanchez.fmf.model.MarketListItemModel;
+import com.sanchez.fmf.util.MarketUtils;
 import com.sanchez.fmf.util.ViewUtils;
 
 import java.lang.reflect.Field;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,7 +54,7 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
     private double[] mCoordinates = null;
     private String mPlaceTitle = null;
 
-    private List<MarketDetailModel> mMarketsDetails = null;
+    private HashMap<MarketListItemModel, MarketDetailModel> mMarkets = null;
 
     public static MarketMapFragment newInstance(double[] coords, String placeTitle) {
         MarketMapFragment frag = new MarketMapFragment();
@@ -155,17 +161,42 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
-        if (null != mMarketsDetails) {
+        if (null != mMarkets) {
             setUpMap();
         }
     }
 
     private void setUpMap() {
 
-        LatLng marketArea = new LatLng(mCoordinates[0], mCoordinates[1]);
+        double lowestLat = mCoordinates[0];
+        double highestLat = mCoordinates[0];
+        double lowestLng = mCoordinates[1];
+        double highestLng = mCoordinates[1];
 
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marketArea, 12));
+        ArrayList<MarketListItemModel> keys = new ArrayList<>(mMarkets.keySet());
+        for (int i = 0; i < keys.size(); i++) {
+            double[] coords = MarketUtils.getCoordinatesFromMapUrl(mMarkets.get(keys.get(i)).getMapLink());
+
+            if (coords[0] < lowestLat) {
+                lowestLat = coords[0];
+            } else if (coords[0] > highestLat) {
+                highestLat = coords[0];
+            }
+            if (coords[1] < lowestLng) {
+                lowestLng = coords[1];
+            } else if (coords[1] > highestLng) {
+                highestLng = coords[1];
+            }
+
+            mMap.addMarker(new MarkerOptions()
+                    .title(MarketUtils.getNameFromMarketString(keys.get(i).getName()))
+                    .position(new LatLng(coords[0], coords[1])));
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds(
+                        new LatLng(lowestLat, lowestLng),
+                        new LatLng(highestLat, highestLng)),
+                        100));
 
         mMapView.setVisibility(View.GONE);
         ViewUtils.crossfadeTwoViews(mMapView, mProgressBar,
@@ -173,7 +204,7 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void onEvent(MarketsDetailsRetrievedEvent event) {
-        mMarketsDetails = event.getMarketDetailModels();
+        mMarkets = event.getMarketDetailModels();
 
         if (null != mMap) {
             setUpMap();
