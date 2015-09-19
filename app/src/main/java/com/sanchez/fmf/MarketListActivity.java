@@ -24,12 +24,13 @@ import com.sanchez.fmf.fragment.MarketListFragment;
 import com.sanchez.fmf.fragment.MarketMapFragment;
 import com.sanchez.fmf.model.MarketDetailModel;
 import com.sanchez.fmf.model.MarketDetailResponseModel;
+import com.sanchez.fmf.model.MarketListItemModel;
 import com.sanchez.fmf.model.MarketListResponseModel;
 import com.sanchez.fmf.service.MarketService;
 import com.sanchez.fmf.service.RestClient;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -51,7 +52,7 @@ public class MarketListActivity extends AppCompatActivity {
     // service for USDA API
     private MarketService mMarketService;
 
-    private volatile List<MarketDetailModel> mMarketDetailResponses = new ArrayList<>();
+    private volatile HashMap<MarketListItemModel, MarketDetailModel> mMarketDetailResponses = new HashMap<>();
     private volatile int mDetailResponses;
 
     private double[] mCoordinates;
@@ -82,7 +83,7 @@ public class MarketListActivity extends AppCompatActivity {
 
         RestClient client = new RestClient();
         mMarketService = client.getMarketService();
-        retrieveMarkets();
+        getMarkets();
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment listFragment = fm.findFragmentById(R.id.container_market_list_activity);
@@ -108,7 +109,7 @@ public class MarketListActivity extends AppCompatActivity {
     }
 
     // TODO: Stuff this in a worker fragment with setRetainInstance(true)
-    private void retrieveMarkets() {
+    private void getMarkets() {
         /**
          * get markets from USDA API
          * coordinates[0] is latitude
@@ -118,7 +119,7 @@ public class MarketListActivity extends AppCompatActivity {
             @Override
             public void success(MarketListResponseModel marketListModel, Response response) {
                 EventBus.getDefault().postSticky(new GetMarketListSuccessEvent(marketListModel));
-                retrieveMarketsDetails(marketListModel);
+                getMarketsDetails(marketListModel);
             }
 
             @Override
@@ -129,26 +130,31 @@ public class MarketListActivity extends AppCompatActivity {
         });
     }
 
-    private void retrieveMarketsDetails(MarketListResponseModel marketList) {
+    private void getMarketsDetails(MarketListResponseModel marketList) {
         for (int i = 0; i < marketList.getMarkets().size(); i++) {
-            mMarketService.getMarket(marketList.getMarkets().get(i).getId(), new Callback<MarketDetailResponseModel>() {
-                @Override
-                public void success(MarketDetailResponseModel marketDetailResponseModel, Response response) {
-                    MarketDetailModel details = marketDetailResponseModel.getMarketdetails();
-                    mMarketDetailResponses.add(details);
-
-                    mDetailResponses++;
-                    if(mDetailResponses == marketList.getMarkets().size()) {
-                        EventBus.getDefault().postSticky(new MarketsDetailsRetrievedEvent(mMarketDetailResponses));
-                    }
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-                    Log.e(TAG, error.toString());
-                }
-            });
+            getMarketDetails(marketList.getMarkets().get(i), marketList.getMarkets().size());
         }
+    }
+
+    private void getMarketDetails(MarketListItemModel market, int marketListSize) {
+        mMarketService.getMarket(market.getId(), new Callback<MarketDetailResponseModel>() {
+            @Override
+            public void success(MarketDetailResponseModel marketDetailResponseModel, Response response) {
+                MarketDetailModel details = marketDetailResponseModel.getMarketdetails();
+
+                mMarketDetailResponses.put(market, details);
+
+                mDetailResponses++;
+                if(mDetailResponses == marketListSize) {
+                    EventBus.getDefault().postSticky(new MarketsDetailsRetrievedEvent(mMarketDetailResponses));
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(TAG, error.toString());
+            }
+        });
     }
 
     private void showMap() {
@@ -188,7 +194,7 @@ public class MarketListActivity extends AppCompatActivity {
                 try {
                     results = coder.getFromLocation(coords[0], coords[1], 1);
                 } catch (IOException e) {
-                    Log.e("FarmersMarketFinder", "Error getting location from coordinates");
+                    Log.e(TAG, "Error getting location from coordinates");
                 }
 
                 if(results == null || results.size() < 1) {
@@ -228,7 +234,7 @@ public class MarketListActivity extends AppCompatActivity {
     }
 
     public void onEvent(RetryGetMarketListEvent event) {
-        retrieveMarkets();
+        getMarkets();
     }
 
     public void onEvent(MapFABClickEvent event) {

@@ -1,20 +1,21 @@
 package com.sanchez.fmf.event;
 
 import com.sanchez.fmf.model.MarketDetailModel;
+import com.sanchez.fmf.model.MarketListItemModel;
 
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * Created by dakota on 9/16/15.
  */
 public class MarketsDetailsRetrievedEvent {
-    private List<MarketDetailModel> marketDetailModels;
+    private HashMap<MarketListItemModel, MarketDetailModel> marketDetailModels;
 
-    public MarketsDetailsRetrievedEvent(List<MarketDetailModel> marketDetailModels) {
+    public MarketsDetailsRetrievedEvent(HashMap<MarketListItemModel, MarketDetailModel> marketDetailModels) {
         this.marketDetailModels = marketDetailModels;
     }
 
-    public List<MarketDetailModel> getMarketDetailModels() {
+    public HashMap<MarketListItemModel, MarketDetailModel> getMarketDetailModels() {
         return marketDetailModels;
     }
 }
