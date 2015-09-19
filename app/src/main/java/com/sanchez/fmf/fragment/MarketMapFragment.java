@@ -17,6 +17,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.event.MarketsDetailsRetrievedEvent;
 import com.sanchez.fmf.event.PlaceTitleResolvedEvent;
@@ -45,10 +46,17 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
 
     private double[] mCoordinates = null;
+    private String mPlaceTitle = null;
+
     private List<MarketDetailModel> mMarketsDetails = null;
 
-    public static MarketMapFragment newInstance() {
-        return new MarketMapFragment();
+    public static MarketMapFragment newInstance(double[] coords, String placeTitle) {
+        MarketMapFragment frag = new MarketMapFragment();
+        Bundle args = new Bundle();
+        args.putDoubleArray(MarketListActivity.EXTRA_COORDINATES, coords);
+        args.putString(MarketListActivity.EXTRA_PLACE_TITLE, placeTitle);
+        frag.setArguments(args);
+        return frag;
     }
 
     public MarketMapFragment() {
@@ -58,6 +66,11 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBundle = savedInstanceState;
+
+        if (getArguments() != null) {
+            mCoordinates = getArguments().getDoubleArray(MarketListActivity.EXTRA_COORDINATES);
+            mPlaceTitle = getArguments().getString(MarketListActivity.EXTRA_PLACE_TITLE);
+        }
     }
 
     @Override
@@ -103,15 +116,16 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
         MapsInitializer.initialize(getActivity());
         mMapView.onCreate(mBundle);
 
-        //ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{Color.TRANSPARENT});
-        //mToolbar.setBackgroundColor(Color.parseColor("#D09E9E9E"));
+        // give primary_dark a little transparency
         int color = getResources().getColor(R.color.primary_dark);
-
         mToolbar.setBackgroundColor(Color.argb(144, Color.red(color), Color.green(color), Color.blue(color)));
 
+        if (null != mPlaceTitle) {
+            mToolbar.setTitle(mPlaceTitle);
+        }
         mToolbar.setNavigationIcon(R.drawable.ic_clear_white_24dp);
         mToolbar.setNavigationOnClickListener((v) -> {
-            getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+            getActivity().getSupportFragmentManager().popBackStackImmediate();
         });
 
         mMapView.getMapAsync(this);
@@ -121,6 +135,7 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        // Pad toolbar because fitsSystemWindows="true" isn't respected for some reason
         Rect insets = new Rect();
         Window window = getActivity().getWindow();
         try {
@@ -140,7 +155,7 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
-        if(mCoordinates != null && mMarketsDetails != null) {
+        if (null != mMarketsDetails) {
             setUpMap();
         }
     }
@@ -158,7 +173,6 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void onEvent(MarketsDetailsRetrievedEvent event) {
-        mCoordinates = event.getCoordinates();
         mMarketsDetails = event.getMarketDetailModels();
 
         if (null != mMap) {

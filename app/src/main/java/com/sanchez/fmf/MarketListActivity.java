@@ -48,10 +48,6 @@ public class MarketListActivity extends AppCompatActivity {
     public static final String EXTRA_PLACE_ID = "com.sanchez.extra_place_id";
     public static final String EXTRA_USED_DEVICE_COORDINATES = "com.sanchez.extra_used_device_coordinates";
 
-    public abstract class OnGetLocationFinishedListener {
-        public abstract void onFinished(String result);
-    }
-
     // service for USDA API
     private MarketService mMarketService;
 
@@ -59,8 +55,7 @@ public class MarketListActivity extends AppCompatActivity {
     private volatile int mDetailResponses;
 
     private double[] mCoordinates;
-
-    private Fragment mModalFrag;
+    private String mPlaceTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +139,7 @@ public class MarketListActivity extends AppCompatActivity {
 
                     mDetailResponses++;
                     if(mDetailResponses == marketList.getMarkets().size()) {
-                        EventBus.getDefault().postSticky(new MarketsDetailsRetrievedEvent(mMarketDetailResponses, mCoordinates));
+                        EventBus.getDefault().postSticky(new MarketsDetailsRetrievedEvent(mMarketDetailResponses));
                     }
                 }
 
@@ -157,11 +152,11 @@ public class MarketListActivity extends AppCompatActivity {
     }
 
     private void showMap() {
-        MarketMapFragment frag = MarketMapFragment.newInstance();
-        mModalFrag = frag;
+        MarketMapFragment frag = MarketMapFragment.newInstance(mCoordinates, mPlaceTitle);
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction()
                 .add(R.id.container_market_list_activity, frag)
+                .addToBackStack("")
                 .commit();
     }
 
@@ -214,6 +209,7 @@ public class MarketListActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String result) {
                 if (result != null) {
+                    mPlaceTitle = result;
                     EventBus.getDefault().postSticky(new PlaceTitleResolvedEvent(result));
                 }
             }
@@ -222,9 +218,10 @@ public class MarketListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (null != mModalFrag) {
-            FragmentManager fm = getSupportFragmentManager();
-            fm.beginTransaction().remove(mModalFrag).commit();
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() == 1) {
+            // Map fragment is on the stack right now, pop it off
+            fm.popBackStackImmediate();
         } else {
             super.onBackPressed();
         }
