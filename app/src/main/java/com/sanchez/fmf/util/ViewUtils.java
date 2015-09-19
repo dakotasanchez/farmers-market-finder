@@ -18,6 +18,10 @@ import java.util.Random;
  */
 public class ViewUtils {
 
+    // Non-instantiatable class
+    private ViewUtils() {
+    }
+
     public static void crossfadeTwoViews(final View inView, final View outView, int duration) {
         inView.setAlpha(0f);
         inView.setVisibility(View.VISIBLE);

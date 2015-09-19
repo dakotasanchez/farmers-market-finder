@@ -1,13 +1,7 @@
 package com.sanchez.fmf.util;
 
-import android.app.Activity;
-import android.content.res.Resources;
-
 import com.sanchez.fmf.R;
-import com.sanchez.fmf.model.MarketListItemModel;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -16,6 +10,10 @@ import java.util.Random;
 public class MarketUtils {
 
     private static final Random RANDOM = new Random();
+
+    // Non-instantiatable class
+    private MarketUtils() {
+    }
 
     // get distance (in miles) from 'marketName' json key
     public static String getDistanceFromMarketString(String marketString) {
@@ -30,7 +28,17 @@ public class MarketUtils {
 
     // strip distance (in miles) from 'marketName' json key
     public static String getNameFromMarketString(String marketString) {
-        return marketString.substring(marketString.indexOf(' ') + 1);
+        return marketString.substring(marketString.indexOf(" ") + 1);
+    }
+
+    public static double[] getCoordinatesFromMapUrl(String mapUrl) {
+        int queryStart = mapUrl.indexOf("=") + 1;
+        int nameStart = mapUrl.indexOf("(");
+
+        String[] coordinates = mapUrl.substring(queryStart, nameStart).split("%20");
+        coordinates[0] = coordinates[0].replace("%2C", "");
+
+        return new double[] {Double.parseDouble(coordinates[0]), Double.parseDouble(coordinates[1])};
     }
 
     public static int getRandomMarketColor() {
