@@ -80,6 +80,9 @@ public class MarketListActivity extends AppCompatActivity {
             // user clicked "use current location button", meaning we need to reverse geocode
             getLocationName(mCoordinates, this);
         }
+        if (null != placeTitle) {
+            mPlaceTitle = placeTitle;
+        }
 
         RestClient client = new RestClient();
         mMarketService = client.getMarketService();

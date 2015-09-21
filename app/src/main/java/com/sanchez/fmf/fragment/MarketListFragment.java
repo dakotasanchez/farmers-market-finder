@@ -2,9 +2,6 @@ package com.sanchez.fmf.fragment;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.location.Address;
-import android.location.Geocoder;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -30,6 +27,7 @@ import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.MarketListAdapter;
 import com.sanchez.fmf.event.GetMarketListFailEvent;
 import com.sanchez.fmf.event.GetMarketListSuccessEvent;
+import com.sanchez.fmf.event.MapClosedEvent;
 import com.sanchez.fmf.event.MapFABClickEvent;
 import com.sanchez.fmf.event.MarketClickEvent;
 import com.sanchez.fmf.event.PlaceTitleResolvedEvent;
@@ -38,10 +36,8 @@ import com.sanchez.fmf.model.MarketListItemModel;
 import com.sanchez.fmf.util.MarketUtils;
 import com.sanchez.fmf.util.ViewUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -67,6 +63,8 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     FloatingActionButton mMapFab;
     @Bind(R.id.progress_bar)
     View mProgressBar;
+    @Bind(R.id.progress_bar_full)
+    View mProgressBarFull;
 
     private static int MED_ANIM_TIME;
 
@@ -160,7 +158,11 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         int marketColor = getResources().getColor(MarketUtils.getRandomMarketColor());
         ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{marketColor});
         mMapFab.setBackgroundTintList(cSL);
-        mMapFab.setOnClickListener((v) -> EventBus.getDefault().post(new MapFABClickEvent()));
+        mMapFab.setOnClickListener((v) -> {
+            mProgressBarFull.setVisibility(View.VISIBLE);
+            mMapFab.setEnabled(false);
+            EventBus.getDefault().post(new MapFABClickEvent());
+        });
 
 
         // linear RecyclerView
@@ -276,5 +278,10 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         i.putExtra(MarketDetailActivity.EXTRA_MARKET_NAME,
                 MarketUtils.getNameFromMarketString(market.getName()));
         startActivity(i);
+    }
+
+    public void onEvent(MapClosedEvent event) {
+        mProgressBarFull.setVisibility(View.GONE);
+        mMapFab.setEnabled(true);
     }
 }

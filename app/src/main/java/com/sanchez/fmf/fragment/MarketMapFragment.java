@@ -13,7 +13,6 @@ import android.view.Window;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -22,6 +21,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
+import com.sanchez.fmf.event.MapClosedEvent;
 import com.sanchez.fmf.event.MarketsDetailsRetrievedEvent;
 import com.sanchez.fmf.event.PlaceTitleResolvedEvent;
 import com.sanchez.fmf.model.MarketDetailModel;
@@ -45,8 +45,8 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
     Toolbar mToolbar;
     @Bind(R.id.market_map)
     MapView mMapView;
-    @Bind(R.id.progress_bar)
-    View mProgressBar;
+//    @Bind(R.id.progress_bar)
+//    View mProgressBar;
 
     private Bundle mBundle;
     private GoogleMap mMap;
@@ -87,6 +87,7 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onStop() {
+        EventBus.getDefault().post(new MapClosedEvent());
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
@@ -198,9 +199,10 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
                         new LatLng(highestLat, highestLng)),
                         100));
 
-        mMapView.setVisibility(View.GONE);
-        ViewUtils.crossfadeTwoViews(mMapView, mProgressBar,
-                getResources().getInteger(android.R.integer.config_mediumAnimTime));
+        mMapView.setVisibility(View.VISIBLE);
+//        mMapView.setVisibility(View.GONE);
+//        ViewUtils.crossfadeTwoViews(mMapView, mProgressBar,
+//                getResources().getInteger(android.R.integer.config_mediumAnimTime));
     }
 
     public void onEvent(MarketsDetailsRetrievedEvent event) {

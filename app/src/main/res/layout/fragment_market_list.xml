@@ -107,4 +107,12 @@
         app:fabSize="normal"
         app:borderWidth="0dp"/>
 
+    <include
+        layout="@layout/progress_bar_large"
+        android:id="@+id/progress_bar_full"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+
 </android.support.design.widget.CoordinatorLayout>
