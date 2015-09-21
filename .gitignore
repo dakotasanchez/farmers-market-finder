@@ -8,4 +8,9 @@
 .idea
 *.iml
 
+# android keystore
+android.jks
+keystore.properties
+
+# Google API keys
 app/src/main/res/values/api_keys.xml
