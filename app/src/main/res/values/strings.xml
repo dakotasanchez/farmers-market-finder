@@ -30,4 +30,7 @@
     <string name="or">or</string>
     <string name="title_activity_market_detail">MarketDetailActivity</string>
 
+    <string name="open_in_maps">Open in Google Maps</string>
+    <string name="view_market_details">View market details</string>
+
 </resources>

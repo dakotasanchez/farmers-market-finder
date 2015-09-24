@@ -22,6 +22,43 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:layout_gravity="top" />
 
+    <LinearLayout
+        android:id="@+id/map_market_details_popup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:background="@color/pure_white"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/open_in_maps_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/button_padding"
+            android:paddingBottom="@dimen/button_padding"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@android:color/transparent"
+            style="@style/Base.TextAppearance.AppCompat.Small"
+            android:textColor="@color/accent"
+            android:text="@string/open_in_maps" />
+
+        <Button
+            android:id="@+id/view_market_details_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/button_padding"
+            android:paddingBottom="@dimen/button_padding"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@android:color/transparent"
+            style="@style/Base.TextAppearance.AppCompat.Small"
+            android:textColor="@color/accent"
+            android:text="@string/view_market_details"/>
+
+    </LinearLayout>
+
     <!--<include layout="@layout/progress_bar_large"-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
