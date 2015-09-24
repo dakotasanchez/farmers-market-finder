@@ -1,6 +1,7 @@
 package com.sanchez.fmf;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -167,6 +168,14 @@ public class MarketListActivity extends AppCompatActivity {
                 .add(R.id.container_market_list_activity, frag)
                 .addToBackStack("")
                 .commit();
+
+        // color nav bar with app color
+        Window w = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // give primary_dark a little transparency
+            int color = getResources().getColor(R.color.primary_dark);
+            w.setNavigationBarColor(Color.argb(144, Color.red(color), Color.green(color), Color.blue(color)));
+        }
     }
 
     @Override
@@ -231,6 +240,11 @@ public class MarketListActivity extends AppCompatActivity {
         if (fm.getBackStackEntryCount() == 1) {
             // Map fragment is on the stack right now, pop it off
             fm.popBackStackImmediate();
+            // color nav bar with app color
+            Window w = getWindow();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                w.setNavigationBarColor(getResources().getColor(R.color.primary_dark));
+            }
         } else {
             super.onBackPressed();
         }
