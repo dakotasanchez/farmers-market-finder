@@ -1,7 +1,9 @@
 package com.sanchez.fmf.fragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,6 +22,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.sanchez.fmf.MarketDetailActivity;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
 import com.sanchez.fmf.event.MapClosedEvent;
@@ -27,7 +31,6 @@ import com.sanchez.fmf.event.PlaceTitleResolvedEvent;
 import com.sanchez.fmf.model.MarketDetailModel;
 import com.sanchez.fmf.model.MarketListItemModel;
 import com.sanchez.fmf.util.MarketUtils;
-import com.sanchez.fmf.util.ViewUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -45,6 +48,12 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
     Toolbar mToolbar;
     @Bind(R.id.market_map)
     MapView mMapView;
+    @Bind(R.id.map_market_details_popup)
+    View mDetailsPopup;
+    @Bind(R.id.open_in_maps_button)
+    Button mOpenInMapsButton;
+    @Bind(R.id.view_market_details_button)
+    Button mViewMarketDetailsButton;
 //    @Bind(R.id.progress_bar)
 //    View mProgressBar;
 
@@ -53,6 +62,9 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
 
     private double[] mCoordinates = null;
     private String mPlaceTitle = null;
+
+    private MarketListItemModel mCurrentMarket;
+    private double[] mCurrentMarketCoordinates;
 
     private HashMap<MarketListItemModel, MarketDetailModel> mMarkets = null;
 
@@ -135,6 +147,24 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
             getActivity().getSupportFragmentManager().popBackStackImmediate();
         });
 
+        mOpenInMapsButton.setOnClickListener((v) -> {
+            Uri gmmIntentUri = Uri.parse("geo:0,0?q=" +
+                    MarketUtils.getQueryFromMapUrl(mMarkets.get(mCurrentMarket).getMapLink()));
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(mapIntent);
+            }
+        });
+
+        mViewMarketDetailsButton.setOnClickListener((v) -> {
+            Intent i = new Intent(getActivity(), MarketDetailActivity.class);
+            i.putExtra(MarketDetailActivity.EXTRA_MARKET_ID, mCurrentMarket.getId());
+            i.putExtra(MarketDetailActivity.EXTRA_MARKET_NAME,
+                    MarketUtils.getNameFromMarketString(mCurrentMarket.getName()));
+            startActivity(i);
+        });
+
         mMapView.getMapAsync(this);
 
         return view;
@@ -198,6 +228,21 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
                         new LatLng(lowestLat, lowestLng),
                         new LatLng(highestLat, highestLng)),
                         100));
+
+        mMap.setOnMarkerClickListener((marker) -> {
+            mDetailsPopup.setVisibility(View.VISIBLE);
+            double lat = marker.getPosition().latitude;
+            double lng = marker.getPosition().longitude;
+
+            for (int i = 0; i < keys.size(); i++) {
+                double[] coords = MarketUtils.getCoordinatesFromMapUrl(mMarkets.get(keys.get(i)).getMapLink());
+                if (lat == coords[0] && lng == coords[1]) {
+                    mCurrentMarket = keys.get(i);
+                    mCurrentMarketCoordinates = coords;
+                }
+            }
+            return false;
+        });
 
         mMapView.setVisibility(View.VISIBLE);
 //        mMapView.setVisibility(View.GONE);
