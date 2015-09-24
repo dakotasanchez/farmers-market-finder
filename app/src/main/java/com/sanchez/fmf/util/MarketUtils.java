@@ -41,6 +41,11 @@ public class MarketUtils {
         return new double[] {Double.parseDouble(coordinates[0]), Double.parseDouble(coordinates[1])};
     }
 
+    public static String getQueryFromMapUrl(String mapUrl) {
+        int queryStart = mapUrl.indexOf("=") + 1;
+        return mapUrl.substring(queryStart);
+    }
+
     public static int getRandomMarketColor() {
 
         switch (RANDOM.nextInt(5)) {
