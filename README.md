@@ -1,7 +1,7 @@
 Farmers Market Finder (Market Fanatic)
 =====================
 
-This application gives easy access to local farmers market data in the United States.
+This application gives easy access to local farmers market data in the United States.    
 Functions include:
 
 - Search any city, town, or zip code for farmers markets.
@@ -11,7 +11,7 @@ Functions include:
 - Various details (address, schedule, products, etc.) provided by USDA API.
 - Pin markets to "Favorite markets" list on app home screen.
 
-Open Source libraries utilized:
+Open source libraries utilized:
 
 - [Butter Knife](https://github.com/JakeWharton/butterknife)
 - [Retrofit](https://github.com/square/retrofit)
