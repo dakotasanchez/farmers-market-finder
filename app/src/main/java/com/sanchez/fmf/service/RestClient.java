@@ -18,13 +18,10 @@ public class RestClient {
 
     public RestClient() {
 
-//        Gson gson = new GsonBuilder()
-//                .registerTypeAdapter(MarketListModel.class, new MarketListModelDeserializer())
-//                .create();
         Gson gson = new Gson();
 
         RestAdapter retrofit = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RestAdapter.LogLevel.NONE)
                 .setEndpoint(BASE_URL)
                 .setClient(new OkClient(new OkHttpClient()))
                 .setConverter(new GsonConverter(gson))
