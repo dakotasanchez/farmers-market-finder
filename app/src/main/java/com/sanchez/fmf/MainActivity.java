@@ -75,21 +75,21 @@ public class MainActivity extends AppCompatActivity {
 
     public static class AboutDialogFragment extends AppCompatDialogFragment {
         @Override
-        public Dialog onCreateDialog(Bundle savedInstaceState) {
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
 
             View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_about, null);
 
             TextView licenseText = (TextView) dialogView.findViewById(R.id.license);
             licenseText.setText(Html.fromHtml(
-                    "<a href=\"https://raw.githubusercontent.com/dakotasanchez/farmers-market-finder/master/LICENSE\">LICENSE</a>"
+                    "<a href=\"https://github.com/dakotasanchez/farmers-market-finder/blob/master/README.md#license\">LICENSE</a>"
             ));
             licenseText.setMovementMethod(LinkMovementMethod.getInstance());
 
-            TextView attributionsText = (TextView) dialogView.findViewById(R.id.attributions);
-            attributionsText.setText(Html.fromHtml(
-                    "<a href=\"https://github.com/dakotasanchez/farmers-market-finder\">LIBRARIES UTILIZED</a>"
+            TextView sourceText = (TextView) dialogView.findViewById(R.id.source);
+            sourceText.setText(Html.fromHtml(
+                    "<a href=\"https://github.com/dakotasanchez/farmers-market-finder\">SOURCE</a>"
             ));
-            attributionsText.setMovementMethod(LinkMovementMethod.getInstance());
+            sourceText.setMovementMethod(LinkMovementMethod.getInstance());
 
             return new AlertDialog.Builder(getActivity())
                     .setTitle(R.string.about)

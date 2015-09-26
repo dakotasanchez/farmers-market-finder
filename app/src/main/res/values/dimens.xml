@@ -10,7 +10,9 @@
     <dimen name="cardview_elevation">2dp</dimen>
     <dimen name="cardview_min_height">80dp</dimen>
 
-    <dimen name="market_list_padding_top">24dp</dimen>
+    <dimen name="dialog_padding">24dp</dimen>
+
+    <dimen name="market_list_padding_top">32dp</dimen>
 
     <dimen name="button_padding">24dp</dimen>
 

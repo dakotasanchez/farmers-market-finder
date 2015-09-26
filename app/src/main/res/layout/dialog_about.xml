@@ -6,24 +6,31 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/cardview_padding"
-        style="@style/Base.TextAppearance.AppCompat.Medium"
-        android:text="@string/usda"/>
-
-    <TextView
         android:id="@+id/license"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/cardview_padding"
+        android:layout_marginLeft="@dimen/dialog_padding"
+        android:layout_marginRight="@dimen/dialog_padding"
+        android:layout_marginTop="@dimen/cardview_padding"
+        android:layout_marginBottom="@dimen/cardview_padding"
         style="@style/Base.TextAppearance.AppCompat.Medium"/>
 
     <TextView
-        android:id="@+id/attributions"
+        android:id="@+id/source"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/cardview_padding"
+        android:layout_marginLeft="@dimen/dialog_padding"
+        android:layout_marginRight="@dimen/dialog_padding"
+        android:layout_marginBottom="@dimen/cardview_padding"
         style="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dialog_padding"
+        android:layout_marginRight="@dimen/dialog_padding"
+        android:layout_marginBottom="@dimen/cardview_padding"
+        style="@style/Base.TextAppearance.AppCompat.Medium"
+        android:text="@string/usda"/>
 
 </LinearLayout>
