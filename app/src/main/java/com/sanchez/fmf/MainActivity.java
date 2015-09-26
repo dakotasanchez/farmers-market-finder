@@ -1,14 +1,23 @@
 package com.sanchez.fmf;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.sanchez.fmf.fragment.MainFragment;
 
@@ -56,7 +65,37 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 return true;
+            case R.id.action_about:
+                AppCompatDialogFragment frag = new AboutDialogFragment();
+                frag.show(getSupportFragmentManager(), "dialog");
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static class AboutDialogFragment extends AppCompatDialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstaceState) {
+
+            View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_about, null);
+
+            TextView licenseText = (TextView) dialogView.findViewById(R.id.license);
+            licenseText.setText(Html.fromHtml(
+                    "<a href=\"https://raw.githubusercontent.com/dakotasanchez/farmers-market-finder/master/LICENSE\">LICENSE</a>"
+            ));
+            licenseText.setMovementMethod(LinkMovementMethod.getInstance());
+
+            TextView attributionsText = (TextView) dialogView.findViewById(R.id.attributions);
+            attributionsText.setText(Html.fromHtml(
+                    "<a href=\"https://github.com/dakotasanchez/farmers-market-finder\">LIBRARIES UTILIZED</a>"
+            ));
+            attributionsText.setMovementMethod(LinkMovementMethod.getInstance());
+
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.about)
+                    .setView(dialogView)
+                    .setPositiveButton(R.string.ok, null)
+                    .create();
+        }
     }
 }

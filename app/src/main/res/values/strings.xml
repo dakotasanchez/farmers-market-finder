@@ -16,7 +16,9 @@
     <string name="fetching_location">Fetching location...</string>
     <string name="location_error">Error getting location...</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="about">About</string>
+    <string name="usda">This product uses USDA’s National Farmers Market API but is not endorsed or certified by USDA.</string>
+    <string name="ok">OK</string>
 
     <!-- MarketListActivity -->
     <string name="markets">Markets</string>
