@@ -1,5 +1,5 @@
-Farmers Market Finder (Market Fanatic)
-=====================
+Market Fanatic
+==============
 
 This application gives easy access to local farmers market data in the United States.    
     
