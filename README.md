@@ -2,6 +2,7 @@ Farmers Market Finder (Market Fanatic)
 =====================
 
 This application gives easy access to local farmers market data in the United States.    
+    
 Functions include:
 
 - Search any city, town, or zip code for farmers markets.
