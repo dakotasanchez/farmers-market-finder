@@ -122,6 +122,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     @Override
     public void onResume() {
         super.onResume();
+        cancelShowFetching();
         updateFavoritesList(null);
     }
 
@@ -313,7 +314,10 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         i.putExtra(MarketListActivity.EXTRA_PLACE_ID, mSelectedPlaceId);
         i.putExtra(MarketListActivity.EXTRA_USED_DEVICE_COORDINATES, usedDeviceCoordinates);
         startActivity(i);
-        cancelShowFetching();
+        contentView.removeCallbacks(delayedShowFetching);
+        if(mFetchingSnackbar != null) {
+            mFetchingSnackbar.dismiss();
+        }
     }
 
     private void removeFocusFromAll() {
