@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.view.WindowManager;
 
 import com.sanchez.fmf.event.GetMarketListFailEvent;
 import com.sanchez.fmf.event.GetMarketListSuccessEvent;
@@ -89,12 +90,28 @@ public class MarketListActivity extends AppCompatActivity {
         getMarkets();
 
         FragmentManager fm = getSupportFragmentManager();
-        Fragment listFragment = fm.findFragmentById(R.id.container_market_list_activity);
+        fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Window w = getWindow();
+                    w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    if (fm.getBackStackEntryCount() == 1) {
+                            w.setStatusBarColor(getResources().getColor(android.R.color.transparent));
+                    } else if (fm.getBackStackEntryCount() == 2) {
+                            w.setStatusBarColor(getResources().getColor(R.color.primary_dark));
+                    }
+                }
+            }
+        });
 
+        Fragment listFragment = fm.findFragmentById(R.id.container_market_list_activity);
         if (listFragment == null) {
-            listFragment = MarketListFragment.newInstance(mCoordinates, placeTitle, placeId, usedDeviceCoordinates);
+            listFragment = MarketListFragment.newInstance(placeTitle, placeId, usedDeviceCoordinates);
             fm.beginTransaction()
-                    .add(R.id.container_market_list_activity, listFragment)
+                    .add(R.id.container_market_list_activity, listFragment, MarketListFragment.TAG)
+                    .addToBackStack(MarketListFragment.TAG)
                     .commit();
         }
     }
@@ -148,7 +165,7 @@ public class MarketListActivity extends AppCompatActivity {
                 mMarketDetailResponses.put(market, details);
 
                 mDetailResponses++;
-                if(mDetailResponses == marketListSize) {
+                if (mDetailResponses == marketListSize) {
                     EventBus.getDefault().postSticky(new MarketsDetailsRetrievedEvent(mMarketDetailResponses));
                 }
             }
@@ -164,8 +181,8 @@ public class MarketListActivity extends AppCompatActivity {
         MarketMapFragment frag = MarketMapFragment.newInstance(mCoordinates, mPlaceTitle);
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction()
-                .add(R.id.container_market_list_activity, frag)
-                .addToBackStack("")
+                .replace(R.id.container_market_list_activity, frag, MarketMapFragment.TAG)
+                .addToBackStack(MarketMapFragment.TAG)
                 .commit();
     }
 
@@ -228,10 +245,11 @@ public class MarketListActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();
-        if (fm.getBackStackEntryCount() == 1) {
+        if (fm.getBackStackEntryCount() == 2) {
             // Map fragment is on the stack right now, pop it off
             fm.popBackStackImmediate();
         } else {
+            fm.popBackStackImmediate();
             super.onBackPressed();
         }
     }

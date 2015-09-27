@@ -27,7 +27,6 @@ import com.sanchez.fmf.R;
 import com.sanchez.fmf.adapter.MarketListAdapter;
 import com.sanchez.fmf.event.GetMarketListFailEvent;
 import com.sanchez.fmf.event.GetMarketListSuccessEvent;
-import com.sanchez.fmf.event.MapClosedEvent;
 import com.sanchez.fmf.event.MapFABClickEvent;
 import com.sanchez.fmf.event.MarketClickEvent;
 import com.sanchez.fmf.event.PlaceTitleResolvedEvent;
@@ -72,20 +71,18 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
 
     //private GoogleApiClient mGoogleApiClient = null;
     private MarketListAdapter mAdapter;
+    private List<MarketListItemModel> mMarkets;
 
-    private double[] mCoordinates = new double[2];
     private String mPlaceTitle = null;
     private String mPlaceId = null;
     private boolean mUsedDeviceCoordinates = false;
 
     // grab coordinates sent from MainFragment intent
-    public static MarketListFragment newInstance(double[] coords,
-                                                 String placeTitle,
+    public static MarketListFragment newInstance(String placeTitle,
                                                  String placeId,
                                                  boolean usedDeviceCoordinates) {
         MarketListFragment fragment = new MarketListFragment();
         Bundle args = new Bundle();
-        args.putDoubleArray(MarketListActivity.EXTRA_COORDINATES, coords);
         args.putString(MarketListActivity.EXTRA_PLACE_TITLE, placeTitle);
         args.putString(MarketListActivity.EXTRA_PLACE_ID, placeId);
         args.putBoolean(MarketListActivity.EXTRA_USED_DEVICE_COORDINATES, usedDeviceCoordinates);
@@ -101,7 +98,6 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mCoordinates = getArguments().getDoubleArray(MarketListActivity.EXTRA_COORDINATES);
             mPlaceTitle = getArguments().getString(MarketListActivity.EXTRA_PLACE_TITLE);
             mPlaceId = getArguments().getString(MarketListActivity.EXTRA_PLACE_ID);
             mUsedDeviceCoordinates = getArguments().getBoolean(MarketListActivity.EXTRA_USED_DEVICE_COORDINATES);
@@ -146,7 +142,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         a.getSupportActionBar().setTitle("");
         a.getSupportActionBar().setDisplayShowHomeEnabled(true);
         a.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if (!mUsedDeviceCoordinates) {
+        if (null != mPlaceTitle) {
             a.getSupportActionBar().setTitle(mPlaceTitle);
         }
 
@@ -158,12 +154,6 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         int marketColor = getResources().getColor(MarketUtils.getRandomMarketColor());
         ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{marketColor});
         mMapFab.setBackgroundTintList(cSL);
-        mMapFab.setOnClickListener((v) -> {
-            mProgressBarFull.setVisibility(View.VISIBLE);
-            mMapFab.setEnabled(false);
-            EventBus.getDefault().post(new MapFABClickEvent());
-        });
-
 
         // linear RecyclerView
         RecyclerView.LayoutManager linearLM = new LinearLayoutManager(getContext());
@@ -178,6 +168,12 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mMapFab.setOnClickListener((v) -> {
+            mProgressBarFull.setVisibility(View.VISIBLE);
+            mMapFab.setEnabled(false);
+            EventBus.getDefault().post(new MapFABClickEvent());
+        });
+
         mTryAgainButton.setOnClickListener((v) -> {
             mProgressBar.setVisibility(View.VISIBLE);
             mTryAgain.setVisibility(View.GONE);
@@ -185,6 +181,10 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         });
 
         loadBackdrop();
+
+        if(null != mMarkets) {
+            showMarkets(mMarkets);
+        }
     }
 
     private void loadBackdrop() {
@@ -251,7 +251,8 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     }
 
     public void onEvent(GetMarketListSuccessEvent event) {
-        showMarkets(event.getMarketList().getMarkets());
+        mMarkets = event.getMarketList().getMarkets();
+        showMarkets(mMarkets);
         EventBus.getDefault().removeStickyEvent(GetMarketListSuccessEvent.class);
     }
 
@@ -262,6 +263,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
     }
 
     public void onEvent(PlaceTitleResolvedEvent event) {
+        mPlaceTitle = event.getPlaceTitle();
         ActionBar ab = ((AppCompatActivity)getActivity()).getSupportActionBar();
         if(null != ab) {
             ab.setTitle(event.getPlaceTitle());
@@ -278,10 +280,5 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         i.putExtra(MarketDetailActivity.EXTRA_MARKET_NAME,
                 MarketUtils.getNameFromMarketString(market.getName()));
         startActivity(i);
-    }
-
-    public void onEvent(MapClosedEvent event) {
-        mProgressBarFull.setVisibility(View.GONE);
-        mMapFab.setEnabled(true);
     }
 }
