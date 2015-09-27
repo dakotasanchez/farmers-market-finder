@@ -25,7 +25,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.sanchez.fmf.MarketDetailActivity;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
-import com.sanchez.fmf.event.MapClosedEvent;
 import com.sanchez.fmf.event.MarketsDetailsRetrievedEvent;
 import com.sanchez.fmf.event.PlaceTitleResolvedEvent;
 import com.sanchez.fmf.model.MarketDetailModel;
@@ -97,7 +96,6 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onStop() {
-        EventBus.getDefault().post(new MapClosedEvent());
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
@@ -135,7 +133,7 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
 
         // give primary_dark a little transparency
         int color = getResources().getColor(R.color.primary_dark);
-        mToolbar.setBackgroundColor(Color.argb(144, Color.red(color), Color.green(color), Color.blue(color)));
+        mToolbar.setBackgroundColor(Color.argb(200, Color.red(color), Color.green(color), Color.blue(color)));
 
         if (null != mPlaceTitle) {
             mToolbar.setTitle(mPlaceTitle);
@@ -166,25 +164,6 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
         mMapView.getMapAsync(this);
 
         return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        // Pad toolbar because fitsSystemWindows="true" isn't respected for some reason
-        Rect insets = new Rect();
-        Window window = getActivity().getWindow();
-        try {
-            Class clazz = Class.forName("com.android.internal.policy.impl.PhoneWindow");
-            Field field = clazz.getDeclaredField("mDecor");
-            field.setAccessible(true);
-            Object decorView = field.get(window);
-            Field insetsField = decorView.getClass().getDeclaredField("mFrameOffsets");
-            insetsField.setAccessible(true);
-            insets = (Rect) insetsField.get(decorView);
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-        mToolbar.setPadding(0, insets.top, 0, 0);
     }
 
     @Override
