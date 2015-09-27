@@ -158,6 +158,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
         // linear RecyclerView
         RecyclerView.LayoutManager linearLM = new LinearLayoutManager(getContext());
         mMarketList.setLayoutManager(linearLM);
+        mMarketList.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_LEFT);
         // dummy adapter so Android doesn't complain
         mMarketList.setAdapter(new MarketListAdapter(new ArrayList<>(), false));
 
