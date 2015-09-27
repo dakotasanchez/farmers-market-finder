@@ -100,7 +100,7 @@
         android:src="@drawable/ic_map_white_36dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
+        android:layout_margin="@dimen/fab_split_margin"
         android:clickable="true"
         app:layout_anchor="@id/appbar_market_list_fragment"
         app:layout_anchorGravity="bottom|right|end"

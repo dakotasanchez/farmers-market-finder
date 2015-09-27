@@ -16,5 +16,6 @@
 
     <dimen name="button_padding">24dp</dimen>
 
-    <dimen name="fab_margin">0dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_split_margin">0dp</dimen>
 </resources>

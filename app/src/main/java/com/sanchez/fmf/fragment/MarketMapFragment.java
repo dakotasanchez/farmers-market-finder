@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -150,6 +151,8 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
             mapIntent.setPackage("com.google.android.apps.maps");
             if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                 startActivity(mapIntent);
+            } else {
+                Snackbar.make(mMapView, R.string.no_maps_installed, Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -204,7 +207,7 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds(
                         new LatLng(lowestLat, lowestLng),
                         new LatLng(highestLat, highestLng)),
-                        100));
+                100));
 
         mMap.setOnMarkerClickListener((marker) -> {
             mDetailsPopup.setVisibility(View.VISIBLE);

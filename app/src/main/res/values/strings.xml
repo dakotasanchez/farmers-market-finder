@@ -30,6 +30,8 @@
     <string name="open_in_maps">Open in Google Maps</string>
     <string name="view_market_details">View market details</string>
 
+    <string name="no_maps_installed">Google Maps not installed!</string>
+
     <!-- MarketDetailActivity -->
     <string name="added_to_favorites">Added to favorites</string>
 
