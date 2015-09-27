@@ -35,13 +35,13 @@
             android:id="@+id/open_in_maps_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/button_padding"
-            android:paddingBottom="@dimen/button_padding"
+            android:paddingTop="@dimen/cardview_padding"
+            android:paddingBottom="@dimen/cardview_padding"
             android:layout_weight="1"
             android:gravity="center"
-            android:background="@android:color/transparent"
+            android:background="?android:attr/selectableItemBackground"
             style="@style/Base.TextAppearance.AppCompat.Small"
-            android:textColor="@color/accent"
+            android:textColor="@android:color/black"
             android:text="@string/open_in_maps" />
 
         <View
@@ -53,20 +53,15 @@
             android:id="@+id/view_market_details_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/button_padding"
-            android:paddingBottom="@dimen/button_padding"
+            android:paddingTop="@dimen/cardview_padding"
+            android:paddingBottom="@dimen/cardview_padding"
             android:layout_weight="1"
             android:gravity="center"
-            android:background="@android:color/transparent"
+            android:background="?android:attr/selectableItemBackground"
             style="@style/Base.TextAppearance.AppCompat.Small"
-            android:textColor="@color/accent"
+            android:textColor="@android:color/black"
             android:text="@string/view_market_details"/>
 
     </LinearLayout>
-
-    <!--<include layout="@layout/progress_bar_large"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center"/>-->
 
 </FrameLayout>

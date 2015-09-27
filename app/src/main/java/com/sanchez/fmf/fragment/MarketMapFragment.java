@@ -54,8 +54,6 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
     Button mOpenInMapsButton;
     @Bind(R.id.view_market_details_button)
     Button mViewMarketDetailsButton;
-//    @Bind(R.id.progress_bar)
-//    View mProgressBar;
 
     private Bundle mBundle;
     private GoogleMap mMap;
@@ -245,9 +243,6 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
         });
 
         mMapView.setVisibility(View.VISIBLE);
-//        mMapView.setVisibility(View.GONE);
-//        ViewUtils.crossfadeTwoViews(mMapView, mProgressBar,
-//                getResources().getInteger(android.R.integer.config_mediumAnimTime));
     }
 
     public void onEvent(MarketsDetailsRetrievedEvent event) {
