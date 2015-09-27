@@ -18,7 +18,8 @@
     <string name="location_error">Error getting location...</string>
 
     <string name="about">About</string>
-    <string name="usda"><b>Disclaimer:</b> This product uses USDA’s National Farmers Market API but is not endorsed or certified by USDA.</string>
+    <string name="usda"><b>Disclaimer:</b>\nThis product uses USDA’s National Farmers Market API but is not endorsed or certified by USDA.</string>
+    <string name="icon_attr"><b>Icon created by:</b>\nValeriaboikova@gmail.com</string>
     <string name="ok">OK</string>
 
     <!-- MarketListActivity -->
