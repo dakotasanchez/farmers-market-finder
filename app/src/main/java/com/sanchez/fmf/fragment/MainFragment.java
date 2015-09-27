@@ -83,6 +83,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     private Snackbar mFetchingSnackbar;
     private Runnable delayedShowFetching = this::showFetching;
+    private Runnable delayedCancelShowFetching = this::cancelShowFetching;
 
     public abstract class OnGetCoordinatesFromLocationListener {
         public abstract void onFinished(ArrayList<Double> results);
@@ -168,7 +169,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                     @Override
                     public void onFinished(ArrayList<Double> results) {
                         //TODO: checkout the coords to make sure they're valid
-                        launchMarketList(new double[] { results.get(0), results.get(1) }, false);
+                        launchMarketList(new double[] { results.get(0), results.get(1) }, false, mSelectedPlace);
                     }
                 });
 
@@ -176,7 +177,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                 mSearchAutocomplete.dismissDropDown();
                 contentView.postDelayed(delayedShowFetching, 300);
                 // As a fail safe if something errors out
-                contentView.postDelayed(this::cancelShowFetching, 8000);
+                contentView.postDelayed(delayedCancelShowFetching, 7000);
 
                 return true;
             }
@@ -237,7 +238,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                                             Snackbar.LENGTH_LONG).show();
                                 } else {
                                     double[] coords = {location.getLatitude(), location.getLongitude()};
-                                    launchMarketList(coords, true);
+                                    launchMarketList(coords, true, null);
                                 }
                             });
                         }
@@ -245,7 +246,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             if (locEnabled) {
                 contentView.postDelayed(delayedShowFetching, 300);
                 // As a fail safe if something errors out
-                contentView.postDelayed(this::cancelShowFetching, 8000);
+                contentView.postDelayed(delayedCancelShowFetching, 7000);
             } else {
                 final Snackbar s = Snackbar.make(contentView,
                         R.string.enable_location_prompt,
@@ -306,15 +307,16 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         }
     }
 
-    private void launchMarketList(double[] coords, boolean usedDeviceCoordinates) {
+    private void launchMarketList(double[] coords, boolean usedDeviceCoordinates, String placeTitle) {
         // start market list activity with coordinates from search
         Intent i = new Intent(getActivity(), MarketListActivity.class);
         i.putExtra(MarketListActivity.EXTRA_COORDINATES, coords);
-        i.putExtra(MarketListActivity.EXTRA_PLACE_TITLE, mSelectedPlace);
+        i.putExtra(MarketListActivity.EXTRA_PLACE_TITLE, placeTitle);
         i.putExtra(MarketListActivity.EXTRA_PLACE_ID, mSelectedPlaceId);
         i.putExtra(MarketListActivity.EXTRA_USED_DEVICE_COORDINATES, usedDeviceCoordinates);
         startActivity(i);
         contentView.removeCallbacks(delayedShowFetching);
+        contentView.removeCallbacks(delayedCancelShowFetching);
         if(mFetchingSnackbar != null) {
             mFetchingSnackbar.dismiss();
         }
