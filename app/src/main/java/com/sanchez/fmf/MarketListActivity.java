@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -105,15 +106,12 @@ public class MarketListActivity extends AppCompatActivity {
                 }
             }
         });
-
-        Fragment listFragment = fm.findFragmentById(R.id.container_market_list_activity);
-        if (listFragment == null) {
-            listFragment = MarketListFragment.newInstance(placeTitle, placeId, usedDeviceCoordinates);
-            fm.beginTransaction()
-                    .add(R.id.container_market_list_activity, listFragment, MarketListFragment.TAG)
-                    .addToBackStack(MarketListFragment.TAG)
-                    .commit();
-        }
+        
+        Fragment listFragment = MarketListFragment.newInstance(placeTitle, placeId, usedDeviceCoordinates);
+        fm.beginTransaction()
+                .add(R.id.container_market_list_activity, listFragment, MarketListFragment.TAG)
+                .addToBackStack(MarketListFragment.TAG)
+                .commit();
     }
 
     @Override
@@ -124,6 +122,7 @@ public class MarketListActivity extends AppCompatActivity {
 
     @Override
     public void onStop() {
+        EventBus.getDefault().removeStickyEvent(PlaceTitleResolvedEvent.class);
         EventBus.getDefault().unregister(this);
         super.onStop();
     }

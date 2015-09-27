@@ -126,7 +126,6 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
 
     @Override
     public void onStop() {
-        EventBus.getDefault().removeStickyEvent(PlaceTitleResolvedEvent.class);
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
