@@ -1,8 +1,8 @@
 Market Fanatic
 ==============
 
-This application gives easy access to local farmers market data in the United States.    
-    
+This application gives easy access to local farmers market data in the United States.
+
 Functions include:
 
 - Search any city, town, or zip code for farmers markets.
@@ -20,6 +20,11 @@ Open source libraries utilized:
 - [Gson](https://github.com/google/gson)
 - [EventBus](https://github.com/greenrobot/EventBus)
 - [Glide](https://github.com/bumptech/glide)
+
+APIs utilized:
+
+- USDA Farmers Market directory
+- Google Places
 
 License
 -------
