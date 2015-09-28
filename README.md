@@ -1,5 +1,6 @@
 Market Fanatic
 ==============
+[![Get it on Google Play](http://www.weathercasterapp.com/img/appstore_google.png)] (https://play.google.com/store/apps/details?id=com.sanchez.fmf&hl=en)
 
 This application gives easy access to local farmers market data in the United States.
 
