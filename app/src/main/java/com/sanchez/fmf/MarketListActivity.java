@@ -248,8 +248,9 @@ public class MarketListActivity extends AppCompatActivity {
             // Map fragment is on the stack right now, pop it off
             fm.popBackStackImmediate();
         } else {
-            fm.popBackStackImmediate();
-            super.onBackPressed();
+            finish();
+            //fm.popBackStackImmediate();
+            //super.onBackPressed();
         }
     }
 
