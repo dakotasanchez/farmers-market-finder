@@ -16,6 +16,7 @@
     <string name="enable">Enable</string>
     <string name="fetching_location">Fetching location...</string>
     <string name="location_error">Error getting location...</string>
+    <string name="location_permission_rationale">The device location is needed to show markets nearby</string>
 
     <string name="about">About</string>
     <string name="usda"><b>Disclaimer:</b>\nThis product uses USDA’s National Farmers Market API but is not endorsed or certified by USDA.</string>

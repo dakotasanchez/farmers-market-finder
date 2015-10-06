@@ -1,7 +1,10 @@
 package com.sanchez.fmf;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Build;
@@ -19,10 +22,15 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.sanchez.fmf.event.PermissionResultEvent;
 import com.sanchez.fmf.fragment.MainFragment;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,10 +75,35 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.action_about:
                 AppCompatDialogFragment frag = new AboutDialogFragment();
-                frag.show(getSupportFragmentManager(), "dialog");
+                frag.show(getSupportFragmentManager(), "dialog1");
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MainFragment.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS:
+                Map<String, Integer> perms = new HashMap<>();
+                // Initial state
+                perms.put(Manifest.permission.ACCESS_COARSE_LOCATION, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.ACCESS_FINE_LOCATION, PackageManager.PERMISSION_GRANTED);
+
+                for (int i = 0; i < permissions.length; i++) {
+                    perms.put(permissions[i], grantResults[i]);
+                }
+
+                if (perms.get(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    EventBus.getDefault().post(new PermissionResultEvent(true));
+                } else {
+                    EventBus.getDefault().post(new PermissionResultEvent(false));
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     public static class AboutDialogFragment extends AppCompatDialogFragment {

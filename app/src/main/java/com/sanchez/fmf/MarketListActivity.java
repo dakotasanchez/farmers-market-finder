@@ -46,10 +46,10 @@ public class MarketListActivity extends AppCompatActivity {
 
     public static final String TAG = MarketListActivity.class.getSimpleName();
 
-    public static final String EXTRA_COORDINATES = "com.sanchez.extra_coordinates";
-    public static final String EXTRA_PLACE_TITLE = "com.sanchez.extra_place_title";
-    public static final String EXTRA_PLACE_ID = "com.sanchez.extra_place_id";
-    public static final String EXTRA_USED_DEVICE_COORDINATES = "com.sanchez.extra_used_device_coordinates";
+    public static final String EXTRA_COORDINATES = "com.sanchez.fmf.extra_coordinates";
+    public static final String EXTRA_PLACE_TITLE = "com.sanchez.fmf.extra_place_title";
+    public static final String EXTRA_PLACE_ID = "com.sanchez.fmf.extra_place_id";
+    public static final String EXTRA_USED_DEVICE_COORDINATES = "com.sanchez.fmf.extra_used_device_coordinates";
 
     // service for USDA API
     private MarketService mMarketService;
