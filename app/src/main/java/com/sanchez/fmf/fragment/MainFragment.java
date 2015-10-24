@@ -95,6 +95,8 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     private String mSelectedPlace = null;
     private String mSelectedPlaceId = null;
 
+    private boolean mGettingPermission = false;
+
     private Snackbar mFetchingSnackbar;
     private Runnable delayedShowFetching = this::showFetching;
     private Runnable delayedCancelShowFetching = this::cancelShowFetching;
@@ -137,7 +139,9 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     @Override
     public void onResume() {
         super.onResume();
-        cancelShowFetching();
+        if(!mGettingPermission) {
+            cancelShowFetching();
+        }
         updateFavoritesList(null);
     }
 
@@ -252,7 +256,10 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         super.onViewCreated(view, savedInstanceState);
     }
 
+    // wrap permission requester around location fetching (required for location access in API 23+)
     private void getLocationWrapper() {
+        mSearchAutocomplete.setEnabled(false);
+        mUseLocationButton.setEnabled(false);
         List<String> permissionsNeeded = new ArrayList<>();
 
         final List<String> permissionsList = new ArrayList<>();
@@ -263,11 +270,16 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             permissionsNeeded.add("Access fine location");
         }
         if (permissionsList.size() > 0) {
+            mGettingPermission = true;
             if (permissionsNeeded.size() > 0) {
                 showPermissionRationale(getString(R.string.location_permission_rationale));
                 return;
             }
-            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    new String[] {
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION},
                     MainFragment.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
             return;
         }
@@ -282,7 +294,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     private boolean addPermission(List<String> permissionList, String permission) {
         if (ContextCompat.checkSelfPermission(getActivity(), permission) != PackageManager.PERMISSION_GRANTED) {
             permissionList.add(permission);
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), permission)) {
+            if (shouldShowRequestPermissionRationale(permission)) {
                 return false;
             }
         }
@@ -290,8 +302,6 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     }
 
     private void getLocationAndLaunchList() {
-        mSearchAutocomplete.setEnabled(false);
-        mUseLocationButton.setEnabled(false);
         boolean locEnabled = new LocationUtil().getLocation(getContext(),
                 new LocationUtil.LocationResult() {
                     @Override
@@ -361,6 +371,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     }
 
     private void launchMarketList(double[] coords, boolean usedDeviceCoordinates, String placeTitle) {
+        mGettingPermission = false;
         // start market list activity with coordinates from search
         Intent i = new Intent(getActivity(), MarketListActivity.class);
         i.putExtra(MarketListActivity.EXTRA_COORDINATES, coords);
@@ -509,12 +520,20 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(getActivity(),
-                                    new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                            ActivityCompat.requestPermissions(
+                                    getActivity(),
+                                    new String[] {
+                                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                                            Manifest.permission.ACCESS_FINE_LOCATION},
                                     MainFragment.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
                         }
                     })
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            EventBus.getDefault().post(new PermissionResultEvent(false));
+                        }
+                    })
                     .create();
         }
     }
@@ -540,6 +559,8 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         if (event.getGranted()) {
             getLocationAndLaunchList();
         } else {
+            mSearchAutocomplete.setEnabled(true);
+            mUseLocationButton.setEnabled(true);
             Snackbar.make(contentView, "Location permission denied", Snackbar.LENGTH_LONG).show();
         }
     }
