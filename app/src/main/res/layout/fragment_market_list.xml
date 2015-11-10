@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@color/material_gray">
+    android:background="@color/material_white">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_market_list_fragment"

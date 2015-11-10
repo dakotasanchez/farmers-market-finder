@@ -10,7 +10,7 @@
     android:layout_margin="@dimen/cardview_margin"
     card_view:cardElevation="@dimen/cardview_elevation"
     card_view:cardCornerRadius="@dimen/cardview_radius"
-    card_view:cardBackgroundColor="@color/material_white">
+    card_view:cardBackgroundColor="@color/pure_white">
 
     <RelativeLayout
         android:layout_width="match_parent"
