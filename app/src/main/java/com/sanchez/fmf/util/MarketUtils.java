@@ -15,35 +15,16 @@ public class MarketUtils {
     private MarketUtils() {
     }
 
-    // get distance (in miles) from 'marketName' json key
-    public static String getDistanceFromMarketString(String marketString) {
-        StringBuilder dist = new StringBuilder();
-        int i = 0;
-        while (marketString.charAt(i) != ' ') {
-            dist.append(marketString.charAt(i));
-            i++;
-        }
-        return dist.toString();
-    }
+    public static double haversine(double lat1, double lon1, double lat2, double lon2) {
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        lat1 = Math.toRadians(lat1);
+        lat2 = Math.toRadians(lat2);
 
-    // strip distance (in miles) from 'marketName' json key
-    public static String getNameFromMarketString(String marketString) {
-        return marketString.substring(marketString.indexOf(" ") + 1);
-    }
-
-    public static double[] getCoordinatesFromMapUrl(String mapUrl) {
-        int queryStart = mapUrl.indexOf("=") + 1;
-        int nameStart = mapUrl.indexOf("(");
-
-        String[] coordinates = mapUrl.substring(queryStart, nameStart).split("%20");
-        coordinates[0] = coordinates[0].replace("%2C", "");
-
-        return new double[] {Double.parseDouble(coordinates[0]), Double.parseDouble(coordinates[1])};
-    }
-
-    public static String getQueryFromMapUrl(String mapUrl) {
-        int queryStart = mapUrl.indexOf("=") + 1;
-        return mapUrl.substring(queryStart);
+        double a = Math.pow(Math.sin(dLat / 2),2) + Math.pow(Math.sin(dLon / 2),2) * Math.cos(lat1) * Math.cos(lat2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double radius = 3959; // miles
+        return radius * c;
     }
 
     public static int getRandomMarketColor() {
