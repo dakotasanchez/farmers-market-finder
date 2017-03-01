@@ -45,16 +45,16 @@ public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.Vi
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         String name = mDataset.get(position).getName();
-        String dist = MarketUtils.getDistanceFromMarketString(name);
+        String dist = mDataset.get(position).getDistance();
+        dist = dist.substring(0, 4);
 
-        holder.mMarketName.setText(name.substring(dist.length() + 1));
+        holder.mMarketName.setText(name);
 
         if(mDisplayDistance) {
             holder.mDistance.setText(dist);
             holder.mDistance.setVisibility(View.VISIBLE);
             holder.mMiles.setVisibility(View.VISIBLE);
         }
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)

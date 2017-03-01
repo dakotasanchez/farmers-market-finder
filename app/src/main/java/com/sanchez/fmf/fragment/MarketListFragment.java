@@ -277,8 +277,7 @@ public class MarketListFragment extends Fragment  implements GoogleApiClient.OnC
 
         Intent i = new Intent(getActivity(), MarketDetailActivity.class);
         i.putExtra(MarketDetailActivity.EXTRA_MARKET_ID, market.getId());
-        i.putExtra(MarketDetailActivity.EXTRA_MARKET_NAME,
-                MarketUtils.getNameFromMarketString(market.getName()));
+        i.putExtra(MarketDetailActivity.EXTRA_MARKET_NAME, market.getName());
         startActivity(i);
     }
 }
