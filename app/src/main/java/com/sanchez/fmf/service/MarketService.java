@@ -12,12 +12,9 @@ import retrofit.http.Query;
  */
 public interface MarketService {
 
-    @GET("/v1/data.svc/locSearch")
-    void getMarkets(@Query("lat") double lat, @Query("lng") double lng, Callback<MarketListResponseModel> cb);
+    @GET("/api/v1/markets")
+    void getMarkets(@Query("x") double lng, @Query("y") double lat, @Query("dist") double distance, Callback<MarketListResponseModel> cb);
 
-//    @GET("/v1/data.svc/zipSearch")
-//    void getMarkets(@Query("zip") int zip, Callback<MarketListResponseModel> cb);
-
-    @GET("/v1/data.svc/mktDetail")
+    @GET("/api/v1/market")
     void getMarket(@Query("id") String id, Callback<MarketDetailResponseModel> cb);
 }
