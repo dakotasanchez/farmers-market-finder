@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,20 +18,15 @@ import android.view.WindowManager;
 import com.sanchez.fmf.event.GetMarketListFailEvent;
 import com.sanchez.fmf.event.GetMarketListSuccessEvent;
 import com.sanchez.fmf.event.MapFABClickEvent;
-import com.sanchez.fmf.event.MarketsDetailsRetrievedEvent;
 import com.sanchez.fmf.event.PlaceTitleResolvedEvent;
 import com.sanchez.fmf.event.RetryGetMarketListEvent;
 import com.sanchez.fmf.fragment.MarketListFragment;
 import com.sanchez.fmf.fragment.MarketMapFragment;
-import com.sanchez.fmf.model.MarketDetailModel;
-import com.sanchez.fmf.model.MarketDetailResponseModel;
-import com.sanchez.fmf.model.MarketListItemModel;
 import com.sanchez.fmf.model.MarketListResponseModel;
 import com.sanchez.fmf.service.MarketService;
 import com.sanchez.fmf.service.RestClient;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,9 +47,6 @@ public class MarketListActivity extends AppCompatActivity {
 
     // service for USDA API
     private MarketService mMarketService;
-
-    private volatile HashMap<MarketListItemModel, MarketDetailModel> mMarketDetailResponses = new HashMap<>();
-    private volatile int mDetailResponses;
 
     private double[] mCoordinates;
     private String mPlaceTitle;
@@ -134,43 +125,16 @@ public class MarketListActivity extends AppCompatActivity {
          * coordinates[0] is latitude
          * coordinates[1] is longitude
          */
-        mMarketService.getMarkets(mCoordinates[0], mCoordinates[1], new Callback<MarketListResponseModel>() {
+        // TODO: Add distance picker
+        mMarketService.getMarkets(mCoordinates[1], mCoordinates[0], 15, new Callback<MarketListResponseModel>() {
             @Override
             public void success(MarketListResponseModel marketListModel, Response response) {
                 EventBus.getDefault().postSticky(new GetMarketListSuccessEvent(marketListModel));
-                getMarketsDetails(marketListModel);
             }
 
             @Override
             public void failure(RetrofitError error) {
                 EventBus.getDefault().postSticky(new GetMarketListFailEvent());
-                Log.e(TAG, error.toString());
-            }
-        });
-    }
-
-    private void getMarketsDetails(MarketListResponseModel marketList) {
-        for (int i = 0; i < marketList.getMarkets().size(); i++) {
-            getMarketDetails(marketList.getMarkets().get(i), marketList.getMarkets().size());
-        }
-    }
-
-    private void getMarketDetails(MarketListItemModel market, int marketListSize) {
-        mMarketService.getMarket(market.getId(), new Callback<MarketDetailResponseModel>() {
-            @Override
-            public void success(MarketDetailResponseModel marketDetailResponseModel, Response response) {
-                MarketDetailModel details = marketDetailResponseModel.getMarketdetails();
-
-                mMarketDetailResponses.put(market, details);
-
-                mDetailResponses++;
-                if (mDetailResponses == marketListSize) {
-                    EventBus.getDefault().postSticky(new MarketsDetailsRetrievedEvent(mMarketDetailResponses));
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
                 Log.e(TAG, error.toString());
             }
         });
