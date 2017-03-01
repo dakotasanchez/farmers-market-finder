@@ -2,17 +2,14 @@ package com.sanchez.fmf.fragment;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,15 +23,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.sanchez.fmf.MarketDetailActivity;
 import com.sanchez.fmf.MarketListActivity;
 import com.sanchez.fmf.R;
-import com.sanchez.fmf.event.MarketsDetailsRetrievedEvent;
+import com.sanchez.fmf.event.GetMarketListSuccessEvent;
 import com.sanchez.fmf.event.PlaceTitleResolvedEvent;
-import com.sanchez.fmf.model.MarketDetailModel;
 import com.sanchez.fmf.model.MarketListItemModel;
-import com.sanchez.fmf.util.MarketUtils;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -64,7 +57,7 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
     private MarketListItemModel mCurrentMarket;
     private double[] mCurrentMarketCoordinates;
 
-    private HashMap<MarketListItemModel, MarketDetailModel> mMarkets = null;
+    private List<MarketListItemModel> mMarkets;
 
     public static MarketMapFragment newInstance(double[] coords, String placeTitle) {
         MarketMapFragment frag = new MarketMapFragment();
@@ -145,8 +138,11 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
         });
 
         mOpenInMapsButton.setOnClickListener((v) -> {
-            Uri gmmIntentUri = Uri.parse("geo:0,0?q=" +
-                    MarketUtils.getQueryFromMapUrl(mMarkets.get(mCurrentMarket).getMapLink()));
+            double x = mCurrentMarket.getX();
+            double y = mCurrentMarket.getY();
+
+            Uri gmmIntentUri = Uri.parse("geo:" + y + "," + x + "?q=" + Uri.encode(mCurrentMarket.getName()));
+
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
             if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -159,8 +155,7 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
         mViewMarketDetailsButton.setOnClickListener((v) -> {
             Intent i = new Intent(getActivity(), MarketDetailActivity.class);
             i.putExtra(MarketDetailActivity.EXTRA_MARKET_ID, mCurrentMarket.getId());
-            i.putExtra(MarketDetailActivity.EXTRA_MARKET_NAME,
-                    MarketUtils.getNameFromMarketString(mCurrentMarket.getName()));
+            i.putExtra(MarketDetailActivity.EXTRA_MARKET_NAME, mCurrentMarket.getName());
             startActivity(i);
         });
 
@@ -184,9 +179,8 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
         double lowestLng = mCoordinates[1];
         double highestLng = mCoordinates[1];
 
-        ArrayList<MarketListItemModel> keys = new ArrayList<>(mMarkets.keySet());
-        for (int i = 0; i < keys.size(); i++) {
-            double[] coords = MarketUtils.getCoordinatesFromMapUrl(mMarkets.get(keys.get(i)).getMapLink());
+        for (int i = 0; i < mMarkets.size(); i++) {
+            double[] coords = { mMarkets.get(i).getY(), mMarkets.get(i).getX() };
 
             if (coords[0] < lowestLat) {
                 lowestLat = coords[0];
@@ -200,7 +194,7 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
             }
 
             mMap.addMarker(new MarkerOptions()
-                    .title(MarketUtils.getNameFromMarketString(keys.get(i).getName()))
+                    .title(mMarkets.get(i).getName())
                     .position(new LatLng(coords[0], coords[1])));
         }
 
@@ -214,10 +208,10 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
             double lat = marker.getPosition().latitude;
             double lng = marker.getPosition().longitude;
 
-            for (int i = 0; i < keys.size(); i++) {
-                double[] coords = MarketUtils.getCoordinatesFromMapUrl(mMarkets.get(keys.get(i)).getMapLink());
+            for (int i = 0; i < mMarkets.size(); i++) {
+                double[] coords = { mMarkets.get(i).getY(), mMarkets.get(i).getX() };
                 if (lat == coords[0] && lng == coords[1]) {
-                    mCurrentMarket = keys.get(i);
+                    mCurrentMarket = mMarkets.get(i);
                     mCurrentMarketCoordinates = coords;
                 }
             }
@@ -227,9 +221,9 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
         mMapView.setVisibility(View.VISIBLE);
     }
 
-    public void onEvent(MarketsDetailsRetrievedEvent event) {
-        mMarkets = event.getMarketDetailModels();
-
+    public void onEvent(GetMarketListSuccessEvent event) {
+        mMarkets = event.getMarketList().getMarkets();
+        EventBus.getDefault().removeStickyEvent(GetMarketListSuccessEvent.class);
         if (null != mMap) {
             setUpMap();
         }
