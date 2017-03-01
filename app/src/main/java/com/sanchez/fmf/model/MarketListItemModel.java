@@ -5,25 +5,62 @@ package com.sanchez.fmf.model;
  */
 public class MarketListItemModel {
 
-    private String id;
-    private String marketname;
+    private String fmid;
+    private String market_name;
+    private String distance;
+    private String uri;
+    private double x;
+    private double y;
 
     public MarketListItemModel() {
     }
 
     public String getId() {
-        return id;
+        return fmid;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.fmid = fmid;
     }
 
     public String getName() {
-        return marketname;
+        return market_name;
     }
 
-    public void setName(String name) {
-        this.marketname = name;
+    public void setName(String market_name) {
+        this.market_name = market_name;
+    }
+
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
     }
 }

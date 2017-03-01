@@ -7,15 +7,15 @@ import java.util.List;
  */
 public class MarketListResponseModel {
 
-    private List<MarketListItemModel> results;
+    private List<MarketListItemModel> markets;
 
     public MarketListResponseModel() {}
 
     public List<MarketListItemModel> getMarkets() {
-        return results;
+        return this.markets;
     }
 
     public void setMarkets(List<MarketListItemModel> markets) {
-        results = markets;
+        this.markets = markets;
     }
 }
