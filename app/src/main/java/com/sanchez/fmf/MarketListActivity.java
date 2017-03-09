@@ -44,12 +44,14 @@ public class MarketListActivity extends AppCompatActivity {
     public static final String EXTRA_PLACE_TITLE = "com.sanchez.fmf.extra_place_title";
     public static final String EXTRA_PLACE_ID = "com.sanchez.fmf.extra_place_id";
     public static final String EXTRA_USED_DEVICE_COORDINATES = "com.sanchez.fmf.extra_used_device_coordinates";
+    public static final String EXTRA_DISTANCE_CONSTRAINT = "com.sanchez.fmf.distance_constraint";
 
     // service for USDA API
     private MarketService mMarketService;
 
     private double[] mCoordinates;
     private String mPlaceTitle;
+    private int mDistanceConstraint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class MarketListActivity extends AppCompatActivity {
         String placeId = getIntent().getStringExtra(EXTRA_PLACE_ID);
         String placeTitle = getIntent().getStringExtra(EXTRA_PLACE_TITLE);
         boolean usedDeviceCoordinates = getIntent().getBooleanExtra(EXTRA_USED_DEVICE_COORDINATES, false);
+        mDistanceConstraint = Integer.parseInt(getIntent().getStringExtra(EXTRA_DISTANCE_CONSTRAINT));
 
         // color nav bar with app color
         Window w = getWindow();
@@ -79,7 +82,7 @@ public class MarketListActivity extends AppCompatActivity {
 
         RestClient client = new RestClient();
         mMarketService = client.getMarketService();
-        getMarkets();
+        getMarkets(mDistanceConstraint);
 
         FragmentManager fm = getSupportFragmentManager();
         fm.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -119,14 +122,14 @@ public class MarketListActivity extends AppCompatActivity {
     }
 
     // TODO: Stuff this in a worker fragment with setRetainInstance(true)
-    private void getMarkets() {
+    private void getMarkets(int distance) {
         /**
          * get markets from USDA API
          * coordinates[0] is latitude
          * coordinates[1] is longitude
          */
         // TODO: Add distance picker
-        mMarketService.getMarkets(mCoordinates[1], mCoordinates[0], 15, new Callback<MarketListResponseModel>() {
+        mMarketService.getMarkets(mCoordinates[1], mCoordinates[0], distance, new Callback<MarketListResponseModel>() {
             @Override
             public void success(MarketListResponseModel marketListModel, Response response) {
                 EventBus.getDefault().postSticky(new GetMarketListSuccessEvent(marketListModel));
@@ -219,7 +222,7 @@ public class MarketListActivity extends AppCompatActivity {
     }
 
     public void onEvent(RetryGetMarketListEvent event) {
-        getMarkets();
+        getMarkets(mDistanceConstraint);
     }
 
     public void onEvent(MapFABClickEvent event) {
