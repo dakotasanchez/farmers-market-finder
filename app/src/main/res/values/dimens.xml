@@ -7,6 +7,7 @@
 
     <dimen name="cardview_margin">8dp</dimen>
     <dimen name="cardview_padding">16dp</dimen>
+    <dimen name="cardview_padding_large">20dp</dimen>
     <dimen name="cardview_padding_small">8dp</dimen>
     <dimen name="cardview_radius">2dp</dimen>
     <dimen name="cardview_elevation">2dp</dimen>
@@ -15,8 +16,10 @@
     <dimen name="dialog_padding">24dp</dimen>
 
     <dimen name="market_list_padding_top">32dp</dimen>
+    <dimen name="tv_min_width">32dp</dimen>
 
     <dimen name="button_padding">24dp</dimen>
+    <dimen name="button_padding_small">16dp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="fab_split_margin">0dp</dimen>

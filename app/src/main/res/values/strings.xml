@@ -9,6 +9,9 @@
     <string name="search_hint">Search city or zip</string>
     <string name="or">or</string>
     <string name="use_location">Use my location</string>
+    <string name="filter">Filter</string>
+    <string name="markets_within">markets within</string>
+    <string name="fifteen">15</string>
     <string name="favorite_markets">Favorite markets</string>
     <string name="no_favorites">Nothing appears to be here!</string>
 
