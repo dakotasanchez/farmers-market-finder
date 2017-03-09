@@ -42,7 +42,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
-public class MarketListFragment extends Fragment  implements GoogleApiClient.OnConnectionFailedListener {
+public class MarketListFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
 
     public static final String TAG = MarketListFragment.class.getSimpleName();
 
