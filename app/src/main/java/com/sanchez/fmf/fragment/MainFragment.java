@@ -21,6 +21,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -34,6 +35,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -70,12 +72,14 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     @Bind(R.id.search_autocomplete)
     AutoCompleteTextView mSearchAutocomplete;
-    @Bind(R.id.search_icon)
-    View mSearchIcon;
+    @Bind(R.id.search_button)
+    View mSearchButton;
     @Bind(R.id.clear_icon)
     View mClearSearch;
     @Bind(R.id.use_location_button)
     Button mUseLocationButton;
+    @Bind(R.id.distance_constraint)
+    EditText mDistanceConstraint;
     @Bind(R.id.market_favorites_list)
     RecyclerView mFavoritesList;
     @Bind(R.id.no_favorites_text)
@@ -176,27 +180,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         // search when search IME option pressed
         mSearchAutocomplete.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                mSearchAutocomplete.setEnabled(false);
-                mUseLocationButton.setEnabled(false);
-
-                String searchText = mSearchAutocomplete.getText().toString();
-                String[] tokens = searchText.split(",");
-                mSelectedPlace = tokens[0];
-
-                getCoordinatesFromLocation(searchText, new OnGetCoordinatesFromLocationListener() {
-                    @Override
-                    public void onFinished(ArrayList<Double> results) {
-                        //TODO: checkout the coords to make sure they're valid
-                        launchMarketList(new double[] { results.get(0), results.get(1) }, false, mSelectedPlace);
-                    }
-                });
-
-                ViewUtils.hideKeyboard(getActivity());
-                mSearchAutocomplete.dismissDropDown();
-                contentView.postDelayed(delayedShowFetching, 300);
-                // As a fail safe if something errors out
-                contentView.postDelayed(delayedCancelShowFetching, 7000);
-
+                search();
                 return true;
             }
             return false;
@@ -224,10 +208,8 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             }
         });
 
-        // icon press triggers search also
-        mSearchIcon.setOnClickListener((v) -> {
-            mSearchAutocomplete.requestFocus();
-            ViewUtils.showKeyboard(getActivity(), mSearchAutocomplete);
+        mSearchButton.setOnClickListener((v) -> {
+            search();
         });
 
         mClearSearch.setOnClickListener((v) -> {
@@ -242,6 +224,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         int primaryColor = getResources().getColor(R.color.primary);
         ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{primaryColor});
         ((AppCompatButton)mUseLocationButton).setSupportBackgroundTintList(cSL);
+        ((AppCompatImageButton)mSearchButton).setSupportBackgroundTintList(cSL);
 
         mUseLocationButton.setOnClickListener((v) -> getLocationWrapper());
 
@@ -254,6 +237,29 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void search() {
+        mSearchAutocomplete.setEnabled(false);
+        mUseLocationButton.setEnabled(false);
+
+        String searchText = mSearchAutocomplete.getText().toString();
+        String[] tokens = searchText.split(",");
+        mSelectedPlace = tokens[0];
+
+        getCoordinatesFromLocation(searchText, new OnGetCoordinatesFromLocationListener() {
+            @Override
+            public void onFinished(ArrayList<Double> results) {
+                //TODO: checkout the coords to make sure they're valid
+                launchMarketList(new double[] { results.get(0), results.get(1) }, false, mSelectedPlace);
+            }
+        });
+
+        ViewUtils.hideKeyboard(getActivity());
+        mSearchAutocomplete.dismissDropDown();
+        contentView.postDelayed(delayedShowFetching, 300);
+        // As a fail safe if something errors out
+        contentView.postDelayed(delayedCancelShowFetching, 7000);
     }
 
     // wrap permission requester around location fetching (required for location access in API 23+)
@@ -378,6 +384,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         i.putExtra(MarketListActivity.EXTRA_PLACE_TITLE, placeTitle);
         i.putExtra(MarketListActivity.EXTRA_PLACE_ID, mSelectedPlaceId);
         i.putExtra(MarketListActivity.EXTRA_USED_DEVICE_COORDINATES, usedDeviceCoordinates);
+        i.putExtra(MarketListActivity.EXTRA_DISTANCE_CONSTRAINT, mDistanceConstraint.getText().toString());
         startActivity(i);
         contentView.removeCallbacks(delayedShowFetching);
         contentView.removeCallbacks(delayedCancelShowFetching);
