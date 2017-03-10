@@ -223,7 +223,6 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
 
     public void onEvent(GetMarketListSuccessEvent event) {
         mMarkets = event.getMarketList().getMarkets();
-        EventBus.getDefault().removeStickyEvent(GetMarketListSuccessEvent.class);
         if (null != mMap) {
             setUpMap();
         }

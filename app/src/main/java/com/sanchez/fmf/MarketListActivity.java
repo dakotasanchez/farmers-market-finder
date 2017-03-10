@@ -116,6 +116,7 @@ public class MarketListActivity extends AppCompatActivity {
 
     @Override
     public void onStop() {
+        EventBus.getDefault().removeStickyEvent(GetMarketListSuccessEvent.class);
         EventBus.getDefault().removeStickyEvent(PlaceTitleResolvedEvent.class);
         EventBus.getDefault().unregister(this);
         super.onStop();

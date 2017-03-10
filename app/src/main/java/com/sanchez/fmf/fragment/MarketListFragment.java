@@ -253,7 +253,6 @@ public class MarketListFragment extends Fragment implements GoogleApiClient.OnCo
     public void onEvent(GetMarketListSuccessEvent event) {
         mMarkets = event.getMarketList().getMarkets();
         showMarkets(mMarkets);
-        EventBus.getDefault().removeStickyEvent(GetMarketListSuccessEvent.class);
     }
 
     public void onEvent(GetMarketListFailEvent event) {
