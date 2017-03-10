@@ -54,7 +54,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_clear_black_24dp"
                     android:layout_alignParentRight="true"
-                    android:padding="@dimen/cardview_padding"
+                    android:padding="@dimen/cardview_padding_small"
+                    android:layout_centerVertical="true"
                     android:visibility="gone"/>
 
                 <AutoCompleteTextView
@@ -63,7 +64,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@id/clear_icon"
-                    android:padding="@dimen/cardview_padding"
+                    android:paddingTop="@dimen/cardview_padding"
+                    android:paddingBottom="@dimen/cardview_padding"
+                    android:paddingLeft="@dimen/cardview_padding"
                     android:background="#00000000"
                     android:textColorHint="@color/material_gray_dark"
                     android:hint="@string/search_hint"
