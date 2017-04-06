@@ -46,7 +46,7 @@ public class MarketListActivity extends AppCompatActivity {
     public static final String EXTRA_USED_DEVICE_COORDINATES = "com.sanchez.fmf.extra_used_device_coordinates";
     public static final String EXTRA_DISTANCE_CONSTRAINT = "com.sanchez.fmf.distance_constraint";
 
-    // service for USDA API
+    // service for API
     private MarketService mMarketService;
 
     private double[] mCoordinates;
