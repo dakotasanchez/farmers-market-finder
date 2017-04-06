@@ -1,30 +1,30 @@
 package com.sanchez.fmf;
 
-import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
-import com.sanchez.fmf.application.FMFApplication;
-import com.sanchez.fmf.util.MarketUtils;
-import com.sanchez.fmf.util.ViewUtils;
-
-import java.util.LinkedHashMap;
+import com.sanchez.fmf.event.GetMarketDetailFailEvent;
+import com.sanchez.fmf.event.GetMarketDetailSuccessEvent;
+import com.sanchez.fmf.event.RetryGetMarketDetailEvent;
+import com.sanchez.fmf.fragment.MarketDetailFragment;
+import com.sanchez.fmf.model.MarketDetailResponseModel;
+import com.sanchez.fmf.service.MarketService;
+import com.sanchez.fmf.service.RestClient;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MarketDetailActivity extends AppCompatActivity {
 
@@ -33,18 +33,13 @@ public class MarketDetailActivity extends AppCompatActivity {
     public static final String EXTRA_MARKET_ID = "com.sanchez.market_id";
     public static final String EXTRA_MARKET_NAME = "com.sanchez.market_name";
 
-    private static final String BASE_URL = "http://search.ams.usda.gov/farmersmarkets/Row.aspx?ID=";
-
-    @Bind(R.id.toolbar_market_detail)
+    @Bind(R.id.toolbar_market_detail_activity)
     Toolbar mToolbar;
-    @Bind(R.id.progress_bar)
-    View mProgressBar;
-    @Bind(R.id.market_detail_webview)
-    WebView mWebView;
-    @Bind(R.id.favorite_fab)
-    FloatingActionButton mFavoriteFab;
 
-    private static int MED_ANIM_TIME;
+    private String mMarketId;
+
+    // service for API
+    private MarketService mMarketService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,61 +57,47 @@ public class MarketDetailActivity extends AppCompatActivity {
             w.setNavigationBarColor(getResources().getColor(R.color.primary_dark));
         }
 
-        MED_ANIM_TIME = getResources().getInteger(android.R.integer.config_mediumAnimTime);
-
-        String marketId = getIntent().getStringExtra(EXTRA_MARKET_ID);
+        mMarketId = getIntent().getStringExtra(EXTRA_MARKET_ID);
         String marketName = getIntent().getStringExtra(EXTRA_MARKET_NAME);
         getSupportActionBar().setTitle(marketName);
 
-        int marketColor = getResources().getColor(MarketUtils.getRandomMarketColor());
-        ColorStateList cSL = new ColorStateList(new int[][]{new int[0]}, new int[]{marketColor});
-        mFavoriteFab.setBackgroundTintList(cSL);
+        RestClient client = new RestClient();
+        mMarketService = client.getMarketService();
+        getMarketDetails(mMarketId);
 
-        LinkedHashMap<String, String> favoriteMarkets =
-                FMFApplication.getGlobalPreferences().getFavoriteMarkets();
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment listFragment = MarketDetailFragment.newInstance(mMarketId, marketName);
+        fm.beginTransaction()
+                .add(R.id.container_market_detail_activity, listFragment, MarketDetailFragment.TAG)
+                .commit();
+    }
 
-        if (null != favoriteMarkets && favoriteMarkets.containsKey(marketId)) {
-            mFavoriteFab.setEnabled(false);
-            mFavoriteFab.setBackgroundTintList(
-                    new ColorStateList(new int[][]{new int[0]}, new int[]{Color.GRAY})
-            );
-        }
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
 
-        mFavoriteFab.setOnClickListener((v) -> {
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
 
-            Snackbar.make(v, R.string.added_to_favorites, Snackbar.LENGTH_LONG).show();
-            mFavoriteFab.setEnabled(false);
-            mFavoriteFab.setBackgroundTintList(
-                    new ColorStateList(new int[][]{new int[0]}, new int[]{Color.GRAY})
-            );
-            
-            // update favorite markets list
-            LinkedHashMap<String, String> favorites = FMFApplication
-                    .getGlobalPreferences()
-                    .getFavoriteMarkets();
-            if(null == favorites) {
-                favorites = new LinkedHashMap<>();
-            }
-            favorites.put(marketId, marketName);
+    private void getMarketDetails(String id) {
 
-            FMFApplication.getGlobalPreferences().setFavoriteMarkets(favorites);
-        });
-
-        mWebView.getSettings().setJavaScriptEnabled(false);
-        mWebView.setWebViewClient(new WebViewClient() {
+        mMarketService.getMarket(id, new Callback<MarketDetailResponseModel>() {
             @Override
-            public void onPageFinished(WebView view, String url) {
-                ViewUtils.crossfadeTwoViews(mWebView, mProgressBar, MED_ANIM_TIME);
+            public void success(MarketDetailResponseModel marketDetailResponseModel, Response response) {
+                EventBus.getDefault().postSticky(new GetMarketDetailSuccessEvent(marketDetailResponseModel));
             }
+
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                // Don't load links in the web view
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
-                return true;
+            public void failure(RetrofitError error) {
+                EventBus.getDefault().postSticky(new GetMarketDetailFailEvent());
+                Log.e(TAG, error.toString());
             }
         });
-        mWebView.loadUrl(BASE_URL + marketId);
     }
 
     @Override
@@ -136,4 +117,6 @@ public class MarketDetailActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    public void onEvent(RetryGetMarketDetailEvent event) { getMarketDetails(mMarketId); }
 }

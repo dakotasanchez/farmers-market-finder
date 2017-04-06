@@ -1,0 +1,44 @@
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_white"
+    tools:context="com.sanchez.fmf.MarketDetailActivity">
+
+    <include layout="@layout/progress_bar_large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <include layout="@layout/network_failure" />
+
+    <RelativeLayout
+        android:id="@+id/layout_market_details"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/test"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/accent"
+            android:textSize="24dp"/>
+
+    </RelativeLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/favorite_fab"
+            android:src="@drawable/ic_favorite_white_36dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:layout_margin="@dimen/fab_margin"
+            android:clickable="true"
+            app:fabSize="normal"
+            app:borderWidth="0dp"/>
+
+</android.support.design.widget.CoordinatorLayout>
