@@ -30,7 +30,7 @@
     <string name="markets">Markets</string>
     <string name="miles">miles</string>
     <string name="no_markets">No markets!</string>
-    <string name="fail_markets">Failed to get markets!</string>
+    <string name="network_failure">Failed to get data!</string>
     <string name="try_again">Try again</string>
     <string name="open_in_maps">Open in Google Maps</string>
     <string name="view_market_details">View market details</string>

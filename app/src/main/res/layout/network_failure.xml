@@ -1,0 +1,28 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_try_again"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/fail_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Base.TextAppearance.AppCompat.Medium"
+        android:layout_centerHorizontal="true"
+        android:text="@string/network_failure" />
+
+    <Button
+        android:id="@+id/try_again_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fail_tv"
+        style="@style/Base.TextAppearance.AppCompat.Large"
+        android:layout_margin="@dimen/cardview_margin"
+        android:padding="@dimen/button_padding"
+        android:layout_centerHorizontal="true"
+        android:text="@string/try_again"
+        android:textStyle="bold" />
+
+</RelativeLayout>
