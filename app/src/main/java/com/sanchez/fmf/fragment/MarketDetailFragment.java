@@ -26,7 +26,7 @@ import com.sanchez.fmf.util.ViewUtils;
 
 import java.util.LinkedHashMap;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
@@ -34,18 +34,18 @@ public class MarketDetailFragment extends Fragment {
 
     public static final String TAG = MarketDetailFragment.class.getSimpleName();
 
-    @Bind(R.id.progress_bar)
+    @BindView(R.id.progress_bar)
     View mProgressBar;
-    @Bind(R.id.favorite_fab)
+    @BindView(R.id.favorite_fab)
     FloatingActionButton mFavoriteFab;
-    @Bind(R.id.layout_try_again)
+    @BindView(R.id.layout_try_again)
     ViewGroup mTryAgain;
-    @Bind(R.id.try_again_button)
+    @BindView(R.id.try_again_button)
     Button mTryAgainButton;
-    @Bind(R.id.layout_market_details)
+    @BindView(R.id.layout_market_details)
     View detailsLayout;
 
-    @Bind(R.id.test)
+    @BindView(R.id.test)
     TextView test;
 
     private static int MED_ANIM_TIME;

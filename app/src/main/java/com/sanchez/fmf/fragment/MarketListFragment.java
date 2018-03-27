@@ -38,7 +38,7 @@ import com.sanchez.fmf.util.ViewUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
@@ -46,23 +46,23 @@ public class MarketListFragment extends Fragment implements GoogleApiClient.OnCo
 
     public static final String TAG = MarketListFragment.class.getSimpleName();
 
-    @Bind(R.id.toolbar_market_list_fragment)
+    @BindView(R.id.toolbar_market_list_fragment)
     Toolbar mToolbar;
-    @Bind(R.id.market_list)
+    @BindView(R.id.market_list)
     RecyclerView mMarketList;
-    @Bind(R.id.fragment_no_markets)
+    @BindView(R.id.fragment_no_markets)
     View mNoMarkets;
-    @Bind(R.id.layout_try_again)
+    @BindView(R.id.layout_try_again)
     ViewGroup mTryAgain;
-    @Bind(R.id.try_again_button)
+    @BindView(R.id.try_again_button)
     Button mTryAgainButton;
-    @Bind(R.id.market_backdrop)
+    @BindView(R.id.market_backdrop)
     ImageView mMarketBackDrop;
-    @Bind(R.id.map_view_fab)
+    @BindView(R.id.map_view_fab)
     FloatingActionButton mMapFab;
-    @Bind(R.id.progress_bar)
+    @BindView(R.id.progress_bar)
     View mProgressBar;
-    @Bind(R.id.progress_bar_full)
+    @BindView(R.id.progress_bar_full)
     View mProgressBarFull;
 
     private static int MED_ANIM_TIME;

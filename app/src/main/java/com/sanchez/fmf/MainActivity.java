@@ -28,13 +28,13 @@ import com.sanchez.fmf.fragment.MainFragment;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
 public class MainActivity extends AppCompatActivity {
 
-    @Bind(R.id.toolbar_main_activity)
+    @BindView(R.id.toolbar_main_activity)
     Toolbar mToolbar;
 
     @Override

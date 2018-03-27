@@ -29,7 +29,7 @@ import com.sanchez.fmf.model.MarketListItemModel;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
@@ -37,15 +37,15 @@ public class MarketMapFragment extends Fragment implements OnMapReadyCallback {
 
     public static final String TAG = MarketMapFragment.class.getSimpleName();
 
-    @Bind(R.id.toolbar_market_map_fragment)
+    @BindView(R.id.toolbar_market_map_fragment)
     Toolbar mToolbar;
-    @Bind(R.id.market_map)
+    @BindView(R.id.market_map)
     MapView mMapView;
-    @Bind(R.id.map_market_details_popup)
+    @BindView(R.id.map_market_details_popup)
     View mDetailsPopup;
-    @Bind(R.id.open_in_maps_button)
+    @BindView(R.id.open_in_maps_button)
     Button mOpenInMapsButton;
-    @Bind(R.id.view_market_details_button)
+    @BindView(R.id.view_market_details_button)
     Button mViewMarketDetailsButton;
 
     private Bundle mBundle;

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
@@ -81,11 +81,11 @@ public class FavoriteListAdapter extends RecyclerView.Adapter<FavoriteListAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.favorite_market_name)
+        @BindView(R.id.favorite_market_name)
         TextView mMarketName;
-        @Bind(R.id.favorite_market_remove)
+        @BindView(R.id.favorite_market_remove)
         ImageView mMarketRemove;
-        @Bind(R.id.favorite_market_separator)
+        @BindView(R.id.favorite_market_separator)
         View mSeparator;
 
         public ViewHolder(View v) {

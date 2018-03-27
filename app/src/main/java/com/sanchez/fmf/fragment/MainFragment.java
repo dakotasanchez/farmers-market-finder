@@ -1,6 +1,7 @@
 package com.sanchez.fmf.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,6 +40,10 @@ import android.widget.EditText;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -62,7 +67,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
@@ -70,19 +75,19 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
 
     public String TAG = MainFragment.class.getSimpleName();
 
-    @Bind(R.id.search_autocomplete)
+    @BindView(R.id.search_autocomplete)
     AutoCompleteTextView mSearchAutocomplete;
-    @Bind(R.id.search_button)
+    @BindView(R.id.search_button)
     View mSearchButton;
-    @Bind(R.id.clear_icon)
+    @BindView(R.id.clear_icon)
     View mClearSearch;
-    @Bind(R.id.use_location_button)
+    @BindView(R.id.use_location_button)
     Button mUseLocationButton;
-    @Bind(R.id.distance_constraint)
+    @BindView(R.id.distance_constraint)
     EditText mDistanceConstraint;
-    @Bind(R.id.market_favorites_list)
+    @BindView(R.id.market_favorites_list)
     RecyclerView mFavoritesList;
-    @Bind(R.id.no_favorites_text)
+    @BindView(R.id.no_favorites_text)
     View mNoFavorites;
 
     // parent of all visible UI in main fragment
@@ -94,6 +99,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             -64.000000), new LatLng(67.000000, -165.000000));
 
     private GoogleApiClient mGoogleApiClient = null;
+    private GeoDataClient mGeoDataClient = null;
     private PlaceAutocompleteAdapter mAutocompleteAdapter = null;
 
     private String mSelectedPlace = null;
@@ -120,12 +126,13 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mGeoDataClient = Places.getGeoDataClient(getActivity());
         // register client for Google APIs
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(getActivity())
-                .addApi(Places.GEO_DATA_API)
-                .enableAutoManage(getActivity(), GOOGLE_API_CLIENT_ID, this)
-                .build();
+//        mGoogleApiClient = new GoogleApiClient
+//                .Builder(getActivity())
+//                .addApi(Places.GEO_DATA_API)
+//                .enableAutoManage(getActivity(), GOOGLE_API_CLIENT_ID, this)
+//                .build();
     }
 
     @Override
@@ -149,6 +156,7 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         updateFavoritesList(null);
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -163,8 +171,12 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         mFavoritesList.setAdapter(new FavoriteListAdapter(new LinkedHashMap<>()));
 
         // customize place autocomplete adapter
-        mAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(),
-                android.R.layout.simple_list_item_1, mGoogleApiClient, BOUNDS_NORTH_AMERICA, null);
+        AutocompleteFilter filter = new AutocompleteFilter.Builder()
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_CITIES)
+                .setCountry("US")
+                .build();
+
+        mAutocompleteAdapter = new PlaceAutocompleteAdapter(getActivity(), mGeoDataClient, BOUNDS_NORTH_AMERICA, filter);
         mSearchAutocomplete.setAdapter(mAutocompleteAdapter);
 
         // customize autocomplete
@@ -240,6 +252,13 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
     }
 
     private void search() {
+        ViewUtils.hideKeyboard(getActivity());
+        if (mSearchAutocomplete.getText().toString().isEmpty() || mDistanceConstraint.getText().toString().isEmpty()) {
+            Snackbar.make(contentView, "Invalid input", Snackbar.LENGTH_LONG).show();
+            cancelShowFetching();
+            return;
+        }
+
         mSearchAutocomplete.setEnabled(false);
         mUseLocationButton.setEnabled(false);
 
@@ -255,7 +274,6 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
             }
         });
 
-        ViewUtils.hideKeyboard(getActivity());
         mSearchAutocomplete.dismissDropDown();
         contentView.postDelayed(delayedShowFetching, 300);
         // As a fail safe if something errors out
@@ -403,8 +421,8 @@ public class MainFragment extends Fragment implements GoogleApiClient.OnConnecti
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             // retrieve the place ID of the selected item from the Adapter.
-            PlaceAutocompleteAdapter.PlaceAutocomplete item = mAutocompleteAdapter.getItem(position);
-            mSelectedPlaceId = String.valueOf(item.placeId);
+            AutocompletePrediction item = mAutocompleteAdapter.getItem(position);
+            mSelectedPlaceId = String.valueOf(item.getPlaceId());
 
             /*
              Issue a request to the Places Geo Data API to retrieve a Place object with additional

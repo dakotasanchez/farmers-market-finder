@@ -19,7 +19,7 @@ import com.sanchez.fmf.model.MarketDetailResponseModel;
 import com.sanchez.fmf.service.MarketService;
 import com.sanchez.fmf.service.RestClient;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import retrofit.Callback;
@@ -33,7 +33,7 @@ public class MarketDetailActivity extends AppCompatActivity {
     public static final String EXTRA_MARKET_ID = "com.sanchez.market_id";
     public static final String EXTRA_MARKET_NAME = "com.sanchez.market_name";
 
-    @Bind(R.id.toolbar_market_detail_activity)
+    @BindView(R.id.toolbar_market_detail_activity)
     Toolbar mToolbar;
 
     private String mMarketId;

@@ -13,7 +13,7 @@ import com.sanchez.fmf.util.MarketUtils;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
@@ -68,11 +68,11 @@ public class MarketListAdapter extends RecyclerView.Adapter<MarketListAdapter.Vi
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.market_name)
+        @BindView(R.id.market_name)
         TextView mMarketName;
-        @Bind(R.id.market_distance)
+        @BindView(R.id.market_distance)
         TextView mDistance;
-        @Bind(R.id.miles)
+        @BindView(R.id.miles)
         TextView mMiles;
 
         public ViewHolder(View v) {
