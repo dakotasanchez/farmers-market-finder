@@ -5,15 +5,15 @@ package com.sanchez.fmf.model;
  */
 public class MarketDetailResponseModel {
 
-    private MarketDetailModel market_details;
+    private MarketDetailModel market;
 
     public MarketDetailResponseModel() {}
 
     public MarketDetailModel getMarketdetails() {
-        return this.market_details;
+        return this.market;
     }
 
-    public void setMarketdetails(MarketDetailModel market_details) {
-        this.market_details = market_details;
+    public void setMarketdetails(MarketDetailModel market) {
+        this.market = market;
     }
 }
