@@ -1,4 +1,4 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -7,203 +7,220 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:paddingTop="@dimen/cardview_margin"
-    android:paddingBottom="@dimen/cardview_padding"
-    android:orientation="vertical"
     android:background="@color/material_white">
-
-    <TextView
-        android:id="@+id/search_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Base.TextAppearance.AppCompat.Medium"
-        android:layout_marginTop="@dimen/cardview_padding"
-        android:layout_marginLeft="@dimen/cardview_padding_small"
-        android:text="@string/search_markets"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="@dimen/cardview_padding_small"
-        android:background="@color/material_gray_dark" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/powered_by_google"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:paddingTop="@dimen/cardview_margin"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/card_search"
-            android:layout_weight="9"
+        <TextView
+            android:id="@+id/search_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_marginTop="@dimen/cardview_padding"
+            android:layout_marginLeft="@dimen/cardview_padding_small"
+            android:text="@string/search_markets"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/cardview_padding_small"
+            android:background="@color/material_gray_dark" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_search"
+                android:layout_weight="9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/cardview_margin"
+                card_view:cardElevation="@dimen/cardview_elevation"
+                card_view:cardCornerRadius="@dimen/cardview_radius"
+                card_view:cardBackgroundColor="@color/pure_white">
+
+                <RelativeLayout
+                    android:id="@+id/search_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/clear_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_clear_black_24dp"
+                        android:layout_alignParentRight="true"
+                        android:padding="@dimen/cardview_padding_small"
+                        android:layout_centerVertical="true"
+                        android:visibility="gone"/>
+
+                    <AutoCompleteTextView
+                        android:id="@+id/search_autocomplete"
+                        style="@style/Widget.AppCompat.AutoCompleteTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/clear_icon"
+                        android:paddingTop="@dimen/cardview_padding"
+                        android:paddingBottom="@dimen/cardview_padding"
+                        android:paddingLeft="@dimen/cardview_padding"
+                        android:background="#00000000"
+                        android:textColorHint="@color/material_gray_dark"
+                        android:hint="@string/search_hint"
+                        android:imeOptions="actionSearch"
+                        android:inputType="textAutoComplete"
+                        android:maxLines="1"/>
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <ImageButton
+                android:id="@+id/search_button"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:padding="@dimen/cardview_padding_large"
+                android:layout_marginRight="@dimen/cardview_margin"
+                android:src="@drawable/ic_search_white_24dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/cardview_margin"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/or_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                style="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_margin="@dimen/cardview_margin"
+                android:text="@string/or"/>
+
+            <Button
+                android:id="@+id/use_location_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:padding="@dimen/button_padding"
+                android:text="@string/use_location"
+                android:textColor="@color/pure_white"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/filter_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_marginLeft="@dimen/cardview_margin"
+            android:text="@string/filter"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/cardview_padding_small"
+            android:background="@color/material_gray_dark" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Base.TextAppearance.AppCompat.Medium"
+                android:text="@string/markets_within"/>
+
+                <EditText
+                    android:id="@+id/distance_constraint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/cardview_padding"
+                    android:paddingBottom="@dimen/cardview_padding"
+                    android:text="@string/fifteen"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:maxLength="3"
+                    android:minWidth="@dimen/tv_min_width"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Base.TextAppearance.AppCompat.Medium"
+                android:text="@string/miles" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/pinned_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_marginLeft="@dimen/cardview_margin"
+            android:text="@string/favorite_markets"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/cardview_padding_small"
+            android:background="@color/material_gray_dark" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/market_favorites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/cardview_margin"
+            android:padding="@dimen/cardview_padding_large"
             card_view:cardElevation="@dimen/cardview_elevation"
             card_view:cardCornerRadius="@dimen/cardview_radius"
             card_view:cardBackgroundColor="@color/pure_white">
 
-            <RelativeLayout
-                android:id="@+id/search_parent"
+            <TextView
+                android:id="@+id/no_favorites_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="@dimen/cardview_padding_large"
+                android:text="@string/no_favorites"
+                style="@style/Base.TextAppearance.AppCompat.Medium"
+                android:visibility="gone"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/market_favorites_list"
+                android:scrollbars="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/clear_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_clear_black_24dp"
-                    android:layout_alignParentRight="true"
-                    android:padding="@dimen/cardview_padding_small"
-                    android:layout_centerVertical="true"
-                    android:visibility="gone"/>
-
-                <AutoCompleteTextView
-                    android:id="@+id/search_autocomplete"
-                    style="@style/Widget.AppCompat.AutoCompleteTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@id/clear_icon"
-                    android:paddingTop="@dimen/cardview_padding"
-                    android:paddingBottom="@dimen/cardview_padding"
-                    android:paddingLeft="@dimen/cardview_padding"
-                    android:background="#00000000"
-                    android:textColorHint="@color/material_gray_dark"
-                    android:hint="@string/search_hint"
-                    android:imeOptions="actionSearch"
-                    android:inputType="textAutoComplete"
-                    android:maxLines="1"/>
-
-            </RelativeLayout>
+                android:layout_height="match_parent" />
 
         </android.support.v7.widget.CardView>
 
-        <ImageButton
-            android:id="@+id/search_button"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:padding="@dimen/cardview_padding_large"
-            android:layout_marginRight="@dimen/cardview_margin"
-            android:src="@drawable/ic_search_white_24dp" />
-
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/cardview_margin"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/or_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            style="@style/Base.TextAppearance.AppCompat.Medium"
-            android:layout_margin="@dimen/cardview_margin"
-            android:text="@string/or"/>
-
-        <Button
-            android:id="@+id/use_location_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:padding="@dimen/button_padding"
-            android:text="@string/use_location"
-            android:textColor="@color/pure_white"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/filter_title"
+    <ImageView
+        android:id="@+id/powered_by_google"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Base.TextAppearance.AppCompat.Medium"
-        android:layout_marginLeft="@dimen/cardview_margin"
-        android:text="@string/filter"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="@dimen/cardview_padding_small"
-        android:background="@color/material_gray_dark" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Base.TextAppearance.AppCompat.Medium"
-            android:text="@string/markets_within"/>
-
-            <EditText
-                android:id="@+id/distance_constraint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/cardview_padding"
-                android:paddingBottom="@dimen/cardview_padding"
-                android:text="@string/fifteen"
-                android:imeOptions="actionDone"
-                android:inputType="number"
-                android:maxLines="1"
-                android:maxLength="3"
-                android:minWidth="@dimen/tv_min_width"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Base.TextAppearance.AppCompat.Medium"
-            android:text="@string/miles" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/pinned_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Base.TextAppearance.AppCompat.Medium"
-        android:layout_marginLeft="@dimen/cardview_margin"
-        android:text="@string/favorite_markets"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="@dimen/cardview_padding_small"
-        android:background="@color/material_gray_dark" />
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/market_favorites"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/cardview_margin"
-        android:padding="@dimen/cardview_padding"
-        card_view:cardElevation="@dimen/cardview_elevation"
-        card_view:cardCornerRadius="@dimen/cardview_radius"
-        card_view:cardBackgroundColor="@color/pure_white">
-
-        <TextView
-            android:id="@+id/no_favorites_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/no_favorites"
-            style="@style/Base.TextAppearance.AppCompat.Medium"
-            android:visibility="gone"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/market_favorites_list"
-            android:scrollbars="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </android.support.v7.widget.CardView>
-
-</LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="@dimen/cardview_margin"
+        android:src="@drawable/powered_by_google_light" />
+</RelativeLayout>
