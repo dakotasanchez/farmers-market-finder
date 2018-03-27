@@ -45,8 +45,39 @@ public class MarketDetailFragment extends Fragment {
     @BindView(R.id.layout_market_details)
     View detailsLayout;
 
-    @BindView(R.id.test)
-    TextView test;
+    @BindView(R.id.market_name)
+    TextView marketName;
+    @BindView(R.id.address)
+    TextView address;
+    @BindView(R.id.location)
+    TextView location;
+    @BindView(R.id.dates)
+    TextView dates;
+    @BindView(R.id.times)
+    TextView times;
+    @BindView(R.id.last_update_time)
+    TextView lastUpdateTime;
+    @BindView(R.id.website)
+    TextView website;
+    @BindView(R.id.facebook)
+    TextView facebook;
+    @BindView(R.id.twitter)
+    TextView twitter;
+    @BindView(R.id.other_media)
+    TextView otherMedia;
+    @BindView(R.id.credit)
+    TextView credit;
+    @BindView(R.id.organic)
+    TextView organic;
+    @BindView(R.id.snap)
+    TextView snap;
+    @BindView(R.id.sfmnp)
+    TextView sfmnp;
+    @BindView(R.id.wic)
+    TextView wic;
+    @BindView(R.id.wic_cash)
+    TextView wicCash;
+
 
     private static int MED_ANIM_TIME;
     private String mMarketId;
@@ -156,7 +187,8 @@ public class MarketDetailFragment extends Fragment {
 
     private void showMarket(MarketDetailModel market) {
 
-        test.setText(market.getMarket_name());
+        marketName.setText(marketName.getText().toString() + market.getMarket_name());
+        // Add others
 
         ViewUtils.crossfadeTwoViews(detailsLayout, mProgressBar, MED_ANIM_TIME);
     }
