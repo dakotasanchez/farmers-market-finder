@@ -10,8 +10,6 @@ public class MarketDetailModel {
     private String facebook;
     private String fmid;
     private String location;
-    private String x;
-    private String y;
     private String market_name;
     private String organic;
     private String other_media;
@@ -26,6 +24,8 @@ public class MarketDetailModel {
     private String website;
     private String wic;
     private String wic_cash;
+    private String x;
+    private String y;
     private String zipcode;
 
     public MarketDetailModel() {
@@ -69,22 +69,6 @@ public class MarketDetailModel {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public String getX() {
-        return x;
-    }
-
-    public void setX(String x) {
-        this.x = x;
-    }
-
-    public String getY() {
-        return y;
-    }
-
-    public void setY(String y) {
-        this.y = y;
     }
 
     public String getMarket_name() {
@@ -197,6 +181,22 @@ public class MarketDetailModel {
 
     public void setWic_cash(String wic_cash) {
         this.wic_cash = wic_cash;
+    }
+
+    public String getX() {
+        return x;
+    }
+
+    public void setX(String x) {
+        this.x = x;
+    }
+
+    public String getY() {
+        return y;
+    }
+
+    public void setY(String y) {
+        this.y = y;
     }
 
     public String getZipcode() {
