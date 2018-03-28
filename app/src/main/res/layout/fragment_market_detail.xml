@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/material_white"
-    android:layout_margin="@dimen/cardview_margin"
     tools:context="com.sanchez.fmf.MarketDetailActivity">
 
     <include layout="@layout/progress_bar_large"
@@ -21,8 +20,10 @@
         <!--android:visibility="visible">-->
 
         <LinearLayout
+            android:id="@+id/layout_market_details"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:padding="@dimen/cardview_padding"
             android:visibility="gone"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -31,71 +32,61 @@
                 android:id="@+id/market_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/market_name"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/address"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/location"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/dates"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/dates"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/times"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/times"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/last_update_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/last_update_time"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/website"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/website"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/facebook"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/facebook"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/twitter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/twitter"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/other_media"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/other_media"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <View
                 android:layout_width="match_parent"
@@ -108,43 +99,37 @@
                 android:id="@+id/credit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/credit"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/organic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/organic"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/snap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/snap"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/sfmnp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/sfmnp"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/wic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/wic"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
                 android:id="@+id/wic_cash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Base.TextAppearance.AppCompat.Medium"
-                android:text="@string/wic_cash"/>
+                style="@style/Base.TextAppearance.AppCompat.Small"/>
         </LinearLayout>
 
         <!--<LinearLayout-->

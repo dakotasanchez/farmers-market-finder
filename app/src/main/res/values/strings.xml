@@ -41,22 +41,22 @@
     <string name="added_to_favorites">Added to favorites</string>
     
     <!-- MarketDetailFragment -->
-    <string name="market_name">Market Name: </string>
-    <string name="address">Address: </string>
-    <string name="location">Location: </string>
-    <string name="dates">Dates: </string>
-    <string name="times">Times: </string>
-    <string name="last_update_time">Last Update Time: </string>
-    <string name="website">Website: </string>
-    <string name="facebook">Facebook: </string>
-    <string name="twitter">Twitter: </string>
-    <string name="other_media">Other Media: </string>
+    <string name="market_name">Market Name:\u0020</string>
+    <string name="address">Address:\u0020</string>
+    <string name="location">Location:\u0020</string>
+    <string name="dates">Dates:\u0020</string>
+    <string name="times">Times:\u0020</string>
+    <string name="last_update_time">Last Update Time:\u0020</string>
+    <string name="website">Website:\u0020</string>
+    <string name="facebook">Facebook:\u0020</string>
+    <string name="twitter">Twitter:\u0020</string>
+    <string name="other_media">Other Media:\u0020</string>
 
-    <string name="credit">Credit: </string>
-    <string name="organic">Organic: </string>
-    <string name="snap">Snap: </string>
-    <string name="sfmnp">Sfmnp: </string>
-    <string name="wic">Wic: </string>
-    <string name="wic_cash">Wic Cash: </string>
+    <string name="credit">Credit:\u0020</string>
+    <string name="organic">Organic:\u0020</string>
+    <string name="snap">Snap:\u0020</string>
+    <string name="sfmnp">Sfmnp:\u0020</string>
+    <string name="wic">Wic:\u0020</string>
+    <string name="wic_cash">Wic Cash:\u0020</string>
 
 </resources>

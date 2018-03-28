@@ -1,6 +1,7 @@
 package com.sanchez.fmf.fragment;
 
 
+import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -187,8 +188,43 @@ public class MarketDetailFragment extends Fragment {
 
     private void showMarket(MarketDetailModel market) {
 
-        marketName.setText(marketName.getText().toString() + market.getMarket_name());
-        // Add others
+        Activity parent = getActivity();
+
+        String sMarketName = parent.getString(R.string.market_name) + market.getMarket_name();
+        String sAddress = parent.getString(R.string.address)
+                + market.getStreet() + ", " + market.getCity() + ", "
+                + market.getState() + ", " + market.getZipcode();
+        String sLocation  = parent.getString(R.string.location) + (market.getLocation() == null ? "" : market.getLocation());
+        String sDates = parent.getString(R.string.dates) + (market.getSeason_1_date() == null ? "" : market.getSeason_1_date());
+        String sTimes = parent.getString(R.string.times) + (market.getSeason_1_time() == null ? "" : market.getSeason_1_time());
+        String sLastUpdateTime = parent.getString(R.string.last_update_time) + (market.getUpdate_time() == null ? "" : market.getUpdate_time());
+        String sWebsite = parent.getString(R.string.website) + (market.getWebsite() == null ? "" : market.getWebsite());
+        String sFacebook = parent.getString(R.string.facebook) + (market.getFacebook() == null ? "" : market.getFacebook());
+        String sTwitter = parent.getString(R.string.twitter) + (market.getTwitter() == null ? "" : market.getTwitter());
+        String sOtherMedia = parent.getString(R.string.other_media) + (market.getOther_media() == null ? "" : market.getOther_media());
+        String sCredit = parent.getString(R.string.credit) + (market.getCredit() == null ? "" : market.getCredit());
+        String sOrganic = parent.getString(R.string.organic) + (market.getOrganic() == null ? "" : market.getOrganic());
+        String sSnap = parent.getString(R.string.snap) + (market.getSnap() == null ? "" : market.getSnap());
+        String sSfmnp = parent.getString(R.string.sfmnp) + (market.getSfmnp() == null ? "" : market.getSfmnp());
+        String sWic = parent.getString(R.string.wic) + (market.getWic() == null ? "" : market.getWic());
+        String sWicCash = parent.getString(R.string.wic_cash) + (market.getWic_cash() == null ? "" : market.getWic_cash());
+
+        marketName.setText(sMarketName);
+        address.setText(sAddress);
+        location.setText(sLocation);
+        dates.setText(sDates);
+        times.setText(sTimes);
+        lastUpdateTime.setText(sLastUpdateTime);
+        website.setText(sWebsite);
+        facebook.setText(sFacebook);
+        twitter.setText(sTwitter);
+        otherMedia.setText(sOtherMedia);
+        credit.setText(sCredit);
+        organic.setText(sOrganic);
+        snap.setText(sSnap);
+        sfmnp.setText(sSfmnp);
+        wic.setText(sWic);
+        wicCash.setText(sWicCash);
 
         ViewUtils.crossfadeTwoViews(detailsLayout, mProgressBar, MED_ANIM_TIME);
     }
