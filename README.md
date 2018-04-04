@@ -8,9 +8,9 @@ Functions include:
 
 - Search any city, town, or zip code for farmers markets.
 - Use device location to show nearby markets.
-- Show distance to markets near device.
+- Show distance to markets when using device location.
 - List view and map view of markets.
-- Various details (address, schedule, products, etc.) provided by USDA API.
+- Various details (address, schedule, websites, etc.) provided by [my market API](https://github.com/dakotasanchez/market-api).
 - Pin markets to "Favorite markets" list on app home screen.
 
 Open source libraries utilized:
@@ -24,13 +24,13 @@ Open source libraries utilized:
 
 APIs utilized:
 
-- USDA Farmers Market directory
+- [https://github.com/dakotasanchez/market-api](https://github.com/dakotasanchez/market-api)
 - Google Places
 
 License
 -------
 
-    Copyright 2017 Dakota Sanchez
+    Copyright 2018 Dakota Sanchez
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
